@@ -27,23 +27,18 @@
     
     <!-- Load config and validation -->
     <script type="module">
-        // Import modules
-        import { config } from './src/config.js';
-        import { validateIPAndRedirect } from './src/ipValidation.js';
+        console.log('Basic module script running...');
         
-        // Make config globally available
-        window.CONFIG = config;
+        // Test if we can access window
+        console.log('Window object:', typeof window);
         
-        // Run validation when everything is loaded
-        window.addEventListener('load', async () => {
-            console.log('Window loaded, starting validation...');
-            try {
-                const result = await validateIPAndRedirect();
-                console.log('Validation complete:', result);
-            } catch (error) {
-                console.error('Validation failed:', error);
-            }
-        });
+        // Test if we can load modules
+        try {
+            const { config } = await import('./src/config.js');
+            console.log('Config loaded successfully');
+        } catch (error) {
+            console.error('Failed to load config:', error);
+        }
     </script>
     
     <!-- Load reCAPTCHA after config is available -->
