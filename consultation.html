@@ -17,7 +17,10 @@
     ">
     
     <!-- reCAPTCHA v3 -->
-    <script src="https://www.google.com/recaptcha/api.js?render=6LewkogqAAAAANUh-L1KOeelY9mBl2I6evdrhRAr"></script>
+    <script type="module">
+        import { config } from './src/config.js';
+        document.write(`<script src="https://www.google.com/recaptcha/api.js?render=${config.RECAPTCHA_SITE_KEY}"><\/script>`);
+    </script>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -174,7 +177,10 @@
     </script>
 
     <!-- Form submission handling -->
-    <script>
+    <script type="module">
+        import { config } from './src/config.js';
+        import { validateIPWithCache } from './src/ipValidation.js';
+
         document.getElementById('consultationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -184,8 +190,8 @@
             }
 
             try {
-                // Get reCAPTCHA token
-                const token = await grecaptcha.execute('6LewkogqAAAAANUh-L1KOeelY9mBl2I6evdrhRAr', {action: 'submit'});
+                // Get reCAPTCHA token using config key
+                const token = await grecaptcha.execute(config.RECAPTCHA_SITE_KEY, {action: 'submit'});
                 document.getElementById('recaptchaResponse').value = token;
 
                 // Use new validation with retry and caching
