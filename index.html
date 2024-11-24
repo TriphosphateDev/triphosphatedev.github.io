@@ -62,7 +62,28 @@
     }
     </script>
 
-    <!-- Google Analytics tag (gtag.js) -->
+    <!-- Initialize core modules first -->
+    <script type="module">
+        console.log('Starting core initialization...');
+        
+        try {
+            // Import all core modules first
+            const { config } = await import('./src/config.js');
+            const { validateIPAndRedirect } = await import('./src/ipValidation.js');
+            const { trackIPCheck } = await import('./src/monitoring.js');
+            
+            // Make modules globally available
+            window.CONFIG = config;
+            window.validateIPAndRedirect = validateIPAndRedirect;
+            window.trackIPCheck = trackIPCheck;
+            
+            console.log('Core modules loaded successfully');
+        } catch (error) {
+            console.error('Failed to initialize core modules:', error);
+        }
+    </script>
+
+    <!-- Then load Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CWBEE471XP"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -505,21 +526,6 @@
                 }
             }
         });
-    </script>
-    <script type="module">
-        console.log('Initializing application...');
-        
-        // Import all core modules first
-        import { config } from './src/config.js';
-        import { validateIPAndRedirect } from './src/ipValidation.js';
-        import { trackIPCheck } from './src/monitoring.js';
-        
-        // Make modules globally available
-        window.CONFIG = config;
-        window.validateIPAndRedirect = validateIPAndRedirect;
-        window.trackIPCheck = trackIPCheck;
-        
-        console.log('Core modules loaded');
     </script>
     <script type="module">
         import { validateAndTrackClick } from './src/validation.js';
