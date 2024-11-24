@@ -1,3 +1,4 @@
+console.log('Loading ipValidation module...');
 // Make cache accessible for testing
 export const cache = new Map();
 export const MAX_RETRIES = 3; // Export for testing
