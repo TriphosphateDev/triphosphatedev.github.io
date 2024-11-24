@@ -118,13 +118,29 @@
         }
     </style>
 
-    <!-- Import our validation module with correct path -->
+    <!-- Update the validation script -->
     <script type="module">
         import { validateIPAndRedirect } from './src/ipValidation.js';
         
-        // Check IP immediately on page load
+        // Add debug logging
+        console.log('Loading IP validation...');
+        
+        // Check IP immediately
+        validateIPAndRedirect().then(result => {
+            console.log('Initial IP validation complete:', result);
+        }).catch(error => {
+            console.error('IP validation failed:', error);
+        });
+
+        // Also check on DOMContentLoaded as backup
         document.addEventListener('DOMContentLoaded', async () => {
-            await validateIPAndRedirect();
+            console.log('DOM loaded, running IP validation...');
+            try {
+                const result = await validateIPAndRedirect();
+                console.log('DOMContentLoaded IP validation complete:', result);
+            } catch (error) {
+                console.error('DOMContentLoaded IP validation failed:', error);
+            }
         });
     </script>
 </head>
