@@ -413,6 +413,7 @@
             color: #8a7bf4;
         }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LewkogqAAAAANUh-L1KOeelY9mBl2I6evdrhRAr"></script>
 </head>
 <body>
     <div class="particles"></div>
@@ -436,12 +437,11 @@
             </section>
 
             <nav class="buttons" aria-label="Contact options">
-                <a class="btn" href="https://forms.gle/MemHJyKfDmTtPbjk9" target="_blank" rel="noopener" 
-                   onclick="gtag_report_conversion(this.href); return true;">Book Free Consultation</a>
+                <a class="btn" href="/consultation.html" onclick="validateAndTrackClick(this, event)">Book Free Consultation</a>
                 <a class="btn" href="mailto:triphosphateLP@gmail.com" 
-                   onclick="gtag_report_conversion(this.href); return true;">Email Direct</a>
+                   onclick="validateAndTrackClick(this, event)">Email Direct</a>
                 <a class="btn" href="https://discord.com/channels/@me/Triphosphate/" rel="noopener" 
-                   onclick="gtag_report_conversion(this.href); return true;">Discord Message</a>
+                   onclick="validateAndTrackClick(this, event)">Discord Message</a>
                 <a class="btn" href="faq.html">FAQ</a>
             </nav>
 
@@ -505,6 +505,10 @@
                 }
             }
         });
+    </script>
+    <script type="module">
+        import { validateAndTrackClick } from './src/validation.js';
+        window.validateAndTrackClick = validateAndTrackClick;
     </script>
 </body>
 </html>
