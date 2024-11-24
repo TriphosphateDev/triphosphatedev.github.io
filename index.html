@@ -3,9 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triphosphate Music - Audio & Mix Engineering</title>
     
-    <!-- Google tag (gtag.js) -->
+    <!-- Primary Meta Tags -->
+    <title>Affordable Mixing Engineer | Triphosphate Music</title>
+    <meta name="description" content="Professional audio mixing for independent artists. Affordable, flexible, and tailored to your sound. Contact Triphosphate Music today!">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://triphosphatemusic.neocities.org">
+    <meta property="og:title" content="Triphosphate Music - Professional Audio & Mix Engineering">
+    <meta property="og:description" content="Affordable mixing services for independent artists and bedroom producers. High-quality mixing with unlimited revisions and personalized attention.">
+    <meta property="og:image" content="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="http://triphosphatemusic.neocities.org">
+    <meta property="twitter:title" content="Triphosphate Music - Professional Audio & Mix Engineering">
+    <meta property="twitter:description" content="Affordable mixing services for independent artists and bedroom producers. High-quality mixing with unlimited revisions and personalized attention.">
+    <meta property="twitter:image" content="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg">
+
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Triphosphate Music",
+      "description": "Professional mixing services for independent artists and bedroom producers. Trained under Latin Grammy winning engineer Charles Dye.",
+      "image": "https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg",
+      "url": "http://triphosphatemusic.neocities.org",
+      "sameAs": [
+        "https://open.spotify.com/artist/2aAj8DO96F1PkkpSC5ABDZ",
+        "https://soundcloud.com/triphosphate",
+        "https://www.youtube.com/@triphosphate",
+        "https://www.instagram.com/triphosphate_music",
+        "https://engineears.com/triphosphate"
+      ],
+      "priceRange": "Affordable",
+      "serviceType": ["Audio Mixing", "Music Production", "Sound Engineering"],
+      "knowsAbout": [
+        "Audio Engineering",
+        "Music Production",
+        "Sound Mixing",
+        "Vocal Processing",
+        "Music Mastering"
+      ],
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "description": "Trained under Latin Grammy winning engineer Charles Dye, with experience working alongside producers Mark Hudson, Rudy Perez, Jon Secada, and David Frangioni"
+      },
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Professional Audio Mixing",
+          "description": "Affordable mixing services with unlimited revisions for independent artists and bedroom producers"
+        }
+      }
+    }
+    </script>
+
+    <!-- Google Analytics tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CWBEE471XP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-CWBEE471XP');
+    </script>
+
+    <!-- Google Ads tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-16777349124"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -13,10 +79,22 @@
         gtag('js', new Date());
         gtag('config', 'AW-16777349124');
     </script>
-    
+
+    <!-- Add this script right after the existing Google Ads tag -->
+    <script>
+    function gtag_report_conversion(url) {
+        gtag('event', 'conversion', {
+            'send_to': 'AW-16777349124/IfN6COvfye0ZEISQiMA-'
+        });
+    }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
     <script src="https://w.soundcloud.com/player/api.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://w.soundcloud.com">
     <style>
         * {
             margin: 0;
@@ -45,37 +123,39 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
             background: transparent;
             z-index: 1;
-            padding-top: 5rem;
+            padding-top: 2rem;
         }
 
         .logo {
-            width: 200px;
-            height: 200px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 900px;
+            height: 900px;
             border-radius: 50%;
-            margin-top: 5rem;
-            margin-bottom: 2rem;
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
             box-shadow: 
                 0 4px 8px rgba(0, 0, 0, 0.3),
                 0 8px 16px rgba(0, 0, 0, 0.2),
                 0 0 0 2px rgba(255, 255, 255, 0.1);
-            animation: float 6s ease-in-out infinite;
-            position: relative;
-            top: 0;
         }
 
         @keyframes float {
             0% {
-                transform: translateY(0px);
+                transform: translate(-50%, -50%);
             }
             50% {
-                transform: translateY(-10px);
+                transform: translate(-50%, -60%);
             }
             100% {
-                transform: translateY(0px);
+                transform: translate(-50%, -50%);
             }
         }
 
@@ -95,13 +175,17 @@
             }
 
             .logo {
-                width: 150px;
-                height: 150px;
-                margin-top: 3rem;
+                width: 600px;
+                height: 600px;
             }
 
             .content {
-                padding-top: 3rem;
+                padding-top: 1rem;
+                justify-content: flex-start;
+            }
+
+            h1 {
+                margin-top: 1rem;
             }
         }
 
@@ -111,8 +195,8 @@
             }
 
             .logo {
-                width: 120px;
-                height: 120px;
+                width: 360px;
+                height: 360px;
                 margin-top: 1.5rem;
             }
 
@@ -300,20 +384,75 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .service-description {
+            max-width: 600px;
+            margin: 1rem auto 2rem;
+            padding: 0 1rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .social-proof {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .social-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: #8a7bf4;
+        }
     </style>
 </head>
 <body>
     <div class="particles"></div>
+    <img src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" 
+         alt="Triphosphate Music - Professional mixing engineer for independent artists and bedroom producers" 
+         class="logo">
     <div id="app">
-        <div class="content">
-            <img src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" alt="Triphosphate Music Logo" class="logo">
+        <main class="content">
             <h1>Triphosphate Music</h1>
-            <div class="buttons">
-                <a class="btn" href="https://forms.gle/MemHJyKfDmTtPbjk9" target="_blank">Contact Form</a>
-                <a class="btn" href="mailto:triphosphateLP@gmail.com">Email Direct</a>
-                <a class="btn" href="https://discord.com/channels/@me/Triphosphate/">Discord Message</a>
+            <h2 style="font-size: 1.5rem; margin-bottom: 2rem;">Affordable Mixing Services for Independent Artists</h2>
+            
+            <section class="consultation-offer" style="
+                background: rgba(138, 123, 244, 0.1);
+                padding: 1.5rem;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+                border: 1px solid rgba(138, 123, 244, 0.3);
+                max-width: 600px;">
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #8a7bf4;">Free Consultation</h3>
+                <p style="color: rgba(255, 255, 255, 0.9);">Not sure if professional mixing is right for you? Let's talk! Book a free consultation to discuss your music and creative goals. No commitment required.</p>
+            </section>
+
+            <nav class="buttons" aria-label="Contact options">
+                <a class="btn" href="https://forms.gle/MemHJyKfDmTtPbjk9" target="_blank" rel="noopener" 
+                   onclick="gtag_report_conversion(this.href); return true;">Book Free Consultation</a>
+                <a class="btn" href="mailto:triphosphateLP@gmail.com" 
+                   onclick="gtag_report_conversion(this.href); return true;">Email Direct</a>
+                <a class="btn" href="https://discord.com/channels/@me/Triphosphate/" rel="noopener" 
+                   onclick="gtag_report_conversion(this.href); return true;">Discord Message</a>
+                <a class="btn" href="faq.html">FAQ</a>
+            </nav>
+
+            <div class="social-proof">
+                <a href="https://engineears.com/triphosphate" class="social-link" target="_blank" rel="noopener">EngineEars Profile</a>
+                <a href="https://soundcloud.com/triphosphate" class="social-link" target="_blank" rel="noopener">SoundCloud</a>
+                <a href="https://www.instagram.com/triphosphate_music" class="social-link" target="_blank" rel="noopener">Instagram</a>
             </div>
-            <div class="playlist-container" :class="{ 'loading': isLoading }">
+
+            <section class="playlist-container" :class="{ 'loading': isLoading }" aria-label="Music portfolio">
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">Listen to My Recent Work</h3>
                 <div class="loading-overlay" v-if="isLoading">
                     <div class="loading-spinner"></div>
                 </div>
@@ -330,8 +469,13 @@
                     <button class="player-btn" @click="previousTrack">⏮</button>
                     <button class="player-btn" @click="nextTrack">⏭</button>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <section class="service-description" style="font-size: 0.95rem; margin-top: 2rem;">
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">Professional Experience</h3>
+                <p>Professional mixing services with over a decade of experience. Trained under Latin Grammy winning engineers, specializing in affordable solutions for independent artists.</p>
+            </section>
+        </main>
     </div>
 
     <script>
