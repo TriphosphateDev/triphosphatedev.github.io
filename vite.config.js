@@ -11,7 +11,7 @@ export default defineConfig({
       }
     }
   },
-  base: '/',
+  base: '/repository-name/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets'
