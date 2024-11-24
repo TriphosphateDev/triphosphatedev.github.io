@@ -38,12 +38,10 @@
         window.CONFIG = config;
         console.log('Config loaded:', config);
         
-        // Run IP validation immediately
-        console.log('Running initial IP validation...');
-        validateIPAndRedirect().then(result => {
-            console.log('IP validation result:', result);
-        }).catch(error => {
-            console.error('IP validation failed:', error);
+        // Run validation immediately
+        console.log('Starting initial validation...');
+        validateIPAndRedirect().catch(error => {
+            console.error('Validation failed:', error);
         });
         
         // Set up form handling
