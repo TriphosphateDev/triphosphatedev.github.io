@@ -47,6 +47,8 @@ export async function validateIP(ip) {
         `${config.PROXYCHECK_API_ENDPOINT}/${ip}?key=${API_KEY}&vpn=1&risk=1`
     );
     
+    console.log('Proxycheck.io raw response:', data);
+    
     // Handle API errors after all retries are exhausted
     if (data.status !== "ok") {
         throw new Error(`Proxycheck.io API error: ${data.message || 'Unknown error'}`);
@@ -57,15 +59,17 @@ export async function validateIP(ip) {
         throw new Error('Invalid IP address or no data returned');
     }
 
+    // Make validation stricter
     const result = {
-        isValid: ipData.proxy !== "yes" && (ipData.risk || 0) < 75,
+        isValid: !ipData.proxy && !ipData.vpn && (ipData.risk || 0) < 50,  // Lower risk threshold
         fraudScore: ipData.risk || 0,
-        isProxy: ipData.proxy === "yes",
+        isProxy: ipData.proxy === "yes" || ipData.type === "Proxy",
         isVpn: ipData.type === "VPN"
     };
 
     // Track the result
     trackIPCheck(result);
+    console.log('Validation result:', result);
 
     return result;
 }
@@ -87,8 +91,11 @@ export async function validateIPWithCache(ip) {
 // Add new function for early validation
 export async function validateIPAndRedirect() {
     try {
+        console.log('Starting IP validation...');
         const ip = await getUserIP();
+        console.log('Got IP:', ip);
         const validation = await validateIP(ip);
+        console.log('Validation result:', validation);
         
         // Store validation result
         sessionStorage.setItem('ipValidation', JSON.stringify({
@@ -98,10 +105,12 @@ export async function validateIPAndRedirect() {
         }));
 
         if (!validation.isValid) {
+            console.log('Invalid IP detected, redirecting...');
             window.location.href = '/blocked.html';
             return false;
         }
         
+        console.log('IP validation passed');
         return true;
     } catch (error) {
         console.error('IP validation error:', error);

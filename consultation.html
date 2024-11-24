@@ -16,10 +16,19 @@
         img-src 'self' data: https:;
     ">
     
-    <!-- reCAPTCHA v3 -->
+    <!-- Load config first -->
     <script type="module">
         import { config } from './src/config.js';
-        document.write(`<script src="https://www.google.com/recaptcha/api.js?render=${config.RECAPTCHA_SITE_KEY}"><\/script>`);
+        window.RECAPTCHA_SITE_KEY = config.RECAPTCHA_SITE_KEY;
+    </script>
+    
+    <!-- Then load reCAPTCHA after config is available -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const script = document.createElement('script');
+            script.src = `https://www.google.com/recaptcha/api.js?render=${window.RECAPTCHA_SITE_KEY}`;
+            document.head.appendChild(script);
+        });
     </script>
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
