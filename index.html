@@ -67,10 +67,17 @@
         console.log('Starting core initialization...');
         
         try {
-            // Import all core modules first
+            console.log('Attempting to import config...');
             const { config } = await import('./src/config.js');
+            console.log('Config imported:', config);
+            
+            console.log('Attempting to import validation...');
             const { validateIPAndRedirect } = await import('./src/ipValidation.js');
+            console.log('Validation imported');
+            
+            console.log('Attempting to import monitoring...');
             const { trackIPCheck } = await import('./src/monitoring.js');
+            console.log('Monitoring imported');
             
             // Make modules globally available
             window.CONFIG = config;
@@ -79,7 +86,8 @@
             
             console.log('Core modules loaded successfully');
         } catch (error) {
-            console.error('Failed to initialize core modules:', error);
+            console.error('Failed to initialize core modules:', error.message);
+            console.error('Full error:', error);
         }
     </script>
 
