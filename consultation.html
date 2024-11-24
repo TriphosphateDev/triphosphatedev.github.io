@@ -27,17 +27,35 @@
     
     <!-- Load config and validation -->
     <script type="module">
-        console.log('Basic module script running...');
+        console.log('Starting module initialization...');
         
-        // Test if we can access window
-        console.log('Window object:', typeof window);
+        // Import all needed modules
+        import { config } from './src/config.js';
+        import { validateIPAndRedirect } from './src/ipValidation.js';
+        import { trackIPCheck } from './src/monitoring.js';
         
-        // Test if we can load modules
-        try {
-            const { config } = await import('./src/config.js');
-            console.log('Config loaded successfully');
-        } catch (error) {
-            console.error('Failed to load config:', error);
+        // Make config globally available
+        window.CONFIG = config;
+        console.log('Config loaded:', config);
+        
+        // Run IP validation immediately
+        console.log('Running initial IP validation...');
+        validateIPAndRedirect().then(result => {
+            console.log('IP validation result:', result);
+        }).catch(error => {
+            console.error('IP validation failed:', error);
+        });
+        
+        // Set up form handling
+        const form = document.getElementById('consultationForm');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                console.log('Form submitted, validating...');
+                // ... rest of form handling code ...
+            });
+        } else {
+            console.error('Form element not found!');
         }
     </script>
     
