@@ -62,9 +62,14 @@
     }
     </script>
 
+    <!-- Add console message before any other scripts -->
+    <script>
+        console.log('Hello World! Site version: ' + new Date().toISOString());
+        console.log('Running on: ' + window.location.href);
+    </script>
+
     <!-- Initialize core modules first -->
     <script type="module">
-        console.log('Hello World! Testing deployment to GitHub Pages...');
         console.log('Starting core initialization...');
         
         try {
