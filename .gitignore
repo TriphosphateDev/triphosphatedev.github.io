@@ -1,0 +1,17 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+src/config.js
+
+# Test files
+coverage/
+cypress/screenshots/
+cypress/videos/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log* 

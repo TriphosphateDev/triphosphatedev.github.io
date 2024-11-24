@@ -1,5 +1,6 @@
-import { validateIP } from '../../src/ipValidation';
+import { validateIP } from '../../src/ipValidation.js';
 import { validateFormSubmission, handleFormSubmit } from '../../src/formValidation';
+import { mockGtag } from '../../src/monitoring.js';
 
 describe('Consultation Form Validation', () => {
   beforeEach(() => {
@@ -14,6 +15,9 @@ describe('Consultation Form Validation', () => {
     global.formData.append('nameOrArtistName', 'Test Artist');
     global.formData.append('email', 'test@example.com');
     global.formData.append('userIP', '1.1.1.1');
+
+    // Mock gtag
+    mockGtag();
   });
 
   test('blocks submission without user interaction', () => {
@@ -25,13 +29,15 @@ describe('Consultation Form Validation', () => {
   });
 
   test('blocks suspicious IPs', async () => {
-    // Mock IP Quality Score response for suspicious IP
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve({
-          proxy: true,
-          vpn: true,
-          fraud_score: 80
+          status: "ok",
+          "1.1.1.1": {
+            proxy: "yes",
+            type: "VPN",
+            risk: 85
+          }
         })
       })
     );
@@ -41,13 +47,14 @@ describe('Consultation Form Validation', () => {
   });
 
   test('allows legitimate IPs', async () => {
-    // Mock IP Quality Score response for legitimate IP
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve({
-          proxy: false,
-          vpn: false,
-          fraud_score: 0
+          status: "ok",
+          "1.1.1.1": {
+            proxy: "no",
+            risk: 0
+          }
         })
       })
     );
