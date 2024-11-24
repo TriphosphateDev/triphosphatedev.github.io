@@ -507,6 +507,21 @@
         });
     </script>
     <script type="module">
+        console.log('Initializing application...');
+        
+        // Import all core modules first
+        import { config } from './src/config.js';
+        import { validateIPAndRedirect } from './src/ipValidation.js';
+        import { trackIPCheck } from './src/monitoring.js';
+        
+        // Make modules globally available
+        window.CONFIG = config;
+        window.validateIPAndRedirect = validateIPAndRedirect;
+        window.trackIPCheck = trackIPCheck;
+        
+        console.log('Core modules loaded');
+    </script>
+    <script type="module">
         import { validateAndTrackClick } from './src/validation.js';
         window.validateAndTrackClick = validateAndTrackClick;
     </script>

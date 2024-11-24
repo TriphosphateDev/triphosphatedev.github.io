@@ -27,33 +27,16 @@
     
     <!-- Load config and validation -->
     <script type="module">
-        console.log('Starting module initialization...');
+        console.log('Consultation page loaded');
         
-        // Import all needed modules
-        import { config } from './src/config.js';
-        import { validateIPAndRedirect } from './src/ipValidation.js';
-        import { trackIPCheck } from './src/monitoring.js';
-        
-        // Make config globally available
-        window.CONFIG = config;
-        console.log('Config loaded:', config);
-        
-        // Run validation immediately
-        console.log('Starting initial validation...');
-        validateIPAndRedirect().catch(error => {
-            console.error('Validation failed:', error);
-        });
-        
-        // Set up form handling
-        const form = document.getElementById('consultationForm');
-        if (form) {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                console.log('Form submitted, validating...');
-                // ... rest of form handling code ...
+        // Use the globally initialized functions
+        if (window.validateIPAndRedirect) {
+            console.log('Running IP validation...');
+            window.validateIPAndRedirect().catch(error => {
+                console.error('Validation failed:', error);
             });
         } else {
-            console.error('Form element not found!');
+            console.error('IP validation not initialized!');
         }
     </script>
     
