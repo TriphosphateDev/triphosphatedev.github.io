@@ -264,5 +264,39 @@
             }
         });
     </script>
+
+    <!-- Initialize core modules first -->
+    <script type="module">
+        console.log('Starting core initialization...');
+        
+        try {
+            console.log('Attempting to import config...');
+            const { config } = await import('./src/config.js');
+            console.log('Config imported:', config);
+            
+            console.log('Attempting to import validation...');
+            const { validateIPAndRedirect } = await import('./src/ipValidation.js');
+            console.log('Validation imported');
+            
+            console.log('Attempting to import monitoring...');
+            const { trackIPCheck } = await import('./src/monitoring.js');
+            console.log('Monitoring imported');
+            
+            // Make modules globally available
+            window.CONFIG = config;
+            window.validateIPAndRedirect = validateIPAndRedirect;
+            window.trackIPCheck = trackIPCheck;
+            
+            // Run validation immediately after initialization
+            console.log('Running IP validation...');
+            validateIPAndRedirect().catch(error => {
+                console.error('Validation failed:', error);
+            });
+            
+        } catch (error) {
+            console.error('Failed to initialize core modules:', error.message);
+            console.error('Full error:', error);
+        }
+    </script>
 </body>
 </html> 
