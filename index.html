@@ -62,45 +62,6 @@
     }
     </script>
 
-    <!-- Add console message before any other scripts -->
-    <script>
-        console.log('Hello World! Site version: ' + new Date().toISOString());
-        console.log('Running on: ' + window.location.href);
-    </script>
-
-    <!-- Initialize core modules first -->
-    <script type="module">
-        console.log('Starting core initialization...');
-        
-        try {
-            console.log('Attempting to import config...');
-            const { config } = await import('./src/config.js');
-            console.log('Config imported:', config);
-            
-            console.log('Attempting to import validation...');
-            const { validateIPAndRedirect, initializeSecurityButton } = await import('./src/ipValidation.js');
-            console.log('Validation imported');
-            
-            console.log('Attempting to import monitoring...');
-            const { trackIPCheck } = await import('./src/monitoring.js');
-            console.log('Monitoring imported');
-            
-            // Make modules globally available if needed
-            window.CONFIG = config;
-            window.validateIPAndRedirect = validateIPAndRedirect;
-            window.trackIPCheck = trackIPCheck;
-            
-            console.log('Core modules loaded successfully');
-            
-            // Initialize button after security checks
-            await initializeSecurityButton('consultButton', './consultation.html');
-            
-        } catch (error) {
-            console.error('Failed to initialize core modules:', error.message);
-            console.error('Full error:', error);
-        }
-    </script>
-
     <!-- Then load Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CWBEE471XP"></script>
     <script>
@@ -462,7 +423,6 @@
             transition: opacity 0.3s ease, background 0.3s ease, transform 0.3s ease;
         }
     </style>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LewkogqAAAAANUh-L1KOeelY9mBl2I6evdrhRAr"></script>
 </head>
 <body>
     <div class="particles"></div>
@@ -589,6 +549,10 @@
                 }
             }, 1000);
         }
+    </script>
+    <script type="module">
+        import { config } from './src/config.js';
+        window.CONFIG = config;
     </script>
 </body>
 </html>
