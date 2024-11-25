@@ -60,31 +60,24 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // Check if this was a real network error vs adblocker
-                const isNetworkError = error && error.type === 'error' && document.body.contains(script);
+                // More careful error detection
+                const isAdblockerError = 
+                    !document.querySelector(`script[src*="proxycheck.io"]`) || // Script was blocked
+                    error.type === 'error' && document.body.contains(script) && // Script exists but failed
+                    (
+                        document.querySelector(`script[src*="proxycheck.io"][src*="${callbackName}"]`) === null ||
+                        error.target.src.includes('proxycheck.io') // Specific to our request
+                    );
                 
-                if (isNetworkError) {
-                    // Try fallback URL with different parameter order
-                    const fallbackParams = new URLSearchParams();
-                    fallbackParams.set('tag', 'callback');  // Put JSONP params first
-                    fallbackParams.set('callback', callbackName);
-                    fallbackParams.set('format', 'jsonp');
-                    // Then add original params
-                    for (const [key, value] of params.entries()) {
-                        if (!['tag', 'callback', 'format'].includes(key)) {
-                            fallbackParams.set(key, value);
-                        }
-                    }
-                    
-                    const fallbackUrl = `${baseUrl}?${fallbackParams.toString()}`;
-                    console.log('🔄 Trying fallback URL:', fallbackUrl);
-                    script.src = fallbackUrl;
-                    document.head.appendChild(script);
-                } else {
+                if (isAdblockerError) {
                     console.log('🛑 ADBLOCKER DETECTED via JSONP failure!');
                     const err = new Error('ADBLOCKER_DETECTED');
                     err.isAdblocker = true;
                     reject(err);
+                } else {
+                    // Try the API request without JSONP
+                    console.log('🔄 JSONP failed, trying direct request...');
+                    reject(new Error('JSONP_FAILED'));
                 }
             };
             
