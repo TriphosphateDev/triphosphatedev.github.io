@@ -23,6 +23,7 @@ async function fetchWithRetry(url) {
         return new Promise((resolve, reject) => {
             const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
             let responseReceived = false;
+            let jsonpResponse = null;
             
             // Extract IP from URL for use in response
             const ipMatch = url.match(/\/v2\/([^?]+)/);
@@ -31,6 +32,7 @@ async function fetchWithRetry(url) {
             window[callbackName] = (data) => {
                 console.log('🔄 JSONP response received:', data);
                 responseReceived = true;
+                jsonpResponse = data;  // Store the actual response
                 
                 // Clean up
                 delete window[callbackName];
@@ -69,10 +71,10 @@ async function fetchWithRetry(url) {
             console.log('🔄 JSONP URL:', jsonpUrl);
             script.src = jsonpUrl;
             
-            script.onerror = (error) => {
+            script.onerror = async (error) => {
                 if (responseReceived) {
                     console.log('✅ Ignoring script error - response already received');
-                    return;
+                    return resolve(jsonpResponse);  // Use the actual response if we got it
                 }
 
                 console.log('🚨 JSONP script error details:', {
@@ -86,6 +88,7 @@ async function fetchWithRetry(url) {
                     ip
                 });
 
+                // Clean up
                 delete window[callbackName];
                 try {
                     document.head.removeChild(script);
@@ -93,46 +96,28 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                if (!responseReceived && ip) {
-                    fetch(url, { mode: 'no-cors' })
-                        .then(() => {
-                            console.log('✅ Direct fetch succeeded, not an adblocker');
-                            resolve({
-                                status: "ok",
-                                [ip]: {
-                                    proxy: "no",
-                                    risk: 0,
-                                    type: "residential"
-                                }
-                            });
-                        })
-                        .catch(fetchError => {
-                            console.log('❌ Direct fetch failed:', fetchError);
-                            
-                            const errorText = (fetchError.message || '').toLowerCase();
-                            const isAdblockerBlock = 
-                                errorText.includes('ad_blocker') ||
-                                errorText.includes('adblocker');
-                            
-                            if (isAdblockerBlock) {
-                                console.log('🛑 ADBLOCKER DETECTED!');
-                                const err = new Error('ADBLOCKER_DETECTED');
-                                err.isAdblocker = true;
-                                reject(err);
-                            } else {
-                                console.log('✅ Not an adblocker, proceeding with data');
-                                resolve({
-                                    status: "ok",
-                                    [ip]: {
-                                        proxy: "no",
-                                        risk: 0,
-                                        type: "residential"
-                                    }
-                                });
-                            }
-                        });
-                } else {
-                    reject(new Error('No IP address found in URL'));
+                try {
+                    // Try a direct fetch to check if it's an adblocker
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    console.log('✅ Direct fetch succeeded with data:', data);
+                    resolve(data);  // Use the actual API response
+                } catch (fetchError) {
+                    console.log('❌ Direct fetch failed:', fetchError);
+                    
+                    const errorText = (fetchError.message || '').toLowerCase();
+                    const isAdblockerBlock = 
+                        errorText.includes('ad_blocker') ||
+                        errorText.includes('adblocker');
+                    
+                    if (isAdblockerBlock) {
+                        console.log('🛑 ADBLOCKER DETECTED!');
+                        const err = new Error('ADBLOCKER_DETECTED');
+                        err.isAdblocker = true;
+                        reject(err);
+                    } else {
+                        reject(fetchError);  // Let the caller handle the error
+                    }
                 }
             };
             
