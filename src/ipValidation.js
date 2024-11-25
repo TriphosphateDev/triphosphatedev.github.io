@@ -131,12 +131,11 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
                 error.isAdblocker || 
                 messageText === 'failed to fetch' ||
                 errorText.includes('err_blocked') ||
-                errorText.includes('network error') ||
+                errorText.includes('err_failed') ||  // Chrome CORS error
+                errorText.includes('cors') ||        // Explicit CORS mentions
                 stackText.includes('proxycheck.io') ||
                 // Opera specific checks
-                errorText.includes('network_err') ||
-                errorText.includes('failed to complete') ||
-                messageText.includes('network');
+                errorText.includes('network_err');
 
             console.log('🔍 Error analysis:', { errorText, messageText, stackText, isBlocked });
 
@@ -147,25 +146,19 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
             }
             
             // Fallback for any other errors
-            console.log('❌ Security check failed, defaulting to adblocker button');
+            console.log('❌ Security check failed, creating adblocker button');
             createButton(buttonId, './adblocker.html');
             return false;
         }
     } catch (error) {
         console.error('❌ Security initialization error:', error);
-        // Always create a button, even on errors
         createButton(buttonId, './adblocker.html');
         return false;
     } finally {
-        // Ensure the countdown is cleared and button is visible
-        if (window.countdownTimer) {
-            clearInterval(window.countdownTimer);
-        }
-        
-        // If no button was created yet, create the adblocker button
+        // Always ensure a button is created
         const button = document.getElementById(buttonId);
-        if (button && button.disabled) {
-            console.log('⚠️ Ensuring button is created');
+        if (button && (button.disabled || button.textContent.includes('Checking Security'))) {
+            console.log('⚠️ Ensuring button is created in finally block');
             createButton(buttonId, './adblocker.html');
         }
     }
@@ -181,23 +174,26 @@ function createButton(buttonId, destination) {
     // Clear any existing countdown
     if (window.countdownTimer) {
         clearInterval(window.countdownTimer);
+        window.countdownTimer = null; // Prevent multiple clears
     }
     
-    // Update button properties
-    button.className = 'btn';
-    button.style.opacity = '1';
-    button.style.cursor = 'pointer';
-    button.disabled = false;
-    
-    // Set appropriate text based on destination
-    button.textContent = destination.includes('adblocker') ? 'Please Disable Adblocker' :
-                        destination.includes('blocked') ? 'Access Denied' :
-                        'Get Your Free Consultation';
-    
-    button.onclick = (e) => {
-        e.preventDefault();
-        window.location.href = destination;
-    };
+    // Update button properties with a small delay to ensure smooth transition
+    setTimeout(() => {
+        button.className = 'btn';
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+        button.disabled = false;
+        
+        // Set appropriate text based on destination
+        button.textContent = destination.includes('adblocker') ? 'Please Disable Adblocker' :
+                            destination.includes('blocked') ? 'Access Denied' :
+                            'Get Your Free Consultation';
+        
+        button.onclick = (e) => {
+            e.preventDefault();
+            window.location.href = destination;
+        };
+    }, 100); // Small delay for smoother transition
 }
 
 // Add validateIPAndRedirect export
