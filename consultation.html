@@ -184,15 +184,10 @@
                    tabindex="-1" 
                    autocomplete="off">
             
-            <div class="form-group">
-                <div class="cf-turnstile" data-sitekey="YOUR_SITE_KEY"></div>
-            </div>
-            
             <button type="submit">Submit</button>
         </form>
     </div>
 
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script>
         document.getElementById('consultationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -206,8 +201,15 @@
                 const formData = new FormData(form);
                 const response = await fetch('https://tripmixes.com/submit-form', {
                     method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
                     body: formData
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 
                 const result = await response.json();
                 
@@ -225,6 +227,7 @@
                     throw new Error(result.message || 'Submission failed');
                 }
             } catch (error) {
+                console.error('Error:', error);
                 alert('Error submitting form: ' + error.message);
             } finally {
                 loadingOverlay.style.display = 'none';
