@@ -22,15 +22,16 @@ async function fetchWithRetry(url) {
         
         return new Promise((resolve, reject) => {
             const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
+            let responseReceived = false; // Add flag to track successful response
             
             // Add callback to window BEFORE creating script
             window[callbackName] = (data) => {
                 console.log('🔄 JSONP response received:', data);
+                responseReceived = true; // Set flag on successful response
                 delete window[callbackName];
                 if (document.head.contains(script)) {
                     document.head.removeChild(script);
                 }
-                // If we got data, it's definitely not blocked
                 resolve(data);
             };
             
@@ -57,13 +58,20 @@ async function fetchWithRetry(url) {
             script.src = jsonpUrl;
             
             script.onerror = (error) => {
+                // If we already got a response, ignore the error
+                if (responseReceived) {
+                    console.log('✅ Ignoring script error - response already received');
+                    return;
+                }
+
                 console.log('🚨 JSONP script error details:', {
                     error,
                     scriptSrc: script.src,
                     scriptExists: document.head.contains(script),
                     scriptState: script.readyState,
                     documentState: document.readyState,
-                    callbackExists: typeof window[callbackName] !== 'undefined'
+                    callbackExists: typeof window[callbackName] !== 'undefined',
+                    responseReceived
                 });
 
                 // Clean up
@@ -74,27 +82,30 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // If we got an error but the callback was called, it's not blocked
-                if (!window[callbackName]) {
-                    // Script error after successful load is not an adblocker
-                    console.log('🔄 Script error but callback was successful');
-                    return;
-                }
-                
-                // Only treat as adblocker if script was actually blocked
-                const isAdblockerBlock = 
-                    !document.querySelector('script[src*="proxycheck.io"]') && // Script was removed
-                    error.type === 'error' && // It's an error event
-                    !document.body.contains(script); // Script is not in document
-                
-                if (isAdblockerBlock) {
-                    console.log('🛑 ADBLOCKER DETECTED via script blocking!');
-                    const err = new Error('ADBLOCKER_DETECTED');
-                    err.isAdblocker = true;
-                    reject(err);
-                } else {
-                    // Not an adblocker, might be a normal script error
-                    console.log('✅ Not an adblocker, proceeding with data');
+                // Only check for adblocker if we haven't received a response
+                if (!responseReceived) {
+                    // Only treat as adblocker if script was actually blocked
+                    const isAdblockerBlock = 
+                        !document.querySelector('script[src*="proxycheck.io"]') && // Script was removed
+                        error.type === 'error' && // It's an error event
+                        !document.body.contains(script); // Script is not in document
+                    
+                    console.log('🔍 Adblocker check:', {
+                        isAdblockerBlock,
+                        scriptFound: !!document.querySelector('script[src*="proxycheck.io"]'),
+                        scriptInBody: document.body.contains(script),
+                        errorType: error.type,
+                        responseReceived
+                    });
+                    
+                    if (isAdblockerBlock) {
+                        console.log('🛑 ADBLOCKER DETECTED via script blocking!');
+                        const err = new Error('ADBLOCKER_DETECTED');
+                        err.isAdblocker = true;
+                        reject(err);
+                    } else {
+                        console.log('✅ Not an adblocker, proceeding with data');
+                    }
                 }
             };
             
