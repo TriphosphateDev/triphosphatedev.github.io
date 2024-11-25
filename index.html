@@ -74,15 +74,15 @@
         
         try {
             console.log('Attempting to import config...');
-            const { config } = await import('/triphosphatedev/src/config.js');
+            const { config } = await import('/src/config.js');
             console.log('Config imported:', config);
             
             console.log('Attempting to import validation...');
-            const { validateIPAndRedirect } = await import('/triphosphatedev/src/ipValidation.js');
+            const { validateIPAndRedirect } = await import('/src/ipValidation.js');
             console.log('Validation imported');
             
             console.log('Attempting to import monitoring...');
-            const { trackIPCheck } = await import('/triphosphatedev/src/monitoring.js');
+            const { trackIPCheck } = await import('/src/monitoring.js');
             console.log('Monitoring imported');
             
             // Make modules globally available
@@ -542,7 +542,7 @@
         });
     </script>
     <script type="module">
-        import { validateAndTrackClick } from '/triphosphatedev/src/validation.js';
+        import { validateAndTrackClick } from '/src/validation.js';
         window.validateAndTrackClick = validateAndTrackClick;
     </script>
 </body>
