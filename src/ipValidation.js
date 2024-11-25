@@ -47,12 +47,15 @@ async function fetchWithRetry(url) {
                 delete window[callbackName];
                 document.head.removeChild(script);
                 
-                // Check if this was blocked by adblocker
-                const isAdblocker = 
+                // More aggressive adblocker detection for JSONP
+                const isBlocked = 
                     error.type === 'error' || 
-                    document.querySelector('script[src*="proxycheck.io"]') === null;
+                    !document.querySelector(`script[src*="proxycheck.io"]`) ||
+                    document.querySelector(`script[src*="proxycheck.io"][src*="${callbackName}"]`) === null;
                 
-                if (isAdblocker) {
+                console.log('🔍 JSONP block check:', { isBlocked, error });
+                
+                if (isBlocked) {
                     console.log('🛑 ADBLOCKER DETECTED via JSONP!');
                     const err = new Error('ADBLOCKER_DETECTED');
                     err.isAdblocker = true;
@@ -62,30 +65,39 @@ async function fetchWithRetry(url) {
                 }
             };
             
+            // Set a timeout to detect blocking
+            setTimeout(() => {
+                if (!document.querySelector(`script[src*="${callbackName}"]`)) {
+                    console.log('🛑 Script injection blocked - likely adblocker');
+                    const err = new Error('ADBLOCKER_DETECTED');
+                    err.isAdblocker = true;
+                    reject(err);
+                }
+            }, 500);
+            
             // Add script to page
             document.head.appendChild(script);
         });
     } catch (error) {
         console.log('🚨 Raw error:', error);
-        console.log('🔍 Error type:', error.name);
-        console.log('📝 Error message:', error.message);
-
-        // Check for adblocker
+        
+        // If it's already identified as an adblocker error, re-throw
         if (error.isAdblocker) {
-            throw error; // Re-throw adblocker errors
+            throw error;
         }
-
-        // For other errors, check if they might be adblocker-related
+        
+        // Check for other signs of blocking
         const errorText = error.toString().toLowerCase();
         const messageText = error.message.toLowerCase();
         const stackText = error.stack?.toLowerCase() || '';
-
-        const isAdblockerError = 
+        
+        const isBlocked = 
             errorText.includes('err_blocked') ||
             messageText.includes('failed to load') ||
+            messageText.includes('jsonp request failed') ||  // Add JSONP failure
             stackText.includes('proxycheck.io');
-
-        if (isAdblockerError) {
+            
+        if (isBlocked) {
             console.log('🛑 ADBLOCKER DETECTED!');
             const err = new Error('ADBLOCKER_DETECTED');
             err.isAdblocker = true;
