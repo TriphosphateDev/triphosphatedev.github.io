@@ -151,85 +151,47 @@ async function fetchWithRetry(url) {
 }
 
 export async function validateIP(ip) {
-    const API_KEY = config.PROXYCHECK_API_KEY || config.PROXYCHECK_PUBLIC_KEY;
+    console.log('🔄 Constructed URL:', `${config.PROXYCHECK_API_ENDPOINT}/${ip}`);
     
-    // Build URL properly with all parameters at once
-    const params = new URLSearchParams({
-        key: API_KEY,
+    // Use public key for initial check, then private key for detailed info if needed
+    const publicParams = new URLSearchParams({
+        key: config.PROXYCHECK_PUBLIC_KEY, // Use public key first
         vpn: '1',
         risk: '1',
         asn: '1',
-        days: '7',    // Cache results for 7 days
-        detailed: '1',  // Get detailed response
-        origin: 'triphosphatedev.github.io' // Add origin parameter
-    });
-    
-    // Construct base URL without query parameters
-    const baseUrl = `${config.PROXYCHECK_API_ENDPOINT}/${ip}`;
-    
-    // Combine URL and parameters
-    const fullUrl = `${baseUrl}?${params.toString()}`;
-    
-    console.log('🔄 Constructed URL:', fullUrl);
-    
-    const data = await fetchWithRetry(fullUrl);
-    console.log('Proxycheck.io raw response:', data);
-    
-    // Handle API errors
-    if (data.status !== "ok") {
-        throw new Error(`Proxycheck.io API error: ${data.message || 'Unknown error'}`);
-    }
-
-    // ProxyCheck.io returns the IP data in a nested object
-    const ipData = data[ip];
-    if (!ipData) {
-        throw new Error('Invalid IP address or no data returned');
-    }
-
-    console.log('🔍 Full IP data details:', ipData);
-
-    // Parse response according to API docs
-    const result = {
-        isValid: !(
-            ipData.proxy === "yes" || 
-            ipData.type?.toLowerCase() === "vpn" || 
-            (ipData.risk || 0) >= 50
-        ),
-        fraudScore: ipData.risk || 0,
-        isProxy: ipData.proxy === "yes",
-        isVpn: ipData.type?.toLowerCase() === "vpn",
-        // Include all available fields
-        country: ipData.country,
-        isp: ipData.provider || ipData.organisation,
-        asn: ipData.asn,
-        type: ipData.type,
-        provider: ipData.provider,
-        organisation: ipData.organisation,
-        region: ipData.region,
-        city: ipData.city,
-        range: ipData.range,
-        devices: ipData.devices
-    };
-
-    // Log detailed validation results
-    console.log('🔍 Validation details:', {
-        proxyStatus: ipData.proxy,
-        connectionType: ipData.type,
-        riskScore: ipData.risk,
-        provider: ipData.provider,
-        organisation: ipData.organisation,
-        isValid: result.isValid,
-        reason: result.isValid ? 'IP Passed' : 
-                result.isProxy ? `Proxy Detected (${ipData.provider})` :
-                result.isVpn ? `VPN Detected (${ipData.provider})` :
-                `High Risk Score (${ipData.risk})`
+        days: '7',
+        detailed: '1',
+        origin: 'triphosphatedev.github.io'
     });
 
-    // Track the result with more details
-    trackIPCheck(result);
-    console.log('Validation result:', result);
-
-    return result;
+    try {
+        // First try with jQuery/Zepto-like approach but using fetch
+        const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${publicParams}`);
+        const data = await response.json();
+        
+        // If basic check passes, do detailed check with private key
+        if (data.status === 'ok' && (!data[ip]?.proxy || data[ip]?.proxy === 'no')) {
+            // Detailed check with private key
+            const privateParams = new URLSearchParams({
+                key: config.PROXYCHECK_API_KEY,
+                vpn: '1',
+                risk: '1',
+                asn: '1',
+                days: '7',
+                detailed: '1',
+                origin: 'triphosphatedev.github.io'
+            });
+            
+            return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${privateParams}`);
+        }
+        
+        // If basic check fails, return that result
+        return data;
+    } catch (error) {
+        console.error('Error in validateIP:', error);
+        // Fall back to JSONP approach if fetch fails
+        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${publicParams}`);
+    }
 }
 
 export async function validateIPWithCache(ip) {
