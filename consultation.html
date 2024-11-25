@@ -202,10 +202,9 @@
             
             try {
                 loadingOverlay.style.display = 'flex';
-                const formData = new FormData(form);
                 
-                // Update this URL to your Cloudflare Worker URL once deployed
-                const response = await fetch('https://tripmixes-form-handler.workers.dev', {
+                const formData = new FormData(form);
+                const response = await fetch('https://tripmixes.com/submit-form', {
                     method: 'POST',
                     body: formData
                 });
@@ -214,7 +213,6 @@
                 
                 if (result.status === 'success') {
                     successMessage.style.display = 'block';
-                    // Track conversion if GA is available
                     if (typeof gtag === 'function') {
                         gtag('event', 'conversion', {
                             'send_to': 'AW-16777349124/IfN6COvfye0ZEISQiMA-'
