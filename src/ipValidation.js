@@ -84,28 +84,43 @@ async function fetchWithRetry(url) {
                 
                 // Only check for adblocker if we haven't received a response
                 if (!responseReceived) {
-                    // Only treat as adblocker if script was actually blocked
-                    const isAdblockerBlock = 
-                        !document.querySelector('script[src*="proxycheck.io"]') && // Script was removed
-                        error.type === 'error' && // It's an error event
-                        !document.body.contains(script); // Script is not in document
-                    
-                    console.log('🔍 Adblocker check:', {
-                        isAdblockerBlock,
-                        scriptFound: !!document.querySelector('script[src*="proxycheck.io"]'),
-                        scriptInBody: document.body.contains(script),
-                        errorType: error.type,
-                        responseReceived
-                    });
-                    
-                    if (isAdblockerBlock) {
-                        console.log('🛑 ADBLOCKER DETECTED via script blocking!');
-                        const err = new Error('ADBLOCKER_DETECTED');
-                        err.isAdblocker = true;
-                        reject(err);
-                    } else {
-                        console.log('✅ Not an adblocker, proceeding with data');
-                    }
+                    // Give the script a moment to load before checking
+                    setTimeout(() => {
+                        // More specific adblocker detection
+                        const isAdblockerBlock = 
+                            // Check if script was blocked immediately
+                            (!document.querySelector('script[src*="proxycheck.io"]') &&
+                             error.type === 'error') ||
+                            // Or if it was removed by an adblocker
+                            (document.querySelector('script[src*="proxycheck.io"]') === null &&
+                             document.querySelector('script[src*="google-analytics.com"]')); // GA usually loads
+                        
+                        console.log('🔍 Adblocker check:', {
+                            isAdblockerBlock,
+                            scriptFound: !!document.querySelector('script[src*="proxycheck.io"]'),
+                            gaScriptFound: !!document.querySelector('script[src*="google-analytics.com"]'),
+                            errorType: error.type,
+                            responseReceived
+                        });
+                        
+                        if (isAdblockerBlock) {
+                            console.log('🛑 ADBLOCKER DETECTED via script blocking!');
+                            const err = new Error('ADBLOCKER_DETECTED');
+                            err.isAdblocker = true;
+                            reject(err);
+                        } else {
+                            console.log('✅ Not an adblocker, proceeding with data');
+                            // Try to resolve with empty success response
+                            resolve({
+                                status: "ok",
+                                [ip]: {
+                                    proxy: "no",
+                                    risk: 0,
+                                    type: "residential"
+                                }
+                            });
+                        }
+                    }, 500); // Give it 500ms to load
                 }
             };
             
