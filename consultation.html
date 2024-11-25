@@ -241,30 +241,6 @@
         });
     </script>
 
-    <!-- Import config -->
-    <script type="module">
-        import { config } from './src/config.js';
-        import { trackIPCheck } from './src/monitoring.js';
-
-        // Track form submissions
-        document.getElementById('consultationForm').addEventListener('submit', () => {
-            gtag('event', 'form_submission', {
-                'event_category': 'Forms',
-                'event_label': 'Consultation'
-            });
-        });
-
-        // Track user interaction
-        document.addEventListener('mousemove', () => {
-            if (!userInteracted) {
-                gtag('event', 'user_interaction', {
-                    'event_category': 'User Behavior',
-                    'event_label': 'Mouse Movement'
-                });
-            }
-        });
-    </script>
-
     <!-- Initialize core modules first -->
     <script type="module">
         console.log('Starting core initialization...');
@@ -287,16 +263,41 @@
             window.validateIPAndRedirect = validateIPAndRedirect;
             window.trackIPCheck = trackIPCheck;
             
-            // Run validation immediately after initialization
+            console.log('Core modules loaded successfully');
+            
+            // Only run validation after modules are initialized
             console.log('Running IP validation...');
-            validateIPAndRedirect().catch(error => {
-                console.error('Validation failed:', error);
-            });
+            await validateIPAndRedirect();
             
         } catch (error) {
             console.error('Failed to initialize core modules:', error.message);
             console.error('Full error:', error);
         }
+    </script>
+
+    <!-- Move this after module initialization -->
+    <script type="module">
+        // Other scripts that depend on the modules being loaded
+        import { config } from './src/config.js';
+        import { trackIPCheck } from './src/monitoring.js';
+
+        // Track form submissions
+        document.getElementById('consultationForm').addEventListener('submit', () => {
+            gtag('event', 'form_submission', {
+                'event_category': 'Forms',
+                'event_label': 'Consultation'
+            });
+        });
+
+        // Track user interaction
+        document.addEventListener('mousemove', () => {
+            if (!userInteracted) {
+                gtag('event', 'user_interaction', {
+                    'event_category': 'User Behavior',
+                    'event_label': 'Mouse Movement'
+                });
+            }
+        });
     </script>
 </body>
 </html> 
