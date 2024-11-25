@@ -19,65 +19,51 @@ export async function getUserIP() {
 async function fetchWithRetry(url) {
     try {
         console.log(`🔄 Fetching ${url}`);
-        const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',  // Explicitly request CORS
-            headers: {
-                'Accept': 'application/json',
-                'Origin': 'https://triphosphatedev.github.io'
-            }
+        
+        // Use JSONP directly instead of fetch
+        return new Promise((resolve, reject) => {
+            // Create unique callback name
+            const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
+            
+            // Add callback to window
+            window[callbackName] = (data) => {
+                // Clean up
+                delete window[callbackName];
+                document.head.removeChild(script);
+                resolve(data);
+            };
+            
+            // Create script element
+            const script = document.createElement('script');
+            script.src = `${url}&callback=${callbackName}`;
+            script.onerror = () => {
+                // Clean up
+                delete window[callbackName];
+                document.head.removeChild(script);
+                reject(new Error('JSONP request failed'));
+            };
+            
+            // Add script to page
+            document.head.appendChild(script);
         });
-        
-        // Check if response is ok before trying to parse JSON
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        return data;
     } catch (error) {
         // Log the error details
         console.log('🚨 Raw error:', error);
         console.log('🔍 Error type:', error.name);
         console.log('📝 Error message:', error.message);
 
-        // More specific error detection
+        // Check for adblocker
         const errorText = error.toString().toLowerCase();
         const messageText = error.message.toLowerCase();
         const stackText = error.stack?.toLowerCase() || '';
 
-        // Check for CORS errors specifically
-        const isCorsError = 
-            errorText.includes('cors') ||
-            messageText.includes('cors') ||
-            stackText.includes('cors') ||
-            error.name === 'TypeError';
-
-        if (isCorsError) {
-            console.log('🌐 CORS error detected, trying JSONP fallback');
-            // Try JSONP fallback
-            const jsonpUrl = `${url}&callback=handleProxyCheckResponse`;
-            return new Promise((resolve, reject) => {
-                window.handleProxyCheckResponse = (data) => {
-                    delete window.handleProxyCheckResponse;
-                    resolve(data);
-                };
-                
-                const script = document.createElement('script');
-                script.src = jsonpUrl;
-                script.onerror = () => {
-                    delete window.handleProxyCheckResponse;
-                    reject(new Error('JSONP request failed'));
-                };
-                document.head.appendChild(script);
-            });
-        }
-
-        // Original adblocker detection
         const isAdblockerError = 
             errorText.includes('err_blocked_by_adblocker') ||
             messageText.includes('err_blocked_by_adblocker') ||
-            stackText.includes('err_blocked_by_adblocker');
+            stackText.includes('err_blocked_by_adblocker') ||
+            // Also check for script blocking
+            messageText.includes('script error') ||
+            messageText.includes('failed to load');
 
         if (isAdblockerError) {
             console.log('🛑 ADBLOCKER DETECTED!');
