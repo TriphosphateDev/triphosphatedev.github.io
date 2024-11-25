@@ -78,18 +78,26 @@ async function fetchWithRetry(url) {
                     .then(resolve)
                     .catch(fetchError => {
                         console.log('❌ Direct fetch failed:', fetchError);
-                        // Now check if it's likely an adblocker
+                        
+                        // More specific adblocker detection
+                        const errorText = (fetchError.message || '').toLowerCase();
                         const isLikelyAdblocker = 
-                            !document.querySelector(`script[src*="proxycheck.io"]`) ||
-                            fetchError.message.includes('blocked');
-                            
+                            // Check for common adblocker error messages
+                            errorText.includes('blocked by client') ||
+                            errorText.includes('network error') && document.documentElement.classList.contains('adblock') ||
+                            errorText.includes('failed to fetch') && !navigator.onLine ||
+                            // Check if script was specifically blocked (not just failed to load)
+                            !document.querySelector('script[src*="proxycheck.io"]') && 
+                            document.querySelector('script[src*="google-analytics.com"]'); // If GA loads but proxycheck doesn't
+                        
                         if (isLikelyAdblocker) {
                             console.log('🛑 ADBLOCKER DETECTED!');
                             const err = new Error('ADBLOCKER_DETECTED');
                             err.isAdblocker = true;
                             reject(err);
                         } else {
-                            reject(fetchError);
+                            // If not an adblocker, pass through the original error
+                            reject(new Error('API_ERROR'));
                         }
                     });
             };
