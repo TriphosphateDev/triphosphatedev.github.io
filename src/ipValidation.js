@@ -1,3 +1,6 @@
+import { trackIPCheck } from './monitoring.js';
+import { config } from './config.js';
+
 console.log('Loading ipValidation module...');
 // Make cache accessible for testing
 export const cache = new Map();
@@ -38,9 +41,6 @@ async function fetchWithRetry(url, retryCount = 0) {
         throw error;
     }
 }
-
-import { trackIPCheck } from './monitoring.js';
-import { config } from './config.js';
 
 export async function validateIP(ip) {
     const API_KEY = config.PROXYCHECK_API_KEY || config.PROXYCHECK_PUBLIC_KEY;
