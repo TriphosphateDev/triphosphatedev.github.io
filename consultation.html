@@ -191,17 +191,15 @@
     <script>
         document.getElementById('consultationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const form = e.target;
             const loadingOverlay = document.querySelector('.loading-overlay');
             const successMessage = document.querySelector('.success-message');
             
             try {
-                // Show loading state
                 loadingOverlay.style.display = 'flex';
                 
                 // Basic form validation
-                const requiredFields = ['nameOrArtistName', 'email', 'contactPreference', 'projectDescription'];
+                const requiredFields = ['nameOrArtistName', 'email', 'projectDescription'];
                 for (const fieldName of requiredFields) {
                     const field = form.elements[fieldName];
                     if (!field.value.trim()) {

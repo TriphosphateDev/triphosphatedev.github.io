@@ -8,6 +8,8 @@
 - blocked.html
 - ROLLBACK.md
 - Click Fraud Prevention Plan.md
+- src/recaptcha.js (if exists)
+- src/recaptcha-config.js (if exists)
 
 ## Configuration Files
 - .github/workflows/deploy.yml (since we're using Cloudflare)
