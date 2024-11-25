@@ -5,74 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Consultation | Triphosphate Music</title>
     
-    <!-- Update CSP to allow config and monitoring scripts -->
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google.com https://www.gstatic.com;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-        font-src 'self' https://fonts.gstatic.com;
-        connect-src 'self' https://www.google-analytics.com https://api.ipify.org https://proxycheck.io;
-        img-src 'self' data: https:;
-        frame-src 'self' https://www.google.com;
-    ">
-    
-    <!-- Add Google Analytics first -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CWBEE471XP"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-CWBEE471XP');
-    </script>
-    
-    <!-- Load config and validation -->
-    <script type="module">
-        console.log('Consultation page loaded');
-        
-        try {
-            console.log('Starting core initialization...');
-            
-            console.log('Attempting to import config...');
-            const { config } = await import('./src/config.js');
-            console.log('Config imported:', config);
-            
-            console.log('Attempting to import validation...');
-            const { validateIPAndRedirect, validateIPWithCache } = await import('./src/ipValidation.js');
-            console.log('Validation imported');
-            
-            console.log('Attempting to import monitoring...');
-            const { trackIPCheck } = await import('./src/monitoring.js');
-            console.log('Monitoring imported');
-            
-            // Make modules globally available
-            window.CONFIG = config;
-            window.validateIPAndRedirect = validateIPAndRedirect;
-            window.validateIPWithCache = validateIPWithCache;
-            window.trackIPCheck = trackIPCheck;
-            
-            console.log('Core modules loaded successfully');
-            
-            // Run validation immediately after initialization
-            console.log('Running IP validation...');
-            await validateIPAndRedirect();
-            
-        } catch (error) {
-            console.error('Failed to initialize core modules:', error.message);
-            console.error('Full error:', error);
-        }
-    </script>
-    
-    <!-- Load reCAPTCHA after config is available -->
-    <script>
-        window.addEventListener('load', () => {
-            if (window.CONFIG) {
-                const script = document.createElement('script');
-                script.src = `https://www.google.com/recaptcha/api.js?render=${window.CONFIG.RECAPTCHA_SITE_KEY}`;
-                document.head.appendChild(script);
-            }
-        });
-    </script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -195,10 +127,6 @@
                 <textarea id="projectDescription" name="projectDescription" required></textarea>
             </div>
             
-            <!-- Hidden Fields -->
-            <input type="hidden" name="userIP" id="userIP">
-            <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
-            
             <!-- Honeypot Field -->
             <input type="text" 
                    name="hiddenHoneypotField" 
@@ -210,46 +138,25 @@
         </form>
     </div>
 
-    <!-- Track user interaction -->
-    <script>
-        let userInteracted = false;
-        document.addEventListener('mousemove', () => userInteracted = true);
-        document.addEventListener('scroll', () => userInteracted = true);
+    <!-- Add config import before form submission script -->
+    <script type="module">
+        import { config } from './src/config.js';
+        window.CONFIG = config;
     </script>
 
-    <!-- Move form submission handling after module initialization -->
+    <!-- Update form submission script to be type="module" -->
     <script type="module">
-        // Form submission handling
         document.getElementById('consultationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (!userInteracted) {
-                alert('Please interact with the page before submitting');
-                return;
-            }
-
             try {
-                // Get reCAPTCHA token using config key
-                const token = await grecaptcha.execute(window.CONFIG.RECAPTCHA_SITE_KEY, {action: 'submit'});
-                document.getElementById('recaptchaResponse').value = token;
-
-                // Use new validation with retry and caching
-                const ipValidation = await validateIPWithCache(document.getElementById('userIP').value);
-
-                if (!ipValidation.isValid) {
-                    alert('Access blocked: VPN or suspicious activity detected');
-                    return;
-                }
-
-                // Submit form data
                 const formData = new FormData(e.target);
-                const response = await fetch(window.CONFIG.GOOGLE_SHEETS_ENDPOINT, {
+                const response = await fetch(CONFIG.GOOGLE_SHEETS_ENDPOINT, {
                     method: 'POST',
                     body: formData
                 });
                 
                 const result = await response.json();
-                
                 if (result.status === 'success') {
                     window.location.href = '/success.html';
                 } else {
@@ -258,31 +165,6 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('An error occurred. Please try again.');
-            }
-        });
-    </script>
-
-    <!-- Move this after module initialization -->
-    <script type="module">
-        // Other scripts that depend on the modules being loaded
-        import { config } from './src/config.js';
-        import { trackIPCheck } from './src/monitoring.js';
-
-        // Track form submissions
-        document.getElementById('consultationForm').addEventListener('submit', () => {
-            gtag('event', 'form_submission', {
-                'event_category': 'Forms',
-                'event_label': 'Consultation'
-            });
-        });
-
-        // Track user interaction
-        document.addEventListener('mousemove', () => {
-            if (!userInteracted) {
-                gtag('event', 'user_interaction', {
-                    'event_category': 'User Behavior',
-                    'event_label': 'Mouse Movement'
-                });
             }
         });
     </script>
