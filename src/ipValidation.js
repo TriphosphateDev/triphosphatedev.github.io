@@ -71,7 +71,7 @@ async function fetchWithRetry(url) {
             console.log('🔄 JSONP URL:', jsonpUrl);
             script.src = jsonpUrl;
             
-            script.onerror = async (error) => {
+            script.onerror = (error) => {
                 if (responseReceived) {
                     console.log('✅ Ignoring script error - response already received');
                     return resolve(jsonpResponse);  // Use the actual response if we got it
@@ -96,28 +96,29 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                try {
-                    // Try a direct fetch to check if it's an adblocker
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    console.log('✅ Direct fetch succeeded with data:', data);
-                    resolve(data);  // Use the actual API response
-                } catch (fetchError) {
-                    console.log('❌ Direct fetch failed:', fetchError);
-                    
-                    const errorText = (fetchError.message || '').toLowerCase();
-                    const isAdblockerBlock = 
-                        errorText.includes('ad_blocker') ||
-                        errorText.includes('adblocker');
-                    
-                    if (isAdblockerBlock) {
-                        console.log('🛑 ADBLOCKER DETECTED!');
-                        const err = new Error('ADBLOCKER_DETECTED');
-                        err.isAdblocker = true;
-                        reject(err);
-                    } else {
-                        reject(fetchError);  // Let the caller handle the error
-                    }
+                // Check if this was an adblocker block
+                const errorText = error.toString().toLowerCase();
+                const isAdblockerBlock = 
+                    errorText.includes('ad_blocker') ||
+                    errorText.includes('adblocker') ||
+                    !document.querySelector('script[src*="proxycheck.io"]');
+                
+                if (isAdblockerBlock) {
+                    console.log('🛑 ADBLOCKER DETECTED!');
+                    const err = new Error('ADBLOCKER_DETECTED');
+                    err.isAdblocker = true;
+                    reject(err);
+                } else {
+                    // If not an adblocker, try to resolve with default safe response
+                    console.log('⚠️ JSONP failed but not adblocker, using default response');
+                    resolve({
+                        status: "ok",
+                        [ip]: {
+                            proxy: "yes",  // Assume proxy/VPN if we can't verify
+                            type: "VPN",
+                            risk: 75
+                        }
+                    });
                 }
             };
             
