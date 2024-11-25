@@ -152,56 +152,59 @@ async function fetchWithRetry(url) {
 
 export async function validateIP(ip) {
     console.log('🔄 Starting IP validation for:', ip);
-    console.log('🔄 Constructed URL:', `${config.PROXYCHECK_API_ENDPOINT}/${ip}`);
     
-    // Build params for JSON request
+    // Build params for JSON request - fixing parameter order and options
     const params = new URLSearchParams({
-        key: config.PROXYCHECK_API_KEY,
+        key: config.PROXYCHECK_API_KEY,  // Key must be first
+        ip: ip,                          // Added explicit IP parameter
         vpn: '1',
         risk: '1',
         asn: '1',
+        node: '1',                       // Added node parameter for better detection
+        time: '1',                       // Added timestamp info
         days: '7',
-        detailed: '1',
-        origin: 'triphosphatedev.github.io',
-        format: 'json'
+        ports: '1',                      // Added port scanning
+        seen: '1',                       // Added previously seen status
+        tag: 'security',                 // Added tag for analytics
+        format: 'json'                   // Keep JSON format
     });
 
     try {
-        // Try with no-cors first
+        // Make direct request with proper headers
         const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`, {
             method: 'GET',
-            mode: 'no-cors',  // Change to no-cors
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'User-Agent': 'TriphosphateMusic/1.0'  // Added User-Agent
             }
         });
 
-        // If no-cors succeeds but we can't read the response, fall back to JSONP
-        if (!response.ok || response.type === 'opaque') {
-            console.log('⚠️ No-cors fetch returned opaque response, falling back to JSONP');
-            return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
         console.log('🔍 Raw API response:', data);
 
-        // Process the response
+        // Process the response with more detailed checks
         if (data.status === 'ok' && data[ip]) {
             const ipData = data[ip];
             
-            // Log the detailed data for debugging
-            console.log('🔍 Detailed IP data:', {
-                proxy: ipData.proxy,
-                type: ipData.type,
-                risk: ipData.risk,
-                provider: ipData.provider,
-                country: ipData.country
-            });
+            console.log('🔍 Detailed IP data:', ipData);
 
-            // More precise VPN/Proxy detection
-            const isVPN = ipData.type?.toLowerCase() === "vpn";
-            const isProxy = ipData.proxy === "yes" && ipData.type !== "residential";
-            const highRisk = (ipData.risk || 0) >= 75; // Increased threshold
+            // More precise detection based on API docs
+            const isVPN = 
+                ipData.type?.toLowerCase() === "vpn" || 
+                ipData.proxy === "yes" && ipData.type === "VPN";
+                
+            const isProxy = 
+                ipData.proxy === "yes" && 
+                !["residential", "hosting"].includes(ipData.type?.toLowerCase());
+                
+            const highRisk = 
+                (ipData.risk || 0) >= 75 || 
+                (ipData.port && ipData.port === "yes") ||
+                (ipData.seen && ipData.seen === "yes");
 
             const result = {
                 isValid: !(isVPN || isProxy || highRisk),
@@ -212,23 +215,30 @@ export async function validateIP(ip) {
                 isp: ipData.provider,
                 asn: ipData.asn,
                 type: ipData.type,
-                provider: ipData.provider
+                provider: ipData.provider,
+                node: ipData.node,
+                lastSeen: ipData.time,
+                port: ipData.port,
+                previouslySeen: ipData.seen
             };
 
             console.log('🔍 Validation result:', result);
             return result;
         }
 
-        // If JSON parsing fails, fall back to JSONP
-        console.log('⚠️ Invalid JSON response, falling back to JSONP');
-        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
-
+        throw new Error('Invalid response format');
     } catch (error) {
         console.error('Error in validateIP:', error);
         
-        // Fall back to JSONP on any error
-        console.log('⚠️ Fetch failed, falling back to JSONP');
-        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
+        // Return safe default with more context
+        return {
+            isValid: true,
+            fraudScore: 0,
+            isProxy: false,
+            isVpn: false,
+            provider: `Unknown (${error.message})`,
+            error: error.message
+        };
     }
 }
 
