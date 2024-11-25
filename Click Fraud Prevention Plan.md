@@ -161,6 +161,96 @@ document.getElementById('consultationForm').addEventListener('submit', async (e)
 - Log successful submissions in Google Sheet
 - Include timestamp and IP details
 
+### 7. Adblocker Handling Strategy
+
+#### Purpose
+Detect and handle adblockers early in the user journey to prevent form access issues.
+
+#### Implementation
+1. **Early Detection (index.html)**
+   - Monitor for `ERR_BLOCKED_BY_ADBLOCKER` during initial security checks
+   - Detect before user reaches consultation form
+   - Track which security features are being blocked
+   ```javascript
+   // Example detection in ipValidation.js
+   if (error.message.includes('ERR_BLOCKED_BY_ADBLOCKER')) {
+       window.location.href = '/adblocker.html';
+       return false;
+   }
+   ```
+
+2. **User Communication (adblocker.html)**
+   ```html
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+       <title>Quick Security Check | Triphosphate Music</title>
+       <!-- Same style as blocked.html -->
+   </head>
+   <body>
+       <div class="container">
+           <h1>One Quick Step</h1>
+           <p>To protect our consultation form from spam and bots, we need to run a few security checks.</p>
+           <p>Please help us by:</p>
+           <ul>
+               <li>Temporarily disabling your adblocker</li>
+               <li>Adding triphosphatedev.github.io to your exceptions</li>
+           </ul>
+           <p>We don't show any ads - this just helps keep our form spam-free!</p>
+           <div class="button-group">
+               <button onclick="location.reload()" class="back-btn">I've Disabled My Adblocker</button>
+               <a href="mailto:triphosphateLP@gmail.com" class="alt-btn">Contact Directly via Email</a>
+               <a href="https://discord.com/channels/@me/Triphosphate/" class="alt-btn">Message on Discord</a>
+           </div>
+       </div>
+   </body>
+   </html>
+   ```
+
+3. **Alternative Contact Methods**
+   - Prominently display on adblocker.html:
+     - Direct email link
+     - Discord contact button
+     - Other messaging options
+   - Track usage of alternative methods
+
+4. **Monitoring & Analytics**
+   - Track at index.html level:
+     - Initial adblocker detection rate
+     - Successful whitelist conversions
+     - Alternative contact method usage
+   ```javascript
+   // Example tracking
+   if (error.message.includes('ERR_BLOCKED_BY_ADBLOCKER')) {
+       gtag('event', 'adblocker_detected', {
+           'event_category': 'Security',
+           'event_label': 'Initial Check'
+       });
+   }
+   ```
+
+5. **Testing**
+   - Test early detection with:
+     - uBlock Origin
+     - AdBlock Plus
+     - Privacy Badger
+   - Verify redirect behavior
+   - Test all alternative contact methods
+   - Ensure tracking works with adblockers
+
+#### Success Metrics
+- Early detection rate > 95%
+- Alternative contact usage > 50%
+- Reduced form abandonment rate
+- Positive user feedback on messaging
+
+#### Implementation Order
+1. Add early detection to index.html
+2. Create adblocker.html with clear messaging
+3. Set up alternative contact tracking
+4. Implement analytics
+5. Test with various adblockers
+
 ## Testing Strategy
 
 ### 1. Local Development Testing

@@ -91,6 +91,11 @@
             window.trackIPCheck = trackIPCheck;
             
             console.log('Core modules loaded successfully');
+            
+            // Run validation immediately after initialization
+            console.log('Running IP validation...');
+            await validateIPAndRedirect();
+            
         } catch (error) {
             console.error('Failed to initialize core modules:', error.message);
             console.error('Full error:', error);

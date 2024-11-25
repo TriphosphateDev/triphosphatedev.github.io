@@ -30,21 +30,21 @@ async function fetchWithRetry(url, retryCount = 0) {
             return fetchWithRetry(url, retryCount + 1);
         }
         
-        // If we've hit max retries or it's not a rate limit error, return the data
         return data;
     } catch (error) {
         console.error('Fetch error:', error);
         if (error.message.includes('ERR_BLOCKED_BY_ADBLOCKER')) {
-            console.log('Request blocked by adblocker, allowing access for better UX');
-            return {
-                status: "ok",
-                [ip]: {
-                    proxy: "no",
-                    risk: 0,
-                    type: "residential"
-                }
-            };
+            // Track adblocker detection
+            gtag('event', 'adblocker_detected', {
+                'event_category': 'Security',
+                'event_label': 'Initial Check'
+            });
+            
+            // Redirect to adblocker page
+            window.location.href = '/adblocker.html';
+            return false;
         }
+        
         if (retryCount < MAX_RETRIES) {
             const delay = INITIAL_RETRY_DELAY * Math.pow(2, retryCount);
             await new Promise(resolve => setTimeout(resolve, delay));
