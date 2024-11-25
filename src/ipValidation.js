@@ -135,13 +135,15 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
                 return false;
             }
             
-            // Don't create button on other errors
-            console.log('❌ Security check failed');
+            // For other errors, create adblocker button as fallback
+            console.log('❌ Security check failed, defaulting to adblocker check');
+            createButton(buttonId, './adblocker.html');
             return false;
         }
     } catch (error) {
         console.error('❌ Security initialization error:', error);
-        // Don't create button on errors
+        // Create adblocker button as fallback for any errors
+        createButton(buttonId, './adblocker.html');
         return false;
     }
 }
@@ -154,7 +156,7 @@ function createButton(buttonId, destination) {
     }
     
     // Update button properties
-    button.className = 'btn'; // Use the same class as other buttons
+    button.className = 'btn';
     button.style.opacity = '1';
     button.style.cursor = 'pointer';
     button.disabled = false;

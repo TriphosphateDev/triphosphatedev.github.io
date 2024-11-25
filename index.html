@@ -566,18 +566,26 @@
         window.validateAndTrackClick = validateAndTrackClick;
     </script>
     <script>
-        // Initialize countdown
+        // Initialize countdown and button state
         let countdown = 3;
         const consultButton = document.getElementById('consultButton');
         
         if (consultButton) {
+            // Set initial state
+            consultButton.className = 'btn';
+            consultButton.style.opacity = '0.7';
+            consultButton.style.cursor = 'not-allowed';
+            consultButton.disabled = true;
+            consultButton.textContent = `Checking Security... (${countdown})`;
+            
             // Start countdown
             const timer = setInterval(() => {
                 countdown--;
-                consultButton.textContent = `Checking Security... (${countdown})`;
-                
-                if (countdown <= 0) {
+                if (countdown > 0) {
+                    consultButton.textContent = `Checking Security... (${countdown})`;
+                } else {
                     clearInterval(timer);
+                    // Don't clear the text - let createButton handle it
                 }
             }, 1000);
         }
