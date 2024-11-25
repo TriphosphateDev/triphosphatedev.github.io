@@ -235,58 +235,67 @@ export async function validateIPWithCache(ip) {
     return result;
 }
 
-// Add new function for early validation
+// Add a new function to handle the initial check and store result
+export async function performInitialValidation() {
+    try {
+        const ip = await getUserIP();
+        const validation = await validateIP(ip);
+        
+        // Store validation result in sessionStorage
+        sessionStorage.setItem('ipValidation', JSON.stringify({
+            ip,
+            result: validation,
+            timestamp: Date.now()
+        }));
+        
+        return validation;
+    } catch (error) {
+        console.error('Initial validation failed:', error);
+        throw error;
+    }
+}
+
+// Update initializeSecurityButton to use cached result
 export async function initializeSecurityButton(buttonId, defaultDestination) {
     try {
         console.log('🔍 Starting security button initialization...');
-        const ip = await getUserIP();
-        console.log('📍 Got IP:', ip);
         
-        try {
-            const validation = await validateIP(ip);
-            
-            // Log validation result
-            console.log('🔍 Security check result:', {
-                validation,
-                isValid: validation.isValid,
-                isProxy: validation.isProxy,
-                isVpn: validation.isVpn,
-                fraudScore: validation.fraudScore
-            });
-
-            if (!validation.isValid) {
-                console.log('❌ Invalid IP detected - VPN or Proxy');
-                createButton(buttonId, './blocked.html');
-                return false;
+        // Try to get cached validation result
+        const cached = sessionStorage.getItem('ipValidation');
+        let validation;
+        
+        if (cached) {
+            const { result, timestamp } = JSON.parse(cached);
+            // Use cached result if less than 5 minutes old
+            if (Date.now() - timestamp < 5 * 60 * 1000) {
+                validation = result;
+                console.log('Using cached validation result');
             }
-            
-            console.log('✅ IP validation passed - creating consultation button');
-            createButton(buttonId, defaultDestination);
-            return true;
-        } catch (error) {
-            console.log('🔍 Checking error:', error);
-            
-            // Only check for adblocker-specific errors
-            const errorText = (error.toString() || '').toLowerCase();
-            const messageText = (error.message || '').toLowerCase();
-            
-            const isAdblockerError = 
-                errorText.includes('ad_blocker') ||
-                errorText.includes('adblocker');
-
-            console.log('🔍 Error analysis:', { errorText, messageText, isAdblockerError });
-
-            if (isAdblockerError) {
-                console.log('🚫 Request blocked by adblocker');
-                createButton(buttonId, './adblocker.html');
-                return false;
-            }
-            
-            // If it's not an adblocker error, proceed to consultation
-            console.log('✅ Not an adblocker error - proceeding to consultation');
-            createButton(buttonId, defaultDestination);
-            return true;
         }
+        
+        // If no valid cached result, perform validation
+        if (!validation) {
+            validation = await performInitialValidation();
+        }
+        
+        // Rest of the function remains the same...
+        console.log('🔍 Security check result:', {
+            validation,
+            isValid: validation.isValid,
+            isProxy: validation.isProxy,
+            isVpn: validation.isVpn,
+            fraudScore: validation.fraudScore
+        });
+        
+        if (!validation.isValid) {
+            console.log('❌ Invalid IP detected - VPN or Proxy');
+            createButton(buttonId, './blocked.html');
+            return false;
+        }
+        
+        console.log('✅ IP validation passed - creating consultation button');
+        createButton(buttonId, defaultDestination);
+        return true;
     } catch (error) {
         console.error('❌ Security initialization error:', error);
         // Only redirect to adblocker page if it's actually an adblocker
@@ -332,38 +341,31 @@ function createButton(buttonId, destination) {
     }, 500); // Increased delay to 500ms
 }
 
-// Add validateIPAndRedirect export
+// Update validateIPAndRedirect to use cached result
 export async function validateIPAndRedirect() {
     try {
-        console.log('🔍 Starting IP validation...');
-        const ip = await getUserIP();
-        console.log('📍 Got IP:', ip);
-        
-        try {
-            const validation = await validateIP(ip);
-            
-            // Store validation result
-            sessionStorage.setItem('ipValidation', JSON.stringify({
-                ip,
-                result: validation,
-                timestamp: Date.now()
-            }));
-
-            if (!validation.isValid) {
-                console.log('❌ Invalid IP detected');
-                window.location.replace('./blocked.html');
-                return false;
+        const cached = sessionStorage.getItem('ipValidation');
+        if (cached) {
+            const { result, timestamp } = JSON.parse(cached);
+            // Use cached result if less than 5 minutes old
+            if (Date.now() - timestamp < 5 * 60 * 1000) {
+                if (!result.isValid) {
+                    window.location.replace('./blocked.html');
+                    return false;
+                }
+                return true;
             }
-            
-            return true;
-        } catch (error) {
-            if (error.isAdblocker || error.message === 'ADBLOCKER_DETECTED') {
-                console.log('🚫 Adblocker detected');
-                window.location.replace('./adblocker.html');
-                return false;
-            }
-            throw error;
         }
+        
+        // If no valid cached result, perform new validation
+        const validation = await performInitialValidation();
+        
+        if (!validation.isValid) {
+            window.location.replace('./blocked.html');
+            return false;
+        }
+        
+        return true;
     } catch (error) {
         console.error('❌ IP validation error:', error);
         // Check for adblocker more thoroughly
