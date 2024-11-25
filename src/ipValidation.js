@@ -27,7 +27,6 @@ async function fetchWithRetry(url, retryCount = 0) {
         console.log('🚨 Raw error:', error);
         console.log('🔍 Error type:', error.name);
         console.log('📝 Error message:', error.message);
-        console.log('🔗 Error stack:', error.stack);
 
         // Check for adblocker in multiple ways
         const errorText = error.toString().toLowerCase();
@@ -39,9 +38,8 @@ async function fetchWithRetry(url, retryCount = 0) {
 
         if (isAdblockerError) {
             console.log('🛑 ADBLOCKER DETECTED!');
-            // Immediately prevent further execution
-            window.location.replace('./adblocker.html');
-            return false;
+            // Don't retry, throw special error
+            throw new Error('ADBLOCKER_DETECTED');
         }
 
         // Only retry if it's not an adblocker error
@@ -129,15 +127,22 @@ export async function validateIPAndRedirect() {
             console.log('✅ IP validation passed');
             return true;
         } catch (error) {
+            console.log('🔍 Checking error type:', error.message);
             // Check if this was an adblocker error
-            if (error === false) {
-                console.log('🚫 Adblocker detection handled, stopping execution');
+            if (error.message === 'ADBLOCKER_DETECTED') {
+                console.log('🚫 Adblocker detected, redirecting to adblocker page');
+                window.location.replace('./adblocker.html');
                 return false;
             }
             throw error;
         }
     } catch (error) {
         console.error('❌ IP validation error:', error);
+        if (error.message === 'ADBLOCKER_DETECTED') {
+            console.log('🚫 Adblocker detection handled at top level');
+            window.location.replace('./adblocker.html');
+            return false;
+        }
         // Allow access on other errors for better UX
         return true;
     }
