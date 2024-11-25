@@ -158,10 +158,9 @@ export async function validateIP(ip) {
         platform: navigator.platform
     });
     
-    // Build params for JSON request
+    // Build params for JSONP request
     const params = new URLSearchParams({
         key: config.PROXYCHECK_API_KEY,
-        ip: ip,
         vpn: '1',
         risk: '1',
         asn: '1',
@@ -170,33 +169,19 @@ export async function validateIP(ip) {
         days: '7',
         ports: '1',
         seen: '1',
-        tag: 'security',
-        format: 'json'
+        tag: 'security'
     });
 
     console.log('🔄 Request parameters:', Object.fromEntries(params.entries()));
 
     try {
-        const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'User-Agent': 'TriphosphateMusic/1.0'
-            }
-        });
+        // Try JSONP first since we know it works
+        console.log('🔄 Attempting JSONP request...');
+        const jsonpData = await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
+        console.log('🔍 JSONP response:', jsonpData);
 
-        console.log('🔍 Response status:', response.status);
-        console.log('🔍 Response headers:', Object.fromEntries(response.headers.entries()));
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('🔍 Raw API response:', JSON.stringify(data, null, 2));
-
-        if (data.status === 'ok' && data[ip]) {
-            const ipData = data[ip];
+        if (jsonpData.status === 'ok' && jsonpData[ip]) {
+            const ipData = jsonpData[ip];
             
             console.log('🔍 Detailed IP analysis:', {
                 rawData: ipData,
@@ -207,10 +192,10 @@ export async function validateIP(ip) {
                 asn: ipData.asn
             });
 
-            // Log each detection check
+            // More precise detection logic
             const isVPN = 
                 ipData.type?.toLowerCase() === "vpn" || 
-                ipData.proxy === "yes" && ipData.type === "VPN";
+                (ipData.proxy === "yes" && ipData.type === "VPN");
             
             const isProxy = 
                 ipData.proxy === "yes" && 
@@ -218,8 +203,8 @@ export async function validateIP(ip) {
             
             const highRisk = 
                 (ipData.risk || 0) >= 75 || 
-                (ipData.port && ipData.port === "yes") ||
-                (ipData.seen && ipData.seen === "yes");
+                (ipData.port === "yes") ||
+                (ipData.seen === "yes" && ipData.type?.toLowerCase().includes("proxy"));
 
             console.log('🔍 Detection checks:', {
                 isVPN,
@@ -258,8 +243,7 @@ export async function validateIP(ip) {
             return result;
         }
 
-        console.log('❌ Invalid API response format:', data);
-        throw new Error('Invalid response format');
+        throw new Error('Invalid JSONP response format');
     } catch (error) {
         console.error('❌ Validation error:', {
             message: error.message,
@@ -267,14 +251,8 @@ export async function validateIP(ip) {
             type: error.name
         });
         
-        return {
-            isValid: true,
-            fraudScore: 0,
-            isProxy: false,
-            isVpn: false,
-            provider: `Unknown (${error.message})`,
-            error: error.message
-        };
+        // Don't return safe default anymore - throw the error
+        throw error;
     }
 }
 
