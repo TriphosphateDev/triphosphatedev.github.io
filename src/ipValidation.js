@@ -114,7 +114,7 @@ async function fetchWithRetry(url) {
             jsonpParams.set('key', params.get('key')); // Key must be first
             jsonpParams.set('tag', 'callback');  // Required by ProxyCheck
             jsonpParams.set('callback', callbackName);
-            jsonpParams.set('origin', 'triphosphatedev.github.io'); // Add origin parameter
+            jsonpParams.set('origin', 'triphosphatedev.github.io');
             // Add remaining parameters
             for (const [key, value] of params.entries()) {
                 if (key !== 'key' && key !== 'tag' && key !== 'callback' && key !== 'origin') {
@@ -122,9 +122,18 @@ async function fetchWithRetry(url) {
                 }
             }
 
-            // Construct final URL with parameters in correct order
+            // Store URL for debugging before any potential blocking
             const jsonpUrl = `${baseUrl}?${jsonpParams.toString()}`;
-            console.log('🔄 JSONP URL:', jsonpUrl);
+            const debugInfo = {
+                baseUrl,
+                params: Object.fromEntries(jsonpParams.entries()),
+                fullUrl: jsonpUrl,
+                timestamp: new Date().toISOString()
+            };
+            // Use sessionStorage to persist the debug info
+            sessionStorage.setItem('lastProxyCheckRequest', JSON.stringify(debugInfo));
+
+            console.log('🔄 Request details (preserved):', debugInfo);
             script.src = jsonpUrl;
             
             try {
