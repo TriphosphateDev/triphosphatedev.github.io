@@ -29,21 +29,31 @@ async function fetchWithRetry(url) {
             const ipMatch = url.match(/\/v2\/([^?]+)/);
             const ip = ipMatch ? ipMatch[1] : null;
             
-            // Create a timeout to check if we get a response
+            // Create a timeout to wait for actual response
             const responseTimeout = setTimeout(() => {
                 if (!responseReceived) {
-                    console.log('⚠️ JSONP timeout - using default safe response');
-                    resolve({
-                        status: "ok",
-                        [ip]: {
-                            proxy: "no",
-                            type: "residential",
-                            risk: 0,
-                            provider: "Unknown (Timeout)"
-                        }
-                    });
+                    // Try to fetch the data directly from the URL
+                    fetch(`https://proxycheck.io/v2/${ip}?key=${config.PROXYCHECK_API_KEY}&format=json`)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('🔄 Direct fetch response:', data);
+                            resolve(data);
+                        })
+                        .catch(() => {
+                            // If direct fetch fails, use safe default
+                            console.log('⚠️ All fetch attempts failed - using safe response');
+                            resolve({
+                                status: "ok",
+                                [ip]: {
+                                    proxy: "no",
+                                    type: "residential",
+                                    risk: 0,
+                                    provider: "Unknown (Timeout)"
+                                }
+                            });
+                        });
                 }
-            }, 3000);
+            }, 5000); // 5 second timeout
             
             window[callbackName] = (data) => {
                 clearTimeout(responseTimeout);
@@ -63,58 +73,48 @@ async function fetchWithRetry(url) {
             const script = document.createElement('script');
             
             script.onerror = (error) => {
-                clearTimeout(responseTimeout);
+                // Don't clear timeout - let it try direct fetch
+                console.log('🚨 JSONP script error - waiting for timeout/direct fetch');
                 
-                if (responseReceived) {
-                    console.log('✅ Ignoring script error - response already received');
-                    return resolve(jsonpResponse);
-                }
-
-                console.log('🚨 JSONP script error details:', {
-                    error,
-                    scriptSrc: script.src,
-                    scriptExists: document.head.contains(script),
-                    scriptState: script.readyState,
-                    documentState: document.readyState,
-                    callbackExists: typeof window[callbackName] !== 'undefined',
-                    responseReceived,
-                    ip
-                });
-
-                // Clean up
-                delete window[callbackName];
+                // Clean up script but keep callback for potential late response
                 try {
                     document.head.removeChild(script);
                 } catch (e) {
                     console.log('Script already removed');
                 }
                 
-                // More precise adblocker detection
+                // Check if this was an adblocker block
                 const errorText = error.toString().toLowerCase();
                 const isAdblockerBlock = 
                     errorText.includes('ad_blocker') ||
-                    errorText.includes('adblocker') ||
-                    (error.message === 'Failed to fetch' && error.stack?.includes('adblock'));
+                    errorText.includes('adblocker');
                 
                 if (isAdblockerBlock) {
+                    clearTimeout(responseTimeout);
                     console.log('🛑 ADBLOCKER DETECTED!');
                     const err = new Error('ADBLOCKER_DETECTED');
                     err.isAdblocker = true;
                     reject(err);
-                } else {
-                    // If not an adblocker, assume it's a temporary error
-                    console.log('⚠️ JSONP failed but not adblocker, using safe response');
-                    resolve({
-                        status: "ok",
-                        [ip]: {
-                            proxy: "no",
-                            type: "residential",
-                            risk: 0,
-                            provider: "Unknown (Failed to Verify)"
-                        }
-                    });
                 }
+                // Otherwise wait for timeout/direct fetch
             };
+            
+            // Format URL for JSONP
+            const baseUrl = url.split('?')[0];
+            const params = new URLSearchParams(url.split('?')[1]);
+            const jsonpParams = new URLSearchParams();
+            jsonpParams.set('key', params.get('key'));
+            jsonpParams.set('tag', 'callback');
+            jsonpParams.set('callback', callbackName);
+            for (const [key, value] of params.entries()) {
+                if (key !== 'key') {
+                    jsonpParams.set(key, value);
+                }
+            }
+            
+            const jsonpUrl = `${baseUrl}?${jsonpParams.toString()}`;
+            console.log('🔄 JSONP URL:', jsonpUrl);
+            script.src = jsonpUrl;
             
             try {
                 document.head.appendChild(script);
