@@ -29,10 +29,28 @@ async function fetchWithRetry(url) {
             const ipMatch = url.match(/\/v2\/([^?]+)/);
             const ip = ipMatch ? ipMatch[1] : null;
             
+            // Create a timeout to check if we get a response
+            const responseTimeout = setTimeout(() => {
+                // If we haven't received a response, try to fetch directly from the URL
+                if (!responseReceived) {
+                    console.log('⚠️ JSONP timeout - using default high-risk response');
+                    resolve({
+                        status: "ok",
+                        [ip]: {
+                            proxy: "yes",
+                            type: "VPN",
+                            risk: 75,
+                            provider: "Unknown (Failed to Verify)"
+                        }
+                    });
+                }
+            }, 3000); // 3 second timeout
+            
             window[callbackName] = (data) => {
+                clearTimeout(responseTimeout);
                 console.log('🔄 JSONP response received:', data);
                 responseReceived = true;
-                jsonpResponse = data;  // Store the actual response
+                jsonpResponse = data;
                 
                 // Clean up
                 delete window[callbackName];
@@ -72,9 +90,11 @@ async function fetchWithRetry(url) {
             script.src = jsonpUrl;
             
             script.onerror = (error) => {
+                clearTimeout(responseTimeout);
+                
                 if (responseReceived) {
                     console.log('✅ Ignoring script error - response already received');
-                    return resolve(jsonpResponse);  // Use the actual response if we got it
+                    return resolve(jsonpResponse);
                 }
 
                 console.log('🚨 JSONP script error details:', {
@@ -100,8 +120,7 @@ async function fetchWithRetry(url) {
                 const errorText = error.toString().toLowerCase();
                 const isAdblockerBlock = 
                     errorText.includes('ad_blocker') ||
-                    errorText.includes('adblocker') ||
-                    !document.querySelector('script[src*="proxycheck.io"]');
+                    errorText.includes('adblocker');
                 
                 if (isAdblockerBlock) {
                     console.log('🛑 ADBLOCKER DETECTED!');
@@ -109,14 +128,15 @@ async function fetchWithRetry(url) {
                     err.isAdblocker = true;
                     reject(err);
                 } else {
-                    // If not an adblocker, try to resolve with default safe response
-                    console.log('⚠️ JSONP failed but not adblocker, using default response');
+                    // If not an adblocker, assume it's a VPN/proxy
+                    console.log('⚠️ JSONP failed but not adblocker, using high-risk response');
                     resolve({
                         status: "ok",
                         [ip]: {
-                            proxy: "yes",  // Assume proxy/VPN if we can't verify
+                            proxy: "yes",
                             type: "VPN",
-                            risk: 75
+                            risk: 75,
+                            provider: "Unknown (Failed to Verify)"
                         }
                     });
                 }
