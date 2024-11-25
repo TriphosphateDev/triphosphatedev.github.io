@@ -152,64 +152,88 @@ async function fetchWithRetry(url) {
 
 export async function validateIP(ip) {
     console.log('🔄 Starting IP validation for:', ip);
+    console.log('🔍 Browser Info:', {
+        userAgent: navigator.userAgent,
+        vendor: navigator.vendor,
+        platform: navigator.platform
+    });
     
-    // Build params for JSON request - fixing parameter order and options
+    // Build params for JSON request
     const params = new URLSearchParams({
-        key: config.PROXYCHECK_API_KEY,  // Key must be first
-        ip: ip,                          // Added explicit IP parameter
+        key: config.PROXYCHECK_API_KEY,
+        ip: ip,
         vpn: '1',
         risk: '1',
         asn: '1',
-        node: '1',                       // Added node parameter for better detection
-        time: '1',                       // Added timestamp info
+        node: '1',
+        time: '1',
         days: '7',
-        ports: '1',                      // Added port scanning
-        seen: '1',                       // Added previously seen status
-        tag: 'security',                 // Added tag for analytics
-        format: 'json'                   // Keep JSON format
+        ports: '1',
+        seen: '1',
+        tag: 'security',
+        format: 'json'
     });
 
+    console.log('🔄 Request parameters:', Object.fromEntries(params.entries()));
+
     try {
-        // Make direct request with proper headers
         const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'User-Agent': 'TriphosphateMusic/1.0'  // Added User-Agent
+                'User-Agent': 'TriphosphateMusic/1.0'
             }
         });
+
+        console.log('🔍 Response status:', response.status);
+        console.log('🔍 Response headers:', Object.fromEntries(response.headers.entries()));
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('🔍 Raw API response:', data);
+        console.log('🔍 Raw API response:', JSON.stringify(data, null, 2));
 
-        // Process the response with more detailed checks
         if (data.status === 'ok' && data[ip]) {
             const ipData = data[ip];
             
-            console.log('🔍 Detailed IP data:', ipData);
+            console.log('🔍 Detailed IP analysis:', {
+                rawData: ipData,
+                proxyStatus: ipData.proxy,
+                connectionType: ipData.type,
+                riskScore: ipData.risk,
+                provider: ipData.provider,
+                asn: ipData.asn
+            });
 
-            // More precise detection based on API docs
+            // Log each detection check
             const isVPN = 
                 ipData.type?.toLowerCase() === "vpn" || 
                 ipData.proxy === "yes" && ipData.type === "VPN";
-                
+            
             const isProxy = 
                 ipData.proxy === "yes" && 
                 !["residential", "hosting"].includes(ipData.type?.toLowerCase());
-                
+            
             const highRisk = 
                 (ipData.risk || 0) >= 75 || 
                 (ipData.port && ipData.port === "yes") ||
                 (ipData.seen && ipData.seen === "yes");
 
+            console.log('🔍 Detection checks:', {
+                isVPN,
+                isProxy,
+                highRisk,
+                vpnReason: isVPN ? 'VPN detected by type or proxy flag' : 'Not VPN',
+                proxyReason: isProxy ? 'Non-residential proxy detected' : 'Residential/safe connection',
+                riskReason: highRisk ? `High risk (score: ${ipData.risk}, ports: ${ipData.port}, seen: ${ipData.seen})` : 'Low risk'
+            });
+
             const result = {
                 isValid: !(isVPN || isProxy || highRisk),
                 fraudScore: ipData.risk || 0,
-                isProxy: isProxy,
+                isProxy,
                 isVpn: isVPN,
                 country: ipData.country,
                 isp: ipData.provider,
@@ -222,15 +246,27 @@ export async function validateIP(ip) {
                 previouslySeen: ipData.seen
             };
 
-            console.log('🔍 Validation result:', result);
+            console.log('🔍 Final validation result:', {
+                result,
+                allowed: result.isValid,
+                reason: result.isValid ? 'IP Passed' : 
+                        result.isVpn ? 'VPN Detected' :
+                        result.isProxy ? 'Proxy Detected' :
+                        'High Risk Score'
+            });
+
             return result;
         }
 
+        console.log('❌ Invalid API response format:', data);
         throw new Error('Invalid response format');
     } catch (error) {
-        console.error('Error in validateIP:', error);
+        console.error('❌ Validation error:', {
+            message: error.message,
+            stack: error.stack,
+            type: error.name
+        });
         
-        // Return safe default with more context
         return {
             isValid: true,
             fraudScore: 0,
