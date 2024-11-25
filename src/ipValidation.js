@@ -184,10 +184,8 @@ function createButton(buttonId, destination) {
         button.style.cursor = 'pointer';
         button.disabled = false;
         
-        // Set appropriate text based on destination
-        button.textContent = destination.includes('adblocker') ? 'Please Disable Adblocker' :
-                            destination.includes('blocked') ? 'Access Denied' :
-                            'Get Your Free Consultation';
+        // Always show "Get Your Free Consultation" regardless of destination
+        button.textContent = 'Get Your Free Consultation';
         
         button.onclick = (e) => {
             e.preventDefault();
