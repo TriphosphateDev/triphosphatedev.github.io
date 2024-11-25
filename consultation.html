@@ -198,20 +198,17 @@
             try {
                 loadingOverlay.style.display = 'flex';
                 
-                // Convert form data to JSON
+                // Convert form data to URLSearchParams
                 const formData = new FormData(form);
-                const jsonData = {};
-                formData.forEach((value, key) => {
-                    jsonData[key] = value;
-                });
+                const urlEncodedData = new URLSearchParams(formData);
                 
                 const response = await fetch('https://tripmixes.com/submit-form', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: JSON.stringify(jsonData)
+                    body: urlEncodedData
                 });
                 
                 console.log('Response status:', response.status);

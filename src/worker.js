@@ -22,11 +22,12 @@ export default {
     }
 
     try {
-      // Parse JSON instead of FormData
-      const data = await request.json();
+      // Parse form data
+      const formData = await request.formData();
+      console.log('Received form data:', Object.fromEntries(formData));
       
       // Honeypot check
-      if (data.hiddenHoneypotField) {
+      if (formData.get('hiddenHoneypotField')) {
         return new Response(JSON.stringify({
           status: 'error',
           message: 'Invalid submission'
@@ -43,7 +44,7 @@ export default {
       await sendEmail({
         to: env.NOTIFICATION_EMAIL,
         subject: 'New Consultation Request',
-        formData: data
+        formData: Object.fromEntries(formData)
       });
       
       return new Response(JSON.stringify({
@@ -57,6 +58,7 @@ export default {
       });
 
     } catch (error) {
+      console.error('Worker error:', error);
       return new Response(JSON.stringify({
         status: 'error',
         message: error.message
