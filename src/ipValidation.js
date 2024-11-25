@@ -38,9 +38,12 @@ async function fetchWithRetry(url) {
             
             // Format URL according to ProxyCheck.io JSONP spec
             // They expect tag=callback and the callback name without the URL parameter
-            const jsonpUrl = `${url}&tag=callback&callback=${callbackName}`;
-            console.log('🔄 JSONP URL:', jsonpUrl);
-            script.src = jsonpUrl;
+            const jsonpUrl = new URL(url);
+            jsonpUrl.searchParams.append('tag', 'callback');
+            jsonpUrl.searchParams.append('callback', callbackName);
+            
+            console.log('🔄 JSONP URL:', jsonpUrl.toString());
+            script.src = jsonpUrl.toString();
             
             script.onerror = (error) => {
                 console.log('🚨 JSONP script error:', error);
@@ -107,10 +110,23 @@ async function fetchWithRetry(url) {
 export async function validateIP(ip) {
     const API_KEY = config.PROXYCHECK_API_KEY || config.PROXYCHECK_PUBLIC_KEY;
     
-    // Construct URL with all required parameters
-    const baseUrl = `${config.PROXYCHECK_API_ENDPOINT}/${ip}?key=${API_KEY}&vpn=1&risk=1&asn=1`;
+    // Build URL properly with all parameters at once
+    const params = new URLSearchParams({
+        key: API_KEY,
+        vpn: '1',
+        risk: '1',
+        asn: '1'
+    });
     
-    const data = await fetchWithRetry(baseUrl);
+    // Construct base URL without query parameters
+    const baseUrl = `${config.PROXYCHECK_API_ENDPOINT}/${ip}`;
+    
+    // Combine URL and parameters
+    const fullUrl = `${baseUrl}?${params.toString()}`;
+    
+    console.log('🔄 Constructed URL:', fullUrl);
+    
+    const data = await fetchWithRetry(fullUrl);
     console.log('Proxycheck.io raw response:', data);
     
     // Handle API errors
