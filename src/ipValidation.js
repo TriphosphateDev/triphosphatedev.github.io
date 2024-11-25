@@ -1,5 +1,5 @@
-import { trackIPCheck } from '../src/monitoring.js';
-import { config } from '../src/config.js';
+import { trackIPCheck } from './monitoring.js';
+import { config } from './config.js';
 
 console.log('Loading ipValidation module...');
 // Make cache accessible for testing
