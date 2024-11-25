@@ -235,58 +235,58 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
         
         try {
             const validation = await validateIP(ip);
+            
+            // Log validation result
+            console.log('🔍 Security check result:', {
+                validation,
+                isValid: validation.isValid,
+                isProxy: validation.isProxy,
+                isVpn: validation.isVpn,
+                fraudScore: validation.fraudScore
+            });
+
             if (!validation.isValid) {
-                console.log('❌ Invalid IP detected');
+                console.log('❌ Invalid IP detected - VPN or Proxy');
                 createButton(buttonId, './blocked.html');
                 return false;
             }
             
-            console.log('✅ IP validation passed');
+            console.log('✅ IP validation passed - creating consultation button');
             createButton(buttonId, defaultDestination);
             return true;
         } catch (error) {
             console.log('🔍 Checking error:', error);
             
-            // More comprehensive error detection for different browsers
+            // Only check for adblocker-specific errors
             const errorText = (error.toString() || '').toLowerCase();
             const messageText = (error.message || '').toLowerCase();
-            const stackText = (error.stack || '').toLowerCase();
             
-            // Check for any indication of blocked requests or network failures
-            const isBlocked = 
-                error.isAdblocker || 
-                messageText === 'failed to fetch' ||
-                errorText.includes('err_blocked') ||
-                errorText.includes('err_failed') ||  // Chrome CORS error
-                errorText.includes('cors') ||        // Explicit CORS mentions
-                stackText.includes('proxycheck.io') ||
-                // Opera specific checks
-                errorText.includes('network_err');
+            const isAdblockerError = 
+                errorText.includes('ad_blocker') ||
+                errorText.includes('adblocker');
 
-            console.log('🔍 Error analysis:', { errorText, messageText, stackText, isBlocked });
+            console.log('🔍 Error analysis:', { errorText, messageText, isAdblockerError });
 
-            if (isBlocked) {
-                console.log('🚫 Request blocked, creating adblocker button');
+            if (isAdblockerError) {
+                console.log('🚫 Request blocked by adblocker');
                 createButton(buttonId, './adblocker.html');
                 return false;
             }
             
-            // Fallback for any other errors
-            console.log('❌ Security check failed, creating adblocker button');
-            createButton(buttonId, './adblocker.html');
-            return false;
+            // If it's not an adblocker error, proceed to consultation
+            console.log('✅ Not an adblocker error - proceeding to consultation');
+            createButton(buttonId, defaultDestination);
+            return true;
         }
     } catch (error) {
         console.error('❌ Security initialization error:', error);
-        createButton(buttonId, './adblocker.html');
-        return false;
-    } finally {
-        // Always ensure a button is created
-        const button = document.getElementById(buttonId);
-        if (button && (button.disabled || button.textContent.includes('Checking Security'))) {
-            console.log('⚠️ Ensuring button is created in finally block');
+        // Only redirect to adblocker page if it's actually an adblocker
+        if (error.message?.toLowerCase().includes('adblocker')) {
             createButton(buttonId, './adblocker.html');
+        } else {
+            createButton(buttonId, defaultDestination);
         }
+        return false;
     }
 }
 
