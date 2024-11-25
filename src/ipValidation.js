@@ -153,60 +153,69 @@ async function fetchWithRetry(url) {
 export async function validateIP(ip) {
     console.log('🔄 Constructed URL:', `${config.PROXYCHECK_API_ENDPOINT}/${ip}`);
     
-    // Use public key for initial check, then private key for detailed info if needed
-    const publicParams = new URLSearchParams({
-        key: config.PROXYCHECK_PUBLIC_KEY,
+    // Build params for JSON request
+    const params = new URLSearchParams({
+        key: config.PROXYCHECK_API_KEY,
         vpn: '1',
         risk: '1',
         asn: '1',
         days: '7',
         detailed: '1',
-        origin: 'triphosphatedev.github.io'
+        origin: 'triphosphatedev.github.io',
+        format: 'json'  // Explicitly request JSON format
     });
 
     try {
-        // First try with fetch
-        const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${publicParams}`);
+        // Make direct JSON request
+        const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Origin': 'triphosphatedev.github.io'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
-        
-        console.log('🔍 Initial check response:', data);
-        
-        // If we got a valid response, process it
+        console.log('🔍 API response:', data);
+
+        // Process the response
         if (data.status === 'ok' && data[ip]) {
             const ipData = data[ip];
-            // If it's clearly a VPN/proxy, no need for second check
-            if (ipData.proxy === 'yes' || ipData.type === 'VPN') {
-                console.log('🚫 VPN/Proxy detected in initial check');
-                return {
-                    isValid: false,
-                    fraudScore: ipData.risk || 0,
-                    isProxy: true,
-                    isVpn: ipData.type === 'VPN',
-                    provider: ipData.provider,
-                    country: ipData.country
-                };
-            }
-            
-            // If it looks clean, do detailed check with private key
-            const privateParams = new URLSearchParams({
-                key: config.PROXYCHECK_API_KEY,
-                vpn: '1',
-                risk: '1',
-                asn: '1',
-                days: '7',
-                detailed: '1',
-                origin: 'triphosphatedev.github.io'
-            });
-            
-            return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${privateParams}`);
+            const result = {
+                isValid: !(
+                    ipData.proxy === "yes" || 
+                    ipData.type?.toLowerCase() === "vpn" || 
+                    (ipData.risk || 0) >= 50
+                ),
+                fraudScore: ipData.risk || 0,
+                isProxy: ipData.proxy === "yes",
+                isVpn: ipData.type?.toLowerCase() === "vpn",
+                country: ipData.country,
+                isp: ipData.provider,
+                asn: ipData.asn,
+                type: ipData.type,
+                provider: ipData.provider
+            };
+
+            console.log('🔍 Validation result:', result);
+            return result;
         }
-        
-        // If initial check failed, try JSONP with private key
-        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${publicParams}`);
-        
+
+        throw new Error('Invalid response format');
     } catch (error) {
         console.error('Error in validateIP:', error);
-        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${publicParams}`);
+        // Return safe default on error
+        return {
+            isValid: true,
+            fraudScore: 0,
+            isProxy: false,
+            isVpn: false,
+            provider: "Unknown (Error)"
+        };
     }
 }
 
