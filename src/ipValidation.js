@@ -152,6 +152,7 @@ async function fetchWithRetry(url) {
 
 export async function validateIP(ip) {
     console.log('🔄 Starting IP validation for:', ip);
+    console.log('🔄 Constructed URL:', `${config.PROXYCHECK_API_ENDPOINT}/${ip}`);
     
     // Build params for JSON request
     const params = new URLSearchParams({
@@ -166,17 +167,19 @@ export async function validateIP(ip) {
     });
 
     try {
-        // Make direct JSON request
+        // Try with no-cors first
         const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`, {
             method: 'GET',
+            mode: 'no-cors',  // Change to no-cors
             headers: {
                 'Accept': 'application/json'
-            },
-            mode: 'cors'  // Explicitly set CORS mode
+            }
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // If no-cors succeeds but we can't read the response, fall back to JSONP
+        if (!response.ok || response.type === 'opaque') {
+            console.log('⚠️ No-cors fetch returned opaque response, falling back to JSONP');
+            return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
         }
 
         const data = await response.json();
@@ -216,30 +219,16 @@ export async function validateIP(ip) {
             return result;
         }
 
-        throw new Error('Invalid response format');
+        // If JSON parsing fails, fall back to JSONP
+        console.log('⚠️ Invalid JSON response, falling back to JSONP');
+        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
+
     } catch (error) {
         console.error('Error in validateIP:', error);
         
-        // Check if this is a CORS/network error
-        if (error.name === 'TypeError' || error.message.includes('Failed to fetch')) {
-            console.log('⚠️ Network/CORS error - using safe default');
-            return {
-                isValid: true,
-                fraudScore: 0,
-                isProxy: false,
-                isVpn: false,
-                provider: "Unknown (Network Error)"
-            };
-        }
-        
-        // For other errors, return safe default
-        return {
-            isValid: true,
-            fraudScore: 0,
-            isProxy: false,
-            isVpn: false,
-            provider: "Unknown (Error)"
-        };
+        // Fall back to JSONP on any error
+        console.log('⚠️ Fetch failed, falling back to JSONP');
+        return await fetchWithRetry(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`);
     }
 }
 
