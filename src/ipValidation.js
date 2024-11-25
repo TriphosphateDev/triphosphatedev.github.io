@@ -27,27 +27,29 @@ async function fetchWithRetry(url) {
             // Add callback to window
             window[callbackName] = (data) => {
                 console.log('🔄 JSONP response received:', data);
-                // Clean up
                 delete window[callbackName];
-                document.head.removeChild(script);
+                if (document.head.contains(script)) {
+                    document.head.removeChild(script);
+                }
                 resolve(data);
             };
             
-            // Create script element
             const script = document.createElement('script');
             
             // Format URL according to ProxyCheck.io JSONP spec
             // They expect tag=callback and the callback name without the URL parameter
             const jsonpUrl = new URL(url);
             jsonpUrl.searchParams.append('tag', 'callback');
+            // Remove 'callback=' prefix as ProxyCheck expects just the function name
             jsonpUrl.searchParams.append('callback', callbackName);
+            // Add format=jsonp parameter
+            jsonpUrl.searchParams.append('format', 'jsonp');
             
             console.log('🔄 JSONP URL:', jsonpUrl.toString());
             script.src = jsonpUrl.toString();
             
             script.onerror = (error) => {
                 console.log('🚨 JSONP script error:', error);
-                // Clean up
                 delete window[callbackName];
                 try {
                     document.head.removeChild(script);
@@ -56,10 +58,14 @@ async function fetchWithRetry(url) {
                 }
                 
                 // Check if this was a real network error vs adblocker
-                const isNetworkError = error && error.type === 'error' && !document.body.contains(script);
+                const isNetworkError = error && error.type === 'error' && document.body.contains(script);
                 
                 if (isNetworkError) {
-                    reject(new Error('Network error'));
+                    // Try fallback URL
+                    const fallbackUrl = jsonpUrl.toString().replace('proxycheck.io/v2', 'proxycheck.io/v2/alt');
+                    console.log('🔄 Trying fallback URL:', fallbackUrl);
+                    script.src = fallbackUrl;
+                    document.head.appendChild(script);
                 } else {
                     console.log('🛑 ADBLOCKER DETECTED via JSONP failure!');
                     const err = new Error('ADBLOCKER_DETECTED');
@@ -91,18 +97,10 @@ async function fetchWithRetry(url) {
                     }
                     reject(new Error('Request timed out'));
                 }
-            }, 10000); // 10 second timeout
+            }, 10000);
         });
     } catch (error) {
         console.log('🚨 Raw error:', error);
-        
-        if (error.message === 'Request timed out' || error.message === 'Network error') {
-            // Retry with fallback URL
-            console.log('🔄 Retrying with fallback...');
-            const fallbackUrl = url.replace('proxycheck.io/v2', 'proxycheck.io/v2/alt');
-            return fetchWithRetry(fallbackUrl);
-        }
-        
         throw error;
     }
 }
