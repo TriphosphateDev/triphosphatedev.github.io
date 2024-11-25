@@ -154,8 +154,12 @@ function createButton(buttonId, destination) {
     }
     
     // Update button properties
-    button.style.display = 'inline-block';
+    button.className = 'btn'; // Use the same class as other buttons
+    button.style.opacity = '1';
+    button.style.cursor = 'pointer';
     button.disabled = false;
+    
+    // Set appropriate text based on destination
     button.textContent = destination.includes('adblocker') ? 'Please Disable Adblocker' :
                         destination.includes('blocked') ? 'Access Denied' :
                         'Get Your Free Consultation';

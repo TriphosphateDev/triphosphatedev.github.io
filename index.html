@@ -488,10 +488,10 @@
             <nav class="buttons" aria-label="Contact options">
                 <button 
                     id="consultButton" 
-                    style="display: none;" 
-                    disabled
-                    class="back-btn">
-                    Get Your Free Consultation
+                    class="btn"
+                    style="opacity: 0.7; cursor: not-allowed;" 
+                    disabled>
+                    Checking Security...
                 </button>
                 <a class="btn" href="mailto:triphosphateLP@gmail.com" 
                    onclick="validateAndTrackClick(this, event)">Email Direct</a>
@@ -568,19 +568,16 @@
     <script>
         // Initialize countdown
         let countdown = 3;
-        const consultationBtn = document.getElementById('consultButton');
+        const consultButton = document.getElementById('consultButton');
         
-        if (consultationBtn) {
-            consultationBtn.textContent = `Checking Security... (${countdown})`;
-            
+        if (consultButton) {
             // Start countdown
             const timer = setInterval(() => {
                 countdown--;
-                consultationBtn.textContent = `Checking Security... (${countdown})`;
+                consultButton.textContent = `Checking Security... (${countdown})`;
                 
                 if (countdown <= 0) {
                     clearInterval(timer);
-                    // Security check will handle the button state
                 }
             }, 1000);
         }
