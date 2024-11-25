@@ -20,7 +20,6 @@ async function fetchWithRetry(url) {
     try {
         console.log(`🔄 Fetching ${url}`);
         
-        // Use JSONP directly
         return new Promise((resolve, reject) => {
             // Create unique callback name
             const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
@@ -36,36 +35,39 @@ async function fetchWithRetry(url) {
             
             // Create script element
             const script = document.createElement('script');
-            // Add callback parameter to URL
-            const jsonpUrl = `${url}&callback=${callbackName}`;
+            
+            // Format URL according to ProxyCheck.io JSONP spec
+            // They expect tag=callback and the callback name without the URL parameter
+            const jsonpUrl = `${url}&tag=callback&callback=${callbackName}`;
             console.log('🔄 JSONP URL:', jsonpUrl);
             script.src = jsonpUrl;
-            
-            // Track if script was actually added
-            let scriptAdded = false;
             
             script.onerror = (error) => {
                 console.log('🚨 JSONP script error:', error);
                 // Clean up
                 delete window[callbackName];
-                if (scriptAdded) {
+                try {
                     document.head.removeChild(script);
+                } catch (e) {
+                    console.log('Script already removed');
                 }
                 
-                // If script wasn't added or failed immediately, it's likely an adblocker
-                console.log('🔍 JSONP error analysis:', { scriptAdded });
+                // Check if this was a real network error vs adblocker
+                const isNetworkError = error && error.type === 'error' && !document.body.contains(script);
                 
-                // Always treat JSONP failures as blocking
-                console.log('🛑 ADBLOCKER DETECTED via JSONP failure!');
-                const err = new Error('ADBLOCKER_DETECTED');
-                err.isAdblocker = true;
-                reject(err);
+                if (isNetworkError) {
+                    reject(new Error('Network error'));
+                } else {
+                    console.log('🛑 ADBLOCKER DETECTED via JSONP failure!');
+                    const err = new Error('ADBLOCKER_DETECTED');
+                    err.isAdblocker = true;
+                    reject(err);
+                }
             };
             
             // Add script to page
             try {
                 document.head.appendChild(script);
-                scriptAdded = true;
                 console.log('📝 JSONP script added successfully');
             } catch (error) {
                 console.log('❌ Failed to add JSONP script:', error);
@@ -79,55 +81,62 @@ async function fetchWithRetry(url) {
                 if (window[callbackName]) {
                     console.log('⏰ JSONP request timed out');
                     delete window[callbackName];
-                    if (scriptAdded) {
+                    try {
                         document.head.removeChild(script);
+                    } catch (e) {
+                        console.log('Script already removed');
                     }
-                    const err = new Error('ADBLOCKER_DETECTED');
-                    err.isAdblocker = true;
-                    reject(err);
+                    reject(new Error('Request timed out'));
                 }
-            }, 5000); // 5 second timeout
+            }, 10000); // 10 second timeout
         });
     } catch (error) {
         console.log('🚨 Raw error:', error);
         
-        // If it's already identified as an adblocker error, re-throw
-        if (error.isAdblocker) {
-            throw error;
+        if (error.message === 'Request timed out' || error.message === 'Network error') {
+            // Retry with fallback URL
+            console.log('🔄 Retrying with fallback...');
+            const fallbackUrl = url.replace('proxycheck.io/v2', 'proxycheck.io/v2/alt');
+            return fetchWithRetry(fallbackUrl);
         }
         
-        // Any error at this point is likely due to blocking
-        console.log('🛑 ADBLOCKER DETECTED from general error!');
-        const err = new Error('ADBLOCKER_DETECTED');
-        err.isAdblocker = true;
-        throw err;
+        throw error;
     }
 }
 
 export async function validateIP(ip) {
     const API_KEY = config.PROXYCHECK_API_KEY || config.PROXYCHECK_PUBLIC_KEY;
-    const data = await fetchWithRetry(
-        `${config.PROXYCHECK_API_ENDPOINT}/${ip}?key=${API_KEY}&vpn=1&risk=1`
-    );
     
+    // Construct URL with all required parameters
+    const baseUrl = `${config.PROXYCHECK_API_ENDPOINT}/${ip}?key=${API_KEY}&vpn=1&risk=1&asn=1`;
+    
+    const data = await fetchWithRetry(baseUrl);
     console.log('Proxycheck.io raw response:', data);
     
-    // Handle API errors after all retries are exhausted
+    // Handle API errors
     if (data.status !== "ok") {
         throw new Error(`Proxycheck.io API error: ${data.message || 'Unknown error'}`);
     }
 
+    // ProxyCheck.io returns the IP data in a nested object
     const ipData = data[ip];
     if (!ipData) {
         throw new Error('Invalid IP address or no data returned');
     }
 
-    // Make validation stricter
+    // Parse response according to API docs
     const result = {
-        isValid: !ipData.proxy && !ipData.vpn && (ipData.risk || 0) < 50,  // Lower risk threshold
+        isValid: !(
+            ipData.proxy === "yes" || 
+            ipData.type === "VPN" || 
+            (ipData.risk || 0) >= 50
+        ),
         fraudScore: ipData.risk || 0,
-        isProxy: ipData.proxy === "yes" || ipData.type === "Proxy",
-        isVpn: ipData.type === "VPN"
+        isProxy: ipData.proxy === "yes",
+        isVpn: ipData.type === "VPN",
+        country: ipData.country,
+        isp: ipData.isp,
+        asn: ipData.asn
     };
 
     // Track the result
