@@ -452,6 +452,16 @@
         .social-link:hover {
             color: #8a7bf4;
         }
+
+        .btn:disabled {
+            background: linear-gradient(135deg, #666 0%, #444 100%);
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        #consultationBtn {
+            transition: opacity 0.3s ease, background 0.3s ease, transform 0.3s ease;
+        }
     </style>
     <script src="https://www.google.com/recaptcha/api.js?render=6LewkogqAAAAANUh-L1KOeelY9mBl2I6evdrhRAr"></script>
 </head>
@@ -477,7 +487,9 @@
             </section>
 
             <nav class="buttons" aria-label="Contact options">
-                <a class="btn" href="/consultation.html" onclick="validateAndTrackClick(this, event)">Book Free Consultation</a>
+                <button id="consultationBtn" class="btn" disabled style="opacity: 0.5; cursor: not-allowed;">
+                    <span id="btnText">Checking Security... (3)</span>
+                </button>
                 <a class="btn" href="mailto:triphosphateLP@gmail.com" 
                    onclick="validateAndTrackClick(this, event)">Email Direct</a>
                 <a class="btn" href="https://discord.com/channels/@me/Triphosphate/" rel="noopener" 
@@ -549,6 +561,39 @@
     <script type="module">
         import { validateAndTrackClick } from './src/validation.js';
         window.validateAndTrackClick = validateAndTrackClick;
+    </script>
+    <script>
+        // Initialize countdown
+        let countdown = 3;
+        const consultationBtn = document.getElementById('consultationBtn');
+        const btnText = document.getElementById('btnText');
+        
+        // Start countdown
+        const timer = setInterval(() => {
+            countdown--;
+            btnText.textContent = `Checking Security... (${countdown})`;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                // Enable button and update based on validation result
+                consultationBtn.style.opacity = '1';
+                consultationBtn.style.cursor = 'pointer';
+                consultationBtn.disabled = false;
+                
+                // Check validation result from sessionStorage
+                const validation = JSON.parse(sessionStorage.getItem('ipValidation') || '{}');
+                if (validation.result?.isValid === false) {
+                    btnText.textContent = 'Access Denied';
+                    consultationBtn.onclick = () => window.location.href = './blocked.html';
+                } else if (document.querySelector('script[src*="proxycheck.io"]')) {
+                    btnText.textContent = 'Please Disable Adblocker';
+                    consultationBtn.onclick = () => window.location.href = './adblocker.html';
+                } else {
+                    btnText.textContent = 'Book Free Consultation';
+                    consultationBtn.onclick = () => window.location.href = './consultation.html';
+                }
+            }
+        }, 1000);
     </script>
 </body>
 </html>
