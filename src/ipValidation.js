@@ -19,7 +19,20 @@ export async function getUserIP() {
 async function fetchWithRetry(url) {
     try {
         console.log(`🔄 Fetching ${url}`);
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',  // Explicitly request CORS
+            headers: {
+                'Accept': 'application/json',
+                'Origin': 'https://triphosphatedev.github.io'
+            }
+        });
+        
+        // Check if response is ok before trying to parse JSON
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         return data;
     } catch (error) {
@@ -28,24 +41,48 @@ async function fetchWithRetry(url) {
         console.log('🔍 Error type:', error.name);
         console.log('📝 Error message:', error.message);
 
-        // Check for adblocker in multiple ways
-        const errorString = error.toString().toLowerCase();
-        const messageString = error.message.toLowerCase();
-        const stackString = error.stack?.toLowerCase() || '';
+        // More specific error detection
+        const errorText = error.toString().toLowerCase();
+        const messageText = error.message.toLowerCase();
+        const stackText = error.stack?.toLowerCase() || '';
 
-        // Look for adblocker signatures in all error text
+        // Check for CORS errors specifically
+        const isCorsError = 
+            errorText.includes('cors') ||
+            messageText.includes('cors') ||
+            stackText.includes('cors') ||
+            error.name === 'TypeError';
+
+        if (isCorsError) {
+            console.log('🌐 CORS error detected, trying JSONP fallback');
+            // Try JSONP fallback
+            const jsonpUrl = `${url}&callback=handleProxyCheckResponse`;
+            return new Promise((resolve, reject) => {
+                window.handleProxyCheckResponse = (data) => {
+                    delete window.handleProxyCheckResponse;
+                    resolve(data);
+                };
+                
+                const script = document.createElement('script');
+                script.src = jsonpUrl;
+                script.onerror = () => {
+                    delete window.handleProxyCheckResponse;
+                    reject(new Error('JSONP request failed'));
+                };
+                document.head.appendChild(script);
+            });
+        }
+
+        // Original adblocker detection
         const isAdblockerError = 
-            errorString.includes('err_blocked_by_adblocker') ||
-            messageString.includes('err_blocked_by_adblocker') ||
-            stackString.includes('err_blocked_by_adblocker') ||
-            // Add additional checks for failed fetch due to adblocker
-            (messageString === 'failed to fetch' && 
-             stackString.includes('proxycheck.io'));
+            errorText.includes('err_blocked_by_adblocker') ||
+            messageText.includes('err_blocked_by_adblocker') ||
+            stackText.includes('err_blocked_by_adblocker');
 
         if (isAdblockerError) {
             console.log('🛑 ADBLOCKER DETECTED!');
             const error = new Error('ADBLOCKER_DETECTED');
-            error.isAdblocker = true;  // Add a flag for easier checking
+            error.isAdblocker = true;
             throw error;
         }
 
