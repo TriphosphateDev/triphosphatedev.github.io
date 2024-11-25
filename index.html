@@ -578,14 +578,15 @@
             consultButton.disabled = true;
             consultButton.textContent = `Checking Security... (${countdown})`;
             
-            // Start countdown
-            const timer = setInterval(() => {
+            // Store timer in window so it can be cleared by createButton
+            window.countdownTimer = setInterval(() => {
                 countdown--;
                 if (countdown > 0) {
                     consultButton.textContent = `Checking Security... (${countdown})`;
                 } else {
-                    clearInterval(timer);
-                    // Don't clear the text - let createButton handle it
+                    clearInterval(window.countdownTimer);
+                    // The security check should have completed by now
+                    // If not, createButton will handle it when it does complete
                 }
             }, 1000);
         }

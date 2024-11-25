@@ -121,13 +121,16 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
         } catch (error) {
             console.log('🔍 Checking error:', error);
             
-            // Check for adblocker more thoroughly
+            // More aggressive adblocker detection
+            const errorText = error.toString().toLowerCase();
+            const messageText = error.message.toLowerCase();
+            const stackText = error.stack?.toLowerCase() || '';
+            
             const isAdblocker = 
                 error.isAdblocker || 
-                error.message === 'ADBLOCKER_DETECTED' ||
-                error.toString().toLowerCase().includes('err_blocked_by_adblocker') ||
-                (error.message === 'Failed to fetch' && 
-                 error.stack?.toLowerCase().includes('proxycheck.io'));
+                messageText === 'failed to fetch' ||  // Common adblocker error
+                errorText.includes('err_blocked_by_adblocker') ||
+                stackText.includes('proxycheck.io');  // If proxycheck.io is in stack, likely blocked
 
             if (isAdblocker) {
                 console.log('🚫 Adblocker detected, creating adblocker button');
@@ -135,14 +138,12 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
                 return false;
             }
             
-            // For other errors, create adblocker button as fallback
-            console.log('❌ Security check failed, defaulting to adblocker check');
-            createButton(buttonId, './adblocker.html');
+            console.log('❌ Security check failed');
+            createButton(buttonId, './adblocker.html'); // Default to adblocker button
             return false;
         }
     } catch (error) {
         console.error('❌ Security initialization error:', error);
-        // Create adblocker button as fallback for any errors
         createButton(buttonId, './adblocker.html');
         return false;
     }
@@ -153,6 +154,11 @@ function createButton(buttonId, destination) {
     if (!button) {
         console.error('Button element not found:', buttonId);
         return;
+    }
+    
+    // Clear the countdown interval if it exists
+    if (window.countdownTimer) {
+        clearInterval(window.countdownTimer);
     }
     
     // Update button properties
