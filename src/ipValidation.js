@@ -174,20 +174,36 @@ export async function validateIP(ip) {
         throw new Error('Invalid IP address or no data returned');
     }
 
+    console.log('🔍 IP data details:', ipData);
+
     // Parse response according to API docs
     const result = {
         isValid: !(
             ipData.proxy === "yes" || 
-            ipData.type === "VPN" || 
+            ipData.type?.toLowerCase() === "vpn" || 
             (ipData.risk || 0) >= 50
         ),
         fraudScore: ipData.risk || 0,
         isProxy: ipData.proxy === "yes",
-        isVpn: ipData.type === "VPN",
+        isVpn: ipData.type?.toLowerCase() === "vpn",
         country: ipData.country,
         isp: ipData.isp,
-        asn: ipData.asn
+        asn: ipData.asn,
+        type: ipData.type,
+        provider: ipData.provider
     };
+
+    // Log detailed validation results
+    console.log('🔍 Validation details:', {
+        proxyStatus: ipData.proxy,
+        connectionType: ipData.type,
+        riskScore: ipData.risk,
+        isValid: result.isValid,
+        reason: result.isValid ? 'IP Passed' : 
+                result.isProxy ? 'Proxy Detected' :
+                result.isVpn ? 'VPN Detected' :
+                'High Risk Score'
+    });
 
     // Track the result
     trackIPCheck(result);
