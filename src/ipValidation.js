@@ -21,16 +21,16 @@ async function fetchWithRetry(url) {
         console.log(`🔄 Fetching ${url}`);
         
         return new Promise((resolve, reject) => {
-            // Create unique callback name
             const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
             
-            // Add callback to window
+            // Add callback to window BEFORE creating script
             window[callbackName] = (data) => {
                 console.log('🔄 JSONP response received:', data);
                 delete window[callbackName];
                 if (document.head.contains(script)) {
                     document.head.removeChild(script);
                 }
+                // If we got data, it's definitely not blocked
                 resolve(data);
             };
             
@@ -52,7 +52,6 @@ async function fetchWithRetry(url) {
                 }
             }
             
-            // Construct final URL
             const jsonpUrl = `${baseUrl}?${jsonpParams.toString()}`;
             console.log('🔄 JSONP URL:', jsonpUrl);
             script.src = jsonpUrl;
@@ -64,13 +63,10 @@ async function fetchWithRetry(url) {
                     scriptExists: document.head.contains(script),
                     scriptState: script.readyState,
                     documentState: document.readyState,
-                    otherScripts: Array.from(document.scripts).map(s => s.src),
-                    // Check if any proxycheck scripts exist
-                    proxyScripts: Array.from(document.scripts)
-                        .filter(s => s.src.includes('proxycheck.io'))
-                        .map(s => s.src)
+                    callbackExists: typeof window[callbackName] !== 'undefined'
                 });
 
+                // Clean up
                 delete window[callbackName];
                 try {
                     document.head.removeChild(script);
@@ -78,39 +74,27 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // Check if script was blocked by adblocker
-                const isAdblockerBlock = 
-                    !document.querySelector('script[src*="proxycheck.io"]') || // Script was removed
-                    error.type === 'error' && !document.body.contains(script); // Script was blocked
+                // If we got an error but the callback was called, it's not blocked
+                if (!window[callbackName]) {
+                    // Script error after successful load is not an adblocker
+                    console.log('🔄 Script error but callback was successful');
+                    return;
+                }
                 
-                console.log('🔍 Adblocker check:', {
-                    isAdblockerBlock,
-                    scriptFound: !!document.querySelector('script[src*="proxycheck.io"]'),
-                    scriptInBody: document.body.contains(script),
-                    errorType: error.type
-                });
-
+                // Only treat as adblocker if script was actually blocked
+                const isAdblockerBlock = 
+                    !document.querySelector('script[src*="proxycheck.io"]') && // Script was removed
+                    error.type === 'error' && // It's an error event
+                    !document.body.contains(script); // Script is not in document
+                
                 if (isAdblockerBlock) {
                     console.log('🛑 ADBLOCKER DETECTED via script blocking!');
                     const err = new Error('ADBLOCKER_DETECTED');
                     err.isAdblocker = true;
                     reject(err);
                 } else {
-                    // Try alternate JSONP URL format
-                    console.log('🔄 Trying alternate JSONP format...');
-                    const altParams = new URLSearchParams(params);
-                    altParams.set('format', 'jsonp');
-                    const altUrl = `${baseUrl}?${altParams.toString()}&callback=${callbackName}`;
-                    
-                    const newScript = document.createElement('script');
-                    newScript.src = altUrl;
-                    newScript.onerror = () => {
-                        console.log('❌ Alternate JSONP format failed');
-                        const err = new Error('ADBLOCKER_DETECTED');
-                        err.isAdblocker = true;
-                        reject(err);
-                    };
-                    document.head.appendChild(newScript);
+                    // Not an adblocker, might be a normal script error
+                    console.log('✅ Not an adblocker, proceeding with data');
                 }
             };
             
@@ -120,24 +104,8 @@ async function fetchWithRetry(url) {
                 console.log('📝 JSONP script added successfully');
             } catch (error) {
                 console.log('❌ Failed to add JSONP script:', error);
-                const err = new Error('ADBLOCKER_DETECTED');
-                err.isAdblocker = true;
-                reject(err);
+                reject(error);
             }
-            
-            // Set a timeout for the request
-            setTimeout(() => {
-                if (window[callbackName]) {
-                    console.log('⏰ JSONP request timed out');
-                    delete window[callbackName];
-                    try {
-                        document.head.removeChild(script);
-                    } catch (e) {
-                        console.log('Script already removed');
-                    }
-                    reject(new Error('Request timed out'));
-                }
-            }, 10000);
         });
     } catch (error) {
         console.log('🚨 Raw error:', error);
