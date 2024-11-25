@@ -10,6 +10,7 @@
 - Click Fraud Prevention Plan.md
 - src/recaptcha.js (if exists)
 - src/recaptcha-config.js (if exists)
+- src/validation.js (contains reCAPTCHA code)
 
 ## Configuration Files
 - .github/workflows/deploy.yml (since we're using Cloudflare)
