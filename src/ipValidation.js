@@ -20,13 +20,14 @@ async function fetchWithRetry(url) {
     try {
         console.log(`🔄 Fetching ${url}`);
         
-        // Use JSONP directly instead of fetch
+        // Use JSONP directly
         return new Promise((resolve, reject) => {
             // Create unique callback name
             const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
             
             // Add callback to window
             window[callbackName] = (data) => {
+                console.log('🔄 JSONP response received:', data);
                 // Clean up
                 delete window[callbackName];
                 document.head.removeChild(script);
@@ -35,41 +36,60 @@ async function fetchWithRetry(url) {
             
             // Create script element
             const script = document.createElement('script');
-            script.src = `${url}&callback=${callbackName}`;
-            script.onerror = () => {
+            // Add callback parameter to URL
+            const jsonpUrl = `${url}&callback=${callbackName}`;
+            console.log('🔄 JSONP URL:', jsonpUrl);
+            script.src = jsonpUrl;
+            
+            script.onerror = (error) => {
+                console.log('🚨 JSONP script error:', error);
                 // Clean up
                 delete window[callbackName];
                 document.head.removeChild(script);
-                reject(new Error('JSONP request failed'));
+                
+                // Check if this was blocked by adblocker
+                const isAdblocker = 
+                    error.type === 'error' || 
+                    document.querySelector('script[src*="proxycheck.io"]') === null;
+                
+                if (isAdblocker) {
+                    console.log('🛑 ADBLOCKER DETECTED via JSONP!');
+                    const err = new Error('ADBLOCKER_DETECTED');
+                    err.isAdblocker = true;
+                    reject(err);
+                } else {
+                    reject(new Error('JSONP request failed'));
+                }
             };
             
             // Add script to page
             document.head.appendChild(script);
         });
     } catch (error) {
-        // Log the error details
         console.log('🚨 Raw error:', error);
         console.log('🔍 Error type:', error.name);
         console.log('📝 Error message:', error.message);
 
         // Check for adblocker
+        if (error.isAdblocker) {
+            throw error; // Re-throw adblocker errors
+        }
+
+        // For other errors, check if they might be adblocker-related
         const errorText = error.toString().toLowerCase();
         const messageText = error.message.toLowerCase();
         const stackText = error.stack?.toLowerCase() || '';
 
         const isAdblockerError = 
-            errorText.includes('err_blocked_by_adblocker') ||
-            messageText.includes('err_blocked_by_adblocker') ||
-            stackText.includes('err_blocked_by_adblocker') ||
-            // Also check for script blocking
-            messageText.includes('script error') ||
-            messageText.includes('failed to load');
+            errorText.includes('err_blocked') ||
+            messageText.includes('failed to load') ||
+            stackText.includes('proxycheck.io');
 
         if (isAdblockerError) {
             console.log('🛑 ADBLOCKER DETECTED!');
-            const error = new Error('ADBLOCKER_DETECTED');
-            error.isAdblocker = true;
-            throw error;
+            const err = new Error('ADBLOCKER_DETECTED');
+            err.isAdblocker = true;
+            throw err;
         }
 
         throw error;
