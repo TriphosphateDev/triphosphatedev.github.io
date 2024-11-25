@@ -66,40 +66,33 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // Try a direct fetch first
-                console.log('🔄 Trying direct fetch...');
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(resolve)
-                    .catch(fetchError => {
-                        console.log('❌ Direct fetch failed:', fetchError);
-                        
-                        // More specific adblocker detection
-                        const errorText = (fetchError.message || '').toLowerCase();
-                        const isLikelyAdblocker = 
-                            // Check for common adblocker error messages
-                            errorText.includes('blocked by client') ||
-                            errorText.includes('network error') && document.documentElement.classList.contains('adblock') ||
-                            errorText.includes('failed to fetch') && !navigator.onLine ||
-                            // Check if script was specifically blocked (not just failed to load)
-                            !document.querySelector('script[src*="proxycheck.io"]') && 
-                            document.querySelector('script[src*="google-analytics.com"]'); // If GA loads but proxycheck doesn't
-                        
-                        if (isLikelyAdblocker) {
-                            console.log('🛑 ADBLOCKER DETECTED!');
-                            const err = new Error('ADBLOCKER_DETECTED');
-                            err.isAdblocker = true;
-                            reject(err);
-                        } else {
-                            // If not an adblocker, pass through the original error
-                            reject(new Error('API_ERROR'));
-                        }
-                    });
+                // Check if script was blocked by adblocker
+                const isAdblockerBlock = 
+                    !document.querySelector('script[src*="proxycheck.io"]') || // Script was removed
+                    error.type === 'error' && !document.body.contains(script); // Script was blocked
+                
+                if (isAdblockerBlock) {
+                    console.log('🛑 ADBLOCKER DETECTED via script blocking!');
+                    const err = new Error('ADBLOCKER_DETECTED');
+                    err.isAdblocker = true;
+                    reject(err);
+                } else {
+                    // Try alternate JSONP URL format
+                    console.log('🔄 Trying alternate JSONP format...');
+                    const altParams = new URLSearchParams(params);
+                    altParams.set('format', 'jsonp');
+                    const altUrl = `${baseUrl}?${altParams.toString()}&callback=${callbackName}`;
+                    
+                    const newScript = document.createElement('script');
+                    newScript.src = altUrl;
+                    newScript.onerror = () => {
+                        console.log('❌ Alternate JSONP format failed');
+                        const err = new Error('ADBLOCKER_DETECTED');
+                        err.isAdblocker = true;
+                        reject(err);
+                    };
+                    document.head.appendChild(newScript);
+                }
             };
             
             // Add script to page
@@ -108,7 +101,9 @@ async function fetchWithRetry(url) {
                 console.log('📝 JSONP script added successfully');
             } catch (error) {
                 console.log('❌ Failed to add JSONP script:', error);
-                reject(error);
+                const err = new Error('ADBLOCKER_DETECTED');
+                err.isAdblocker = true;
+                reject(err);
             }
             
             // Set a timeout for the request
