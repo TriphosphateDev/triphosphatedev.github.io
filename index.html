@@ -78,23 +78,22 @@
             console.log('Config imported:', config);
             
             console.log('Attempting to import validation...');
-            const { validateIPAndRedirect } = await import('./src/ipValidation.js');
+            const { validateIPAndRedirect, initializeSecurityButton } = await import('./src/ipValidation.js');
             console.log('Validation imported');
             
             console.log('Attempting to import monitoring...');
             const { trackIPCheck } = await import('./src/monitoring.js');
             console.log('Monitoring imported');
             
-            // Make modules globally available
+            // Make modules globally available if needed
             window.CONFIG = config;
             window.validateIPAndRedirect = validateIPAndRedirect;
             window.trackIPCheck = trackIPCheck;
             
             console.log('Core modules loaded successfully');
             
-            // Run validation immediately after initialization
-            console.log('Running IP validation...');
-            await validateIPAndRedirect();
+            // Initialize button after security checks
+            await initializeSecurityButton('consultButton', './consultation.html');
             
         } catch (error) {
             console.error('Failed to initialize core modules:', error.message);
@@ -585,12 +584,6 @@
                 }
             }, 1000);
         }
-    </script>
-    <script type="module">
-        import { initializeSecurityButton } from './src/ipValidation.js';
-        
-        // Initialize button after security checks
-        await initializeSecurityButton('consultButton', './consultation.html');
     </script>
 </body>
 </html>

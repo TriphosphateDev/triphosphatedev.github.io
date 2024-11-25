@@ -119,14 +119,22 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
             createButton(buttonId, defaultDestination);
             return true;
         } catch (error) {
+            console.log('🔍 Checking error:', error);
+            
             // Check for adblocker more thoroughly
-            if (error.isAdblocker || 
+            const isAdblocker = 
+                error.isAdblocker || 
                 error.message === 'ADBLOCKER_DETECTED' ||
-                (error.message === 'Failed to fetch' && error.stack?.includes('proxycheck.io'))) {
-                console.log('🚫 Adblocker detected');
+                error.toString().toLowerCase().includes('err_blocked_by_adblocker') ||
+                (error.message === 'Failed to fetch' && 
+                 error.stack?.toLowerCase().includes('proxycheck.io'));
+
+            if (isAdblocker) {
+                console.log('🚫 Adblocker detected, creating adblocker button');
                 createButton(buttonId, './adblocker.html');
                 return false;
             }
+            
             // Don't create button on other errors
             console.log('❌ Security check failed');
             return false;
