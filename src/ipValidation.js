@@ -33,7 +33,12 @@ async function fetchWithRetry(url, retryCount = 0) {
         return data;
     } catch (error) {
         console.error('Fetch error:', error);
-        if (error.message.includes('ERR_BLOCKED_BY_ADBLOCKER')) {
+        // Check error message and error.toString() for adblocker detection
+        const errorString = error.toString().toLowerCase();
+        const errorMessage = error.message.toLowerCase();
+        
+        if (errorString.includes('err_blocked_by_adblocker') || 
+            errorMessage.includes('err_blocked_by_adblocker')) {
             console.log('🚫 Adblocker detected! Preparing to redirect...');
             // Track adblocker detection
             if (typeof gtag === 'function') {
