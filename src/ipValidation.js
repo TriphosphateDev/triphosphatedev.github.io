@@ -39,8 +39,8 @@ async function fetchWithRetry(url, retryCount = 0) {
     }
 }
 
-import { trackIPCheck } from '/repository-name/src/monitoring.js';
-import { config } from '/repository-name/src/config.js';
+import { trackIPCheck } from '/triphosphatedev/src/monitoring.js';
+import { config } from '/triphosphatedev/src/config.js';
 
 export async function validateIP(ip) {
     const API_KEY = config.PROXYCHECK_API_KEY || config.PROXYCHECK_PUBLIC_KEY;
