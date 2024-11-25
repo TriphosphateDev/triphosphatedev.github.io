@@ -103,6 +103,64 @@ export async function validateIPWithCache(ip) {
 // Add new function for early validation
 export async function initializeSecurityButton(buttonId, defaultDestination) {
     try {
+        console.log('🔍 Starting security button initialization...');
+        const ip = await getUserIP();
+        console.log('📍 Got IP:', ip);
+        
+        try {
+            const validation = await validateIP(ip);
+            if (!validation.isValid) {
+                console.log('❌ Invalid IP detected');
+                createButton(buttonId, './blocked.html');
+                return false;
+            }
+            
+            console.log('✅ IP validation passed');
+            createButton(buttonId, defaultDestination);
+            return true;
+        } catch (error) {
+            // Check for adblocker more thoroughly
+            if (error.isAdblocker || 
+                error.message === 'ADBLOCKER_DETECTED' ||
+                (error.message === 'Failed to fetch' && error.stack?.includes('proxycheck.io'))) {
+                console.log('🚫 Adblocker detected');
+                createButton(buttonId, './adblocker.html');
+                return false;
+            }
+            // Don't create button on other errors
+            console.log('❌ Security check failed');
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Security initialization error:', error);
+        // Don't create button on errors
+        return false;
+    }
+}
+
+function createButton(buttonId, destination) {
+    const button = document.getElementById(buttonId);
+    if (!button) {
+        console.error('Button element not found:', buttonId);
+        return;
+    }
+    
+    // Update button properties
+    button.style.display = 'inline-block';
+    button.disabled = false;
+    button.textContent = destination.includes('adblocker') ? 'Please Disable Adblocker' :
+                        destination.includes('blocked') ? 'Access Denied' :
+                        'Get Your Free Consultation';
+    
+    button.onclick = (e) => {
+        e.preventDefault();
+        window.location.href = destination;
+    };
+}
+
+// Add validateIPAndRedirect export
+export async function validateIPAndRedirect() {
+    try {
         console.log('🔍 Starting IP validation...');
         const ip = await getUserIP();
         console.log('📍 Got IP:', ip);
@@ -118,49 +176,30 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
             }));
 
             if (!validation.isValid) {
-                console.log('❌ Invalid IP detected, setting blocked destination');
-                createButton(buttonId, './blocked.html');
+                console.log('❌ Invalid IP detected');
+                window.location.replace('./blocked.html');
                 return false;
             }
             
-            console.log('✅ IP validation passed, setting default destination');
-            createButton(buttonId, defaultDestination);
             return true;
         } catch (error) {
-            console.log('🔍 Checking error type:', error.message);
-            if (error.message === 'ADBLOCKER_DETECTED') {
-                console.log('🚫 Adblocker detected, setting adblocker destination');
-                createButton(buttonId, './adblocker.html');
+            if (error.isAdblocker || error.message === 'ADBLOCKER_DETECTED') {
+                console.log('🚫 Adblocker detected');
+                window.location.replace('./adblocker.html');
                 return false;
             }
             throw error;
         }
     } catch (error) {
         console.error('❌ IP validation error:', error);
-        if (error.message === 'ADBLOCKER_DETECTED') {
+        // Check for adblocker more thoroughly
+        if (error.isAdblocker || 
+            error.message === 'ADBLOCKER_DETECTED' ||
+            (error.message === 'Failed to fetch' && error.stack?.includes('proxycheck.io'))) {
             console.log('🚫 Adblocker detection handled at top level');
-            createButton(buttonId, './adblocker.html');
+            window.location.replace('./adblocker.html');
             return false;
         }
-        // On other errors, create button with default destination
-        console.log('⚠️ Other error detected, using default destination');
-        createButton(buttonId, defaultDestination);
-        return true;
+        return false; // Don't allow access on errors
     }
-}
-
-function createButton(buttonId, destination) {
-    const button = document.getElementById(buttonId);
-    if (!button) {
-        console.error('Button element not found:', buttonId);
-        return;
-    }
-    
-    // Update button properties
-    button.style.display = 'inline-block'; // Show the button
-    button.disabled = false; // Enable the button
-    button.onclick = (e) => {
-        e.preventDefault();
-        window.location.href = destination;
-    };
 } 

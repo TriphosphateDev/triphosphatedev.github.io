@@ -569,35 +569,22 @@
     <script>
         // Initialize countdown
         let countdown = 3;
-        const consultationBtn = document.getElementById('consultationBtn');
-        const btnText = document.getElementById('btnText');
+        const consultationBtn = document.getElementById('consultButton');
         
-        // Start countdown
-        const timer = setInterval(() => {
-            countdown--;
-            btnText.textContent = `Checking Security... (${countdown})`;
+        if (consultationBtn) {
+            consultationBtn.textContent = `Checking Security... (${countdown})`;
             
-            if (countdown <= 0) {
-                clearInterval(timer);
-                // Enable button and update based on validation result
-                consultationBtn.style.opacity = '1';
-                consultationBtn.style.cursor = 'pointer';
-                consultationBtn.disabled = false;
+            // Start countdown
+            const timer = setInterval(() => {
+                countdown--;
+                consultationBtn.textContent = `Checking Security... (${countdown})`;
                 
-                // Check validation result from sessionStorage
-                const validation = JSON.parse(sessionStorage.getItem('ipValidation') || '{}');
-                if (validation.result?.isValid === false) {
-                    btnText.textContent = 'Access Denied';
-                    consultationBtn.onclick = () => window.location.href = './blocked.html';
-                } else if (document.querySelector('script[src*="proxycheck.io"]')) {
-                    btnText.textContent = 'Please Disable Adblocker';
-                    consultationBtn.onclick = () => window.location.href = './adblocker.html';
-                } else {
-                    btnText.textContent = 'Book Free Consultation';
-                    consultationBtn.onclick = () => window.location.href = './consultation.html';
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    // Security check will handle the button state
                 }
-            }
-        }, 1000);
+            }, 1000);
+        }
     </script>
     <script type="module">
         import { initializeSecurityButton } from './src/ipValidation.js';
