@@ -84,33 +84,11 @@ async function fetchWithRetry(url) {
                 
                 // Only check for adblocker if we haven't received a response
                 if (!responseReceived) {
-                    // Give the script a moment to load before checking
-                    setTimeout(() => {
-                        // More specific adblocker detection
-                        const isAdblockerBlock = 
-                            // Check if script was blocked immediately
-                            (!document.querySelector('script[src*="proxycheck.io"]') &&
-                             error.type === 'error') ||
-                            // Or if it was removed by an adblocker
-                            (document.querySelector('script[src*="proxycheck.io"]') === null &&
-                             document.querySelector('script[src*="google-analytics.com"]')); // GA usually loads
-                        
-                        console.log('🔍 Adblocker check:', {
-                            isAdblockerBlock,
-                            scriptFound: !!document.querySelector('script[src*="proxycheck.io"]'),
-                            gaScriptFound: !!document.querySelector('script[src*="google-analytics.com"]'),
-                            errorType: error.type,
-                            responseReceived
-                        });
-                        
-                        if (isAdblockerBlock) {
-                            console.log('🛑 ADBLOCKER DETECTED via script blocking!');
-                            const err = new Error('ADBLOCKER_DETECTED');
-                            err.isAdblocker = true;
-                            reject(err);
-                        } else {
-                            console.log('✅ Not an adblocker, proceeding with data');
-                            // Try to resolve with empty success response
+                    // Try to fetch directly first
+                    fetch(url, { mode: 'no-cors' })
+                        .then(() => {
+                            console.log('✅ Direct fetch succeeded, not an adblocker');
+                            // If direct fetch works, it's not an adblocker
                             resolve({
                                 status: "ok",
                                 [ip]: {
@@ -119,8 +97,36 @@ async function fetchWithRetry(url) {
                                     type: "residential"
                                 }
                             });
-                        }
-                    }, 500); // Give it 500ms to load
+                        })
+                        .catch(fetchError => {
+                            console.log('❌ Direct fetch failed:', fetchError);
+                            
+                            // Check if it's really an adblocker
+                            const isAdblockerBlock = 
+                                // Check if other scripts load but proxycheck doesn't
+                                document.querySelector('script[src*="google-analytics.com"]') && 
+                                !document.querySelector('script[src*="proxycheck.io"]') ||
+                                // Or if the error is explicitly about blocking
+                                fetchError.message.includes('blocked');
+                            
+                            if (isAdblockerBlock) {
+                                console.log('🛑 ADBLOCKER DETECTED!');
+                                const err = new Error('ADBLOCKER_DETECTED');
+                                err.isAdblocker = true;
+                                reject(err);
+                            } else {
+                                // Not an adblocker, just a network error
+                                console.log('✅ Not an adblocker, network error');
+                                resolve({
+                                    status: "ok",
+                                    [ip]: {
+                                        proxy: "no",
+                                        risk: 0,
+                                        type: "residential"
+                                    }
+                                });
+                            }
+                        });
                 }
             };
             
