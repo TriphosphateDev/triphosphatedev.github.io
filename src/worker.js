@@ -1,3 +1,39 @@
+// Add the sendEmail function
+async function sendEmail({ to, subject, formData }) {
+  return fetch('https://api.mailchannels.net/tx/v1/send', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      personalizations: [
+        {
+          to: [{ email: to }],
+        },
+      ],
+      from: {
+        email: 'noreply@tripmixes.com',
+        name: 'Consultation Form',
+      },
+      subject: subject,
+      content: [
+        {
+          type: 'text/plain',
+          value: `
+New consultation request:
+Name: ${formData.nameOrArtistName}
+Email: ${formData.email}
+Phone: ${formData.phone || 'Not provided'}
+Discord: ${formData.discord || 'Not provided'}
+Contact Preference: ${formData.contactPreference}
+Project Description: ${formData.projectDescription}
+          `.trim()
+        },
+      ],
+    }),
+  });
+}
+
 export default {
   async fetch(request, env) {
     // Handle CORS preflight
