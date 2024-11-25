@@ -31,10 +31,19 @@ async function fetchWithRetry(url) {
             window[callbackName] = (data) => {
                 console.log('🔄 JSONP response received:', data);
                 responseReceived = true;
+                
+                // Clean up
                 delete window[callbackName];
                 if (document.head.contains(script)) {
                     document.head.removeChild(script);
                 }
+                
+                // Clear countdown timer if it exists
+                if (window.countdownTimer) {
+                    clearInterval(window.countdownTimer);
+                    window.countdownTimer = null;
+                }
+                
                 resolve(data);
             };
             
@@ -300,24 +309,27 @@ function createButton(buttonId, destination) {
     // Clear any existing countdown
     if (window.countdownTimer) {
         clearInterval(window.countdownTimer);
-        window.countdownTimer = null; // Prevent multiple clears
+        window.countdownTimer = null;
     }
     
-    // Update button properties with a small delay to ensure smooth transition
+    console.log('🔄 Creating button with destination:', destination);
+    
+    // Update button properties after a longer delay to ensure JSONP completed
     setTimeout(() => {
         button.className = 'btn';
         button.style.opacity = '1';
         button.style.cursor = 'pointer';
         button.disabled = false;
         
-        // Always show "Get Your Free Consultation" regardless of destination
+        // Always show "Get Your Free Consultation"
         button.textContent = 'Get Your Free Consultation';
         
         button.onclick = (e) => {
             e.preventDefault();
+            console.log('🔄 Button clicked, navigating to:', destination);
             window.location.href = destination;
         };
-    }, 100); // Small delay for smoother transition
+    }, 500); // Increased delay to 500ms
 }
 
 // Add validateIPAndRedirect export

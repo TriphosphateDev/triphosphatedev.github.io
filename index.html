@@ -567,7 +567,7 @@
     </script>
     <script>
         // Initialize countdown and button state
-        let countdown = 3;
+        let countdown = 5;
         const consultButton = document.getElementById('consultButton');
         
         if (consultButton) {
@@ -584,9 +584,8 @@
                 if (countdown > 0) {
                     consultButton.textContent = `Checking Security... (${countdown})`;
                 } else {
-                    clearInterval(window.countdownTimer);
-                    // The security check should have completed by now
-                    // If not, createButton will handle it when it does complete
+                    // Don't clear the interval here - let createButton handle it
+                    consultButton.textContent = 'Checking Security...';
                 }
             }, 1000);
         }
