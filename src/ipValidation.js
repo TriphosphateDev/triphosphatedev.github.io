@@ -88,7 +88,6 @@ async function fetchWithRetry(url) {
                     fetch(url, { mode: 'no-cors' })
                         .then(() => {
                             console.log('✅ Direct fetch succeeded, not an adblocker');
-                            // If direct fetch works, it's not an adblocker
                             resolve({
                                 status: "ok",
                                 [ip]: {
@@ -101,13 +100,11 @@ async function fetchWithRetry(url) {
                         .catch(fetchError => {
                             console.log('❌ Direct fetch failed:', fetchError);
                             
-                            // Check if it's really an adblocker
+                            // Only look for specific adblocker terms
+                            const errorText = (fetchError.message || '').toLowerCase();
                             const isAdblockerBlock = 
-                                // Check if other scripts load but proxycheck doesn't
-                                document.querySelector('script[src*="google-analytics.com"]') && 
-                                !document.querySelector('script[src*="proxycheck.io"]') ||
-                                // Or if the error is explicitly about blocking
-                                fetchError.message.includes('blocked');
+                                errorText.includes('ad_blocker') ||
+                                errorText.includes('adblocker');
                             
                             if (isAdblockerBlock) {
                                 console.log('🛑 ADBLOCKER DETECTED!');
@@ -116,7 +113,7 @@ async function fetchWithRetry(url) {
                                 reject(err);
                             } else {
                                 // Not an adblocker, just a network error
-                                console.log('✅ Not an adblocker, network error');
+                                console.log('✅ Not an adblocker, proceeding with data');
                                 resolve({
                                     status: "ok",
                                     [ip]: {
