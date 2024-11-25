@@ -158,7 +158,9 @@ export async function validateIP(ip) {
         key: API_KEY,
         vpn: '1',
         risk: '1',
-        asn: '1'
+        asn: '1',
+        days: '7',    // Cache results for 7 days
+        detailed: '1'  // Get detailed response
     });
     
     // Construct base URL without query parameters
@@ -183,7 +185,7 @@ export async function validateIP(ip) {
         throw new Error('Invalid IP address or no data returned');
     }
 
-    console.log('🔍 IP data details:', ipData);
+    console.log('🔍 Full IP data details:', ipData);
 
     // Parse response according to API docs
     const result = {
@@ -195,11 +197,17 @@ export async function validateIP(ip) {
         fraudScore: ipData.risk || 0,
         isProxy: ipData.proxy === "yes",
         isVpn: ipData.type?.toLowerCase() === "vpn",
+        // Include all available fields
         country: ipData.country,
-        isp: ipData.isp,
+        isp: ipData.provider || ipData.organisation,
         asn: ipData.asn,
         type: ipData.type,
-        provider: ipData.provider
+        provider: ipData.provider,
+        organisation: ipData.organisation,
+        region: ipData.region,
+        city: ipData.city,
+        range: ipData.range,
+        devices: ipData.devices
     };
 
     // Log detailed validation results
@@ -207,14 +215,16 @@ export async function validateIP(ip) {
         proxyStatus: ipData.proxy,
         connectionType: ipData.type,
         riskScore: ipData.risk,
+        provider: ipData.provider,
+        organisation: ipData.organisation,
         isValid: result.isValid,
         reason: result.isValid ? 'IP Passed' : 
-                result.isProxy ? 'Proxy Detected' :
-                result.isVpn ? 'VPN Detected' :
-                'High Risk Score'
+                result.isProxy ? `Proxy Detected (${ipData.provider})` :
+                result.isVpn ? `VPN Detected (${ipData.provider})` :
+                `High Risk Score (${ipData.risk})`
     });
 
-    // Track the result
+    // Track the result with more details
     trackIPCheck(result);
     console.log('Validation result:', result);
 
