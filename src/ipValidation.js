@@ -35,14 +35,16 @@ async function fetchWithRetry(url, retryCount = 0) {
         console.error('Fetch error:', error);
         if (error.message.includes('ERR_BLOCKED_BY_ADBLOCKER')) {
             // Track adblocker detection
-            gtag('event', 'adblocker_detected', {
-                'event_category': 'Security',
-                'event_label': 'Initial Check'
-            });
+            if (typeof gtag === 'function') {
+                gtag('event', 'adblocker_detected', {
+                    'event_category': 'Security',
+                    'event_label': 'Initial Check'
+                });
+            }
             
             // Redirect to adblocker page
             window.location.href = '/adblocker.html';
-            return false;
+            throw new Error('ADBLOCKER_DETECTED');
         }
         
         if (retryCount < MAX_RETRIES) {
@@ -107,27 +109,38 @@ export async function validateIPAndRedirect() {
         console.log('Starting IP validation...');
         const ip = await getUserIP();
         console.log('Got IP:', ip);
-        const validation = await validateIP(ip);
-        console.log('Validation result:', validation);
         
-        // Store validation result
-        sessionStorage.setItem('ipValidation', JSON.stringify({
-            ip,
-            result: validation,
-            timestamp: Date.now()
-        }));
+        try {
+            const validation = await validateIP(ip);
+            console.log('Validation result:', validation);
+            
+            // Store validation result
+            sessionStorage.setItem('ipValidation', JSON.stringify({
+                ip,
+                result: validation,
+                timestamp: Date.now()
+            }));
 
-        if (!validation.isValid) {
-            console.log('Invalid IP detected, redirecting...');
-            window.location.href = '/blocked.html';
-            return false;
+            if (!validation.isValid) {
+                console.log('Invalid IP detected, redirecting...');
+                window.location.href = '/blocked.html';
+                return false;
+            }
+            
+            console.log('IP validation passed');
+            return true;
+        } catch (error) {
+            if (error.message === 'ADBLOCKER_DETECTED') {
+                return false;  // Stop execution after adblocker redirect
+            }
+            throw error;  // Re-throw other errors
         }
-        
-        console.log('IP validation passed');
-        return true;
     } catch (error) {
         console.error('IP validation error:', error);
-        // Allow access on error for better UX
+        if (error.message === 'ADBLOCKER_DETECTED') {
+            return false;  // Stop execution after adblocker redirect
+        }
+        // Allow access on other errors for better UX
         return true;
     }
 } 
