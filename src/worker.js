@@ -1,12 +1,20 @@
 export default {
   async fetch(request, env) {
-    // Handle CORS preflight requests
+    // Get the URL path
+    const url = new URL(request.url);
+    
+    // Only handle /submit-form requests
+    if (!url.pathname.startsWith('/submit-form')) {
+      return new Response('Not found', { status: 404 });
+    }
+
+    // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type',
+          'Access-Control-Allow-Headers': 'Content-Type, Accept',
         },
       });
     }

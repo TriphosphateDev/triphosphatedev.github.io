@@ -7,7 +7,7 @@ NOTIFICATION_EMAIL = "triphosphatelp@gmail.com"
 
 # Routes
 [[routes]]
-pattern = "tripmixes.com/consultation"
+pattern = "tripmixes.com/submit-form/*"
 zone_id = "745313294601ce924f0e49745603a937"  # Get this from Cloudflare dashboard
 
 # Remove the triggers section if you don't need cron jobs
