@@ -22,12 +22,15 @@ async function fetchWithRetry(url) {
         
         return new Promise((resolve, reject) => {
             const callbackName = 'proxyCheckCallback_' + Math.random().toString(36).substr(2, 9);
-            let responseReceived = false; // Add flag to track successful response
+            let responseReceived = false;
             
-            // Add callback to window BEFORE creating script
+            // Extract IP from URL for use in response
+            const ipMatch = url.match(/\/v2\/([^?]+)/);
+            const ip = ipMatch ? ipMatch[1] : null;
+            
             window[callbackName] = (data) => {
                 console.log('🔄 JSONP response received:', data);
-                responseReceived = true; // Set flag on successful response
+                responseReceived = true;
                 delete window[callbackName];
                 if (document.head.contains(script)) {
                     document.head.removeChild(script);
@@ -58,7 +61,6 @@ async function fetchWithRetry(url) {
             script.src = jsonpUrl;
             
             script.onerror = (error) => {
-                // If we already got a response, ignore the error
                 if (responseReceived) {
                     console.log('✅ Ignoring script error - response already received');
                     return;
@@ -74,7 +76,6 @@ async function fetchWithRetry(url) {
                     responseReceived
                 });
 
-                // Clean up
                 delete window[callbackName];
                 try {
                     document.head.removeChild(script);
@@ -82,9 +83,7 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // Only check for adblocker if we haven't received a response
                 if (!responseReceived) {
-                    // Try to fetch directly first
                     fetch(url, { mode: 'no-cors' })
                         .then(() => {
                             console.log('✅ Direct fetch succeeded, not an adblocker');
@@ -100,7 +99,6 @@ async function fetchWithRetry(url) {
                         .catch(fetchError => {
                             console.log('❌ Direct fetch failed:', fetchError);
                             
-                            // Only look for specific adblocker terms
                             const errorText = (fetchError.message || '').toLowerCase();
                             const isAdblockerBlock = 
                                 errorText.includes('ad_blocker') ||
@@ -112,7 +110,6 @@ async function fetchWithRetry(url) {
                                 err.isAdblocker = true;
                                 reject(err);
                             } else {
-                                // Not an adblocker, just a network error
                                 console.log('✅ Not an adblocker, proceeding with data');
                                 resolve({
                                     status: "ok",
@@ -127,7 +124,6 @@ async function fetchWithRetry(url) {
                 }
             };
             
-            // Add script to page
             try {
                 document.head.appendChild(script);
                 console.log('📝 JSONP script added successfully');
