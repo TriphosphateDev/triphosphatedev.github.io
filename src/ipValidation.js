@@ -50,7 +50,10 @@ async function fetchWithRetry(url, retryCount = 0) {
             }
             
             console.log('🔄 Redirecting to adblocker page...');
-            window.location.href = '/adblocker.html';
+            // Use relative path for GitHub Pages compatibility
+            const currentPath = window.location.pathname;
+            const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+            window.location.href = `${basePath}adblocker.html`;
             throw new Error('ADBLOCKER_DETECTED');
         }
         
