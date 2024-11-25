@@ -121,31 +121,53 @@ export async function initializeSecurityButton(buttonId, defaultDestination) {
         } catch (error) {
             console.log('🔍 Checking error:', error);
             
-            // More aggressive adblocker detection
-            const errorText = error.toString().toLowerCase();
-            const messageText = error.message.toLowerCase();
-            const stackText = error.stack?.toLowerCase() || '';
+            // More comprehensive error detection for different browsers
+            const errorText = (error.toString() || '').toLowerCase();
+            const messageText = (error.message || '').toLowerCase();
+            const stackText = (error.stack || '').toLowerCase();
             
-            const isAdblocker = 
+            // Check for any indication of blocked requests or network failures
+            const isBlocked = 
                 error.isAdblocker || 
-                messageText === 'failed to fetch' ||  // Common adblocker error
-                errorText.includes('err_blocked_by_adblocker') ||
-                stackText.includes('proxycheck.io');  // If proxycheck.io is in stack, likely blocked
+                messageText === 'failed to fetch' ||
+                errorText.includes('err_blocked') ||
+                errorText.includes('network error') ||
+                stackText.includes('proxycheck.io') ||
+                // Opera specific checks
+                errorText.includes('network_err') ||
+                errorText.includes('failed to complete') ||
+                messageText.includes('network');
 
-            if (isAdblocker) {
-                console.log('🚫 Adblocker detected, creating adblocker button');
+            console.log('🔍 Error analysis:', { errorText, messageText, stackText, isBlocked });
+
+            if (isBlocked) {
+                console.log('🚫 Request blocked, creating adblocker button');
                 createButton(buttonId, './adblocker.html');
                 return false;
             }
             
-            console.log('❌ Security check failed');
-            createButton(buttonId, './adblocker.html'); // Default to adblocker button
+            // Fallback for any other errors
+            console.log('❌ Security check failed, defaulting to adblocker button');
+            createButton(buttonId, './adblocker.html');
             return false;
         }
     } catch (error) {
         console.error('❌ Security initialization error:', error);
+        // Always create a button, even on errors
         createButton(buttonId, './adblocker.html');
         return false;
+    } finally {
+        // Ensure the countdown is cleared and button is visible
+        if (window.countdownTimer) {
+            clearInterval(window.countdownTimer);
+        }
+        
+        // If no button was created yet, create the adblocker button
+        const button = document.getElementById(buttonId);
+        if (button && button.disabled) {
+            console.log('⚠️ Ensuring button is created');
+            createButton(buttonId, './adblocker.html');
+        }
     }
 }
 
@@ -156,7 +178,7 @@ function createButton(buttonId, destination) {
         return;
     }
     
-    // Clear the countdown interval if it exists
+    // Clear any existing countdown
     if (window.countdownTimer) {
         clearInterval(window.countdownTimer);
     }
