@@ -114,9 +114,10 @@ async function fetchWithRetry(url) {
             jsonpParams.set('key', params.get('key')); // Key must be first
             jsonpParams.set('tag', 'callback');  // Required by ProxyCheck
             jsonpParams.set('callback', callbackName);
+            jsonpParams.set('origin', 'triphosphatedev.github.io'); // Add origin parameter
             // Add remaining parameters
             for (const [key, value] of params.entries()) {
-                if (key !== 'key' && key !== 'tag' && key !== 'callback') {
+                if (key !== 'key' && key !== 'tag' && key !== 'callback' && key !== 'origin') {
                     jsonpParams.set(key, value);
                 }
             }
@@ -150,7 +151,8 @@ export async function validateIP(ip) {
         risk: '1',
         asn: '1',
         days: '7',    // Cache results for 7 days
-        detailed: '1'  // Get detailed response
+        detailed: '1',  // Get detailed response
+        origin: 'triphosphatedev.github.io' // Add origin parameter
     });
     
     // Construct base URL without query parameters
