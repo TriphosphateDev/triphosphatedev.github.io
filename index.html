@@ -446,17 +446,23 @@
             </section>
 
             <nav class="buttons" aria-label="Contact options">
-                <button 
-                    id="consultButton" 
-                    class="btn"
-                    style="opacity: 0.7; cursor: not-allowed;" 
-                    disabled>
-                    Checking Security...
-                </button>
-                <a class="btn" href="mailto:triphosphateLP@gmail.com" 
-                   onclick="validateAndTrackClick(this, event)">Email Direct</a>
-                <a class="btn" href="https://discord.com/channels/@me/Triphosphate/" rel="noopener" 
-                   onclick="validateAndTrackClick(this, event)">Discord Message</a>
+                <a href="consultation.html" 
+                   class="btn" 
+                   id="consultButton"
+                   onclick="gtag_report_conversion(this.href)">
+                    Book a Free Consultation
+                </a>
+                <a class="btn" 
+                   href="mailto:triphosphateLP@gmail.com" 
+                   onclick="gtag_report_conversion(this.href)">
+                    Email Direct
+                </a>
+                <a class="btn" 
+                   href="https://discord.com/channels/@me/Triphosphate/" 
+                   rel="noopener" 
+                   onclick="gtag_report_conversion(this.href)">
+                    Discord Message
+                </a>
                 <a class="btn" href="faq.html">FAQ</a>
             </nav>
 
@@ -524,31 +530,6 @@
     <script type="module">
         import { validateAndTrackClick } from './src/validation.js';
         window.validateAndTrackClick = validateAndTrackClick;
-    </script>
-    <script>
-        // Initialize countdown and button state
-        let countdown = 5;
-        const consultButton = document.getElementById('consultButton');
-        
-        if (consultButton) {
-            // Set initial state
-            consultButton.className = 'btn';
-            consultButton.style.opacity = '0.7';
-            consultButton.style.cursor = 'not-allowed';
-            consultButton.disabled = true;
-            consultButton.textContent = `Checking Security... (${countdown})`;
-            
-            // Store timer in window so it can be cleared by createButton
-            window.countdownTimer = setInterval(() => {
-                countdown--;
-                if (countdown > 0) {
-                    consultButton.textContent = `Checking Security... (${countdown})`;
-                } else {
-                    // Don't clear the interval here - let createButton handle it
-                    consultButton.textContent = 'Checking Security...';
-                }
-            }, 1000);
-        }
     </script>
     <script type="module">
         import { config } from './src/config.js';
