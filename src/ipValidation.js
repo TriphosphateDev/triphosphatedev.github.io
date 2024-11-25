@@ -16,14 +16,14 @@ export async function getUserIP() {
     return data.ip;
 }
 
-async function fetchWithRetry(url, retryCount = 0) {
+async function fetchWithRetry(url) {
     try {
-        console.log(`🔄 Attempt ${retryCount + 1}: Fetching ${url}`);
+        console.log(`🔄 Fetching ${url}`);
         const response = await fetch(url);
         const data = await response.json();
         return data;
     } catch (error) {
-        // Log the raw error first
+        // Log the error details
         console.log('🚨 Raw error:', error);
         console.log('🔍 Error type:', error.name);
         console.log('📝 Error message:', error.message);
@@ -38,18 +38,10 @@ async function fetchWithRetry(url, retryCount = 0) {
 
         if (isAdblockerError) {
             console.log('🛑 ADBLOCKER DETECTED!');
-            // Don't retry, throw special error
             throw new Error('ADBLOCKER_DETECTED');
         }
 
-        // Only retry if it's not an adblocker error
-        if (retryCount < MAX_RETRIES) {
-            const delay = INITIAL_RETRY_DELAY * Math.pow(2, retryCount);
-            console.log(`⏳ Waiting ${delay}ms before retry ${retryCount + 1}/${MAX_RETRIES}`);
-            await new Promise(resolve => setTimeout(resolve, delay));
-            return fetchWithRetry(url, retryCount + 1);
-        }
-
+        // For any other error, just throw it
         throw error;
     }
 }
