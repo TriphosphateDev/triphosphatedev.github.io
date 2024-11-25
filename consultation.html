@@ -194,53 +194,6 @@
         document.addEventListener('scroll', () => userInteracted = true);
     </script>
 
-    <!-- Form submission handling -->
-    <script type="module">
-        import { config } from './src/config.js';
-        import { validateIPWithCache } from './src/ipValidation.js';
-
-        document.getElementById('consultationForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!userInteracted) {
-                alert('Please interact with the page before submitting');
-                return;
-            }
-
-            try {
-                // Get reCAPTCHA token using config key
-                const token = await grecaptcha.execute(config.RECAPTCHA_SITE_KEY, {action: 'submit'});
-                document.getElementById('recaptchaResponse').value = token;
-
-                // Use new validation with retry and caching
-                const ipValidation = await validateIPWithCache(document.getElementById('userIP').value);
-
-                if (!ipValidation.isValid) {
-                    alert('Access blocked: VPN or suspicious activity detected');
-                    return;
-                }
-
-                // Submit form data
-                const formData = new FormData(e.target);
-                const response = await fetch('https://script.google.com/macros/s/AKfycbx9P_NPnYmMaOBD6AFbbCDE6H3T4fR43GhbE0gUhlsTyemjqX-ku62o8VzOVepeDjnE7Q/exec', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === 'success') {
-                    window.location.href = '/success.html';
-                } else {
-                    alert(result.message || 'An error occurred. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            }
-        });
-    </script>
-
     <!-- Initialize core modules first -->
     <script type="module">
         console.log('Starting core initialization...');
@@ -265,7 +218,7 @@
             
             console.log('Core modules loaded successfully');
             
-            // Only run validation after modules are initialized
+            // Run validation immediately after initialization
             console.log('Running IP validation...');
             await validateIPAndRedirect();
             
@@ -273,6 +226,51 @@
             console.error('Failed to initialize core modules:', error.message);
             console.error('Full error:', error);
         }
+    </script>
+
+    <!-- Move form submission handling after module initialization -->
+    <script type="module">
+        // Form submission handling
+        document.getElementById('consultationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!userInteracted) {
+                alert('Please interact with the page before submitting');
+                return;
+            }
+
+            try {
+                // Get reCAPTCHA token using config key
+                const token = await grecaptcha.execute(window.CONFIG.RECAPTCHA_SITE_KEY, {action: 'submit'});
+                document.getElementById('recaptchaResponse').value = token;
+
+                // Use new validation with retry and caching
+                const ipValidation = await validateIPWithCache(document.getElementById('userIP').value);
+
+                if (!ipValidation.isValid) {
+                    alert('Access blocked: VPN or suspicious activity detected');
+                    return;
+                }
+
+                // Submit form data
+                const formData = new FormData(e.target);
+                const response = await fetch(window.CONFIG.GOOGLE_SHEETS_ENDPOINT, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    window.location.href = '/success.html';
+                } else {
+                    alert(result.message || 'An error occurred. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
     </script>
 
     <!-- Move this after module initialization -->
