@@ -11,6 +11,9 @@
 - src/recaptcha.js (if exists)
 - src/recaptcha-config.js (if exists)
 - src/validation.js (contains reCAPTCHA code)
+- src/recaptcha-handler.js (if exists)
+- public/recaptcha.html (if exists)
+- .env (contains reCAPTCHA keys)
 
 ## Configuration Files
 - .github/workflows/deploy.yml (since we're using Cloudflare)
