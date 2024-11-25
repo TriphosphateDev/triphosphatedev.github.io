@@ -31,20 +31,19 @@ async function fetchWithRetry(url) {
             
             // Create a timeout to check if we get a response
             const responseTimeout = setTimeout(() => {
-                // If we haven't received a response, try to fetch directly from the URL
                 if (!responseReceived) {
-                    console.log('⚠️ JSONP timeout - using default high-risk response');
+                    console.log('⚠️ JSONP timeout - using default safe response');
                     resolve({
                         status: "ok",
                         [ip]: {
-                            proxy: "yes",
-                            type: "VPN",
-                            risk: 75,
-                            provider: "Unknown (Failed to Verify)"
+                            proxy: "no",
+                            type: "residential",
+                            risk: 0,
+                            provider: "Unknown (Timeout)"
                         }
                     });
                 }
-            }, 3000); // 3 second timeout
+            }, 3000);
             
             window[callbackName] = (data) => {
                 clearTimeout(responseTimeout);
@@ -58,36 +57,10 @@ async function fetchWithRetry(url) {
                     document.head.removeChild(script);
                 }
                 
-                // Clear countdown timer if it exists
-                if (window.countdownTimer) {
-                    clearInterval(window.countdownTimer);
-                    window.countdownTimer = null;
-                }
-                
                 resolve(data);
             };
             
             const script = document.createElement('script');
-            
-            // Format URL according to ProxyCheck.io JSONP spec
-            const baseUrl = url.split('?')[0];
-            const params = new URLSearchParams(url.split('?')[1]);
-            
-            // Add JSONP specific parameters in the correct order
-            const jsonpParams = new URLSearchParams();
-            jsonpParams.set('key', params.get('key'));
-            jsonpParams.set('tag', 'callback');
-            jsonpParams.set('callback', callbackName);
-            // Add remaining parameters
-            for (const [key, value] of params.entries()) {
-                if (key !== 'key') {
-                    jsonpParams.set(key, value);
-                }
-            }
-            
-            const jsonpUrl = `${baseUrl}?${jsonpParams.toString()}`;
-            console.log('🔄 JSONP URL:', jsonpUrl);
-            script.src = jsonpUrl;
             
             script.onerror = (error) => {
                 clearTimeout(responseTimeout);
@@ -116,11 +89,12 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // Check if this was an adblocker block
+                // More precise adblocker detection
                 const errorText = error.toString().toLowerCase();
                 const isAdblockerBlock = 
                     errorText.includes('ad_blocker') ||
-                    errorText.includes('adblocker');
+                    errorText.includes('adblocker') ||
+                    (error.message === 'Failed to fetch' && error.stack?.includes('adblock'));
                 
                 if (isAdblockerBlock) {
                     console.log('🛑 ADBLOCKER DETECTED!');
@@ -128,14 +102,14 @@ async function fetchWithRetry(url) {
                     err.isAdblocker = true;
                     reject(err);
                 } else {
-                    // If not an adblocker, assume it's a VPN/proxy
-                    console.log('⚠️ JSONP failed but not adblocker, using high-risk response');
+                    // If not an adblocker, assume it's a temporary error
+                    console.log('⚠️ JSONP failed but not adblocker, using safe response');
                     resolve({
                         status: "ok",
                         [ip]: {
-                            proxy: "yes",
-                            type: "VPN",
-                            risk: 75,
+                            proxy: "no",
+                            type: "residential",
+                            risk: 0,
                             provider: "Unknown (Failed to Verify)"
                         }
                     });
