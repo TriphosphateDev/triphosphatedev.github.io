@@ -151,7 +151,7 @@ async function fetchWithRetry(url) {
 }
 
 export async function validateIP(ip) {
-    console.log('🔄 Constructed URL:', `${config.PROXYCHECK_API_ENDPOINT}/${ip}`);
+    console.log('🔄 Starting IP validation for:', ip);
     
     // Build params for JSON request
     const params = new URLSearchParams({
@@ -162,7 +162,7 @@ export async function validateIP(ip) {
         days: '7',
         detailed: '1',
         origin: 'triphosphatedev.github.io',
-        format: 'json'  // Explicitly request JSON format
+        format: 'json'
     });
 
     try {
@@ -170,9 +170,9 @@ export async function validateIP(ip) {
         const response = await fetch(`${config.PROXYCHECK_API_ENDPOINT}/${ip}?${params}`, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json',
-                'Origin': 'triphosphatedev.github.io'
-            }
+                'Accept': 'application/json'
+            },
+            mode: 'cors'  // Explicitly set CORS mode
         });
 
         if (!response.ok) {
@@ -180,20 +180,31 @@ export async function validateIP(ip) {
         }
 
         const data = await response.json();
-        console.log('🔍 API response:', data);
+        console.log('🔍 Raw API response:', data);
 
         // Process the response
         if (data.status === 'ok' && data[ip]) {
             const ipData = data[ip];
+            
+            // Log the detailed data for debugging
+            console.log('🔍 Detailed IP data:', {
+                proxy: ipData.proxy,
+                type: ipData.type,
+                risk: ipData.risk,
+                provider: ipData.provider,
+                country: ipData.country
+            });
+
+            // More precise VPN/Proxy detection
+            const isVPN = ipData.type?.toLowerCase() === "vpn";
+            const isProxy = ipData.proxy === "yes" && ipData.type !== "residential";
+            const highRisk = (ipData.risk || 0) >= 75; // Increased threshold
+
             const result = {
-                isValid: !(
-                    ipData.proxy === "yes" || 
-                    ipData.type?.toLowerCase() === "vpn" || 
-                    (ipData.risk || 0) >= 50
-                ),
+                isValid: !(isVPN || isProxy || highRisk),
                 fraudScore: ipData.risk || 0,
-                isProxy: ipData.proxy === "yes",
-                isVpn: ipData.type?.toLowerCase() === "vpn",
+                isProxy: isProxy,
+                isVpn: isVPN,
                 country: ipData.country,
                 isp: ipData.provider,
                 asn: ipData.asn,
@@ -208,7 +219,20 @@ export async function validateIP(ip) {
         throw new Error('Invalid response format');
     } catch (error) {
         console.error('Error in validateIP:', error);
-        // Return safe default on error
+        
+        // Check if this is a CORS/network error
+        if (error.name === 'TypeError' || error.message.includes('Failed to fetch')) {
+            console.log('⚠️ Network/CORS error - using safe default');
+            return {
+                isValid: true,
+                fraudScore: 0,
+                isProxy: false,
+                isVpn: false,
+                provider: "Unknown (Network Error)"
+            };
+        }
+        
+        // For other errors, return safe default
         return {
             isValid: true,
             fraudScore: 0,
