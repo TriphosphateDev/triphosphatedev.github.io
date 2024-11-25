@@ -94,7 +94,7 @@ export async function validateIPWithCache(ip) {
 }
 
 // Add new function for early validation
-export async function validateIPAndRedirect() {
+export async function initializeSecurityButton(buttonId, defaultDestination) {
     try {
         console.log('🔍 Starting IP validation...');
         const ip = await getUserIP();
@@ -111,19 +111,19 @@ export async function validateIPAndRedirect() {
             }));
 
             if (!validation.isValid) {
-                console.log('❌ Invalid IP detected, redirecting...');
-                window.location.replace('./blocked.html');
+                console.log('❌ Invalid IP detected, setting blocked destination');
+                createButton(buttonId, './blocked.html');
                 return false;
             }
             
-            console.log('✅ IP validation passed');
+            console.log('✅ IP validation passed, setting default destination');
+            createButton(buttonId, defaultDestination);
             return true;
         } catch (error) {
             console.log('🔍 Checking error type:', error.message);
-            // Check if this was an adblocker error
             if (error.message === 'ADBLOCKER_DETECTED') {
-                console.log('🚫 Adblocker detected, redirecting to adblocker page');
-                window.location.replace('./adblocker.html');
+                console.log('🚫 Adblocker detected, setting adblocker destination');
+                createButton(buttonId, './adblocker.html');
                 return false;
             }
             throw error;
@@ -132,10 +132,28 @@ export async function validateIPAndRedirect() {
         console.error('❌ IP validation error:', error);
         if (error.message === 'ADBLOCKER_DETECTED') {
             console.log('🚫 Adblocker detection handled at top level');
-            window.location.replace('./adblocker.html');
+            createButton(buttonId, './adblocker.html');
             return false;
         }
-        // Allow access on other errors for better UX
+        // On other errors, create button with default destination
+        console.log('⚠️ Other error detected, using default destination');
+        createButton(buttonId, defaultDestination);
         return true;
     }
+}
+
+function createButton(buttonId, destination) {
+    const button = document.getElementById(buttonId);
+    if (!button) {
+        console.error('Button element not found:', buttonId);
+        return;
+    }
+    
+    // Update button properties
+    button.style.display = 'inline-block'; // Show the button
+    button.disabled = false; // Enable the button
+    button.onclick = (e) => {
+        e.preventDefault();
+        window.location.href = destination;
+    };
 } 

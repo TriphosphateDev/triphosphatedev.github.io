@@ -487,8 +487,12 @@
             </section>
 
             <nav class="buttons" aria-label="Contact options">
-                <button id="consultationBtn" class="btn" disabled style="opacity: 0.5; cursor: not-allowed;">
-                    <span id="btnText">Checking Security... (3)</span>
+                <button 
+                    id="consultButton" 
+                    style="display: none;" 
+                    disabled
+                    class="back-btn">
+                    Get Your Free Consultation
                 </button>
                 <a class="btn" href="mailto:triphosphateLP@gmail.com" 
                    onclick="validateAndTrackClick(this, event)">Email Direct</a>
@@ -594,6 +598,12 @@
                 }
             }
         }, 1000);
+    </script>
+    <script type="module">
+        import { initializeSecurityButton } from './src/ipValidation.js';
+        
+        // Initialize button after security checks
+        await initializeSecurityButton('consultButton', './consultation.html');
     </script>
 </body>
 </html>
