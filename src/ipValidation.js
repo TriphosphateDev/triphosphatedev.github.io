@@ -73,7 +73,8 @@ async function fetchWithRetry(url) {
                     scriptState: script.readyState,
                     documentState: document.readyState,
                     callbackExists: typeof window[callbackName] !== 'undefined',
-                    responseReceived
+                    responseReceived,
+                    ip
                 });
 
                 delete window[callbackName];
@@ -83,7 +84,7 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                if (!responseReceived) {
+                if (!responseReceived && ip) {
                     fetch(url, { mode: 'no-cors' })
                         .then(() => {
                             console.log('✅ Direct fetch succeeded, not an adblocker');
@@ -121,6 +122,8 @@ async function fetchWithRetry(url) {
                                 });
                             }
                         });
+                } else {
+                    reject(new Error('No IP address found in URL'));
                 }
             };
             
