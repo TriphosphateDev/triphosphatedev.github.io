@@ -37,17 +37,23 @@ async function fetchWithRetry(url) {
             const script = document.createElement('script');
             
             // Format URL according to ProxyCheck.io JSONP spec
-            // They expect tag=callback and the callback name without the URL parameter
-            const baseUrl = url.split('?')[0];  // Get base URL without parameters
-            const params = new URLSearchParams(url.split('?')[1]); // Get existing params
+            const baseUrl = url.split('?')[0];
+            const params = new URLSearchParams(url.split('?')[1]);
             
-            // Add JSONP specific parameters
-            params.set('tag', 'callback');  // Required by ProxyCheck
-            params.set('callback', callbackName);  // Our callback function
-            params.set('format', 'jsonp');  // Request JSONP format
+            // Add JSONP specific parameters in the correct order
+            const jsonpParams = new URLSearchParams();
+            jsonpParams.set('key', params.get('key'));
+            jsonpParams.set('tag', 'callback');
+            jsonpParams.set('callback', callbackName);
+            // Add remaining parameters
+            for (const [key, value] of params.entries()) {
+                if (key !== 'key') {
+                    jsonpParams.set(key, value);
+                }
+            }
             
             // Construct final URL
-            const jsonpUrl = `${baseUrl}?${params.toString()}`;
+            const jsonpUrl = `${baseUrl}?${jsonpParams.toString()}`;
             console.log('🔄 JSONP URL:', jsonpUrl);
             script.src = jsonpUrl;
             
@@ -60,25 +66,32 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // More careful error detection
-                const isAdblockerError = 
-                    !document.querySelector(`script[src*="proxycheck.io"]`) || // Script was blocked
-                    error.type === 'error' && document.body.contains(script) && // Script exists but failed
-                    (
-                        document.querySelector(`script[src*="proxycheck.io"][src*="${callbackName}"]`) === null ||
-                        error.target.src.includes('proxycheck.io') // Specific to our request
-                    );
-                
-                if (isAdblockerError) {
-                    console.log('🛑 ADBLOCKER DETECTED via JSONP failure!');
-                    const err = new Error('ADBLOCKER_DETECTED');
-                    err.isAdblocker = true;
-                    reject(err);
-                } else {
-                    // Try the API request without JSONP
-                    console.log('🔄 JSONP failed, trying direct request...');
-                    reject(new Error('JSONP_FAILED'));
-                }
+                // Try a direct fetch first
+                console.log('🔄 Trying direct fetch...');
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(resolve)
+                    .catch(fetchError => {
+                        console.log('❌ Direct fetch failed:', fetchError);
+                        // Now check if it's likely an adblocker
+                        const isLikelyAdblocker = 
+                            !document.querySelector(`script[src*="proxycheck.io"]`) ||
+                            fetchError.message.includes('blocked');
+                            
+                        if (isLikelyAdblocker) {
+                            console.log('🛑 ADBLOCKER DETECTED!');
+                            const err = new Error('ADBLOCKER_DETECTED');
+                            err.isAdblocker = true;
+                            reject(err);
+                        } else {
+                            reject(fetchError);
+                        }
+                    });
             };
             
             // Add script to page
@@ -87,9 +100,7 @@ async function fetchWithRetry(url) {
                 console.log('📝 JSONP script added successfully');
             } catch (error) {
                 console.log('❌ Failed to add JSONP script:', error);
-                const err = new Error('ADBLOCKER_DETECTED');
-                err.isAdblocker = true;
-                reject(err);
+                reject(error);
             }
             
             // Set a timeout for the request
