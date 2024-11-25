@@ -1,10 +1,5 @@
 export default {
   async fetch(request, env) {
-    // Log request details
-    console.log('Request URL:', request.url);
-    console.log('Request method:', request.method);
-    console.log('Request headers:', Object.fromEntries(request.headers));
-
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -17,38 +12,21 @@ export default {
       });
     }
 
-    // Check if this is the submit-form endpoint
-    const url = new URL(request.url);
-    if (!url.pathname.startsWith('/submit-form')) {
-      return new Response('Not Found', { 
-        status: 404,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        }
-      });
-    }
-
     if (request.method !== 'POST') {
-      return new Response(JSON.stringify({
-        status: 'error',
-        message: 'Method not allowed'
-      }), { 
+      return new Response('Method not allowed', { 
         status: 405,
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
         }
       });
     }
 
     try {
-      const formData = await request.formData();
+      // Parse JSON instead of FormData
+      const data = await request.json();
       
-      // Log form data
-      console.log('Form data received:', Object.fromEntries(formData));
-
       // Honeypot check
-      if (formData.get('hiddenHoneypotField')) {
+      if (data.hiddenHoneypotField) {
         return new Response(JSON.stringify({
           status: 'error',
           message: 'Invalid submission'
@@ -65,7 +43,7 @@ export default {
       await sendEmail({
         to: env.NOTIFICATION_EMAIL,
         subject: 'New Consultation Request',
-        formData: formData
+        formData: data
       });
       
       return new Response(JSON.stringify({
