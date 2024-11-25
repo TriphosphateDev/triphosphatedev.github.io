@@ -38,15 +38,18 @@ async function fetchWithRetry(url) {
             
             // Format URL according to ProxyCheck.io JSONP spec
             // They expect tag=callback and the callback name without the URL parameter
-            const jsonpUrl = new URL(url);
-            jsonpUrl.searchParams.append('tag', 'callback');
-            // Remove 'callback=' prefix as ProxyCheck expects just the function name
-            jsonpUrl.searchParams.append('callback', callbackName);
-            // Add format=jsonp parameter
-            jsonpUrl.searchParams.append('format', 'jsonp');
+            const baseUrl = url.split('?')[0];  // Get base URL without parameters
+            const params = new URLSearchParams(url.split('?')[1]); // Get existing params
             
-            console.log('🔄 JSONP URL:', jsonpUrl.toString());
-            script.src = jsonpUrl.toString();
+            // Add JSONP specific parameters
+            params.set('tag', 'callback');  // Required by ProxyCheck
+            params.set('callback', callbackName);  // Our callback function
+            params.set('format', 'jsonp');  // Request JSONP format
+            
+            // Construct final URL
+            const jsonpUrl = `${baseUrl}?${params.toString()}`;
+            console.log('🔄 JSONP URL:', jsonpUrl);
+            script.src = jsonpUrl;
             
             script.onerror = (error) => {
                 console.log('🚨 JSONP script error:', error);
@@ -61,8 +64,19 @@ async function fetchWithRetry(url) {
                 const isNetworkError = error && error.type === 'error' && document.body.contains(script);
                 
                 if (isNetworkError) {
-                    // Try fallback URL
-                    const fallbackUrl = jsonpUrl.toString().replace('proxycheck.io/v2', 'proxycheck.io/v2/alt');
+                    // Try fallback URL with different parameter order
+                    const fallbackParams = new URLSearchParams();
+                    fallbackParams.set('tag', 'callback');  // Put JSONP params first
+                    fallbackParams.set('callback', callbackName);
+                    fallbackParams.set('format', 'jsonp');
+                    // Then add original params
+                    for (const [key, value] of params.entries()) {
+                        if (!['tag', 'callback', 'format'].includes(key)) {
+                            fallbackParams.set(key, value);
+                        }
+                    }
+                    
+                    const fallbackUrl = `${baseUrl}?${fallbackParams.toString()}`;
                     console.log('🔄 Trying fallback URL:', fallbackUrl);
                     script.src = fallbackUrl;
                     document.head.appendChild(script);
