@@ -39,8 +39,8 @@ async function fetchWithRetry(url, retryCount = 0) {
     }
 }
 
-import { trackIPCheck } from '/src/monitoring.js';
-import { config } from '/src/config.js';
+import { trackIPCheck } from './monitoring.js';
+import { config } from './config.js';
 
 export async function validateIP(ip) {
     const API_KEY = config.PROXYCHECK_API_KEY || config.PROXYCHECK_PUBLIC_KEY;
