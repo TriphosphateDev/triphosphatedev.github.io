@@ -58,7 +58,19 @@ async function fetchWithRetry(url) {
             script.src = jsonpUrl;
             
             script.onerror = (error) => {
-                console.log('🚨 JSONP script error:', error);
+                console.log('🚨 JSONP script error details:', {
+                    error,
+                    scriptSrc: script.src,
+                    scriptExists: document.head.contains(script),
+                    scriptState: script.readyState,
+                    documentState: document.readyState,
+                    otherScripts: Array.from(document.scripts).map(s => s.src),
+                    // Check if any proxycheck scripts exist
+                    proxyScripts: Array.from(document.scripts)
+                        .filter(s => s.src.includes('proxycheck.io'))
+                        .map(s => s.src)
+                });
+
                 delete window[callbackName];
                 try {
                     document.head.removeChild(script);
@@ -71,6 +83,13 @@ async function fetchWithRetry(url) {
                     !document.querySelector('script[src*="proxycheck.io"]') || // Script was removed
                     error.type === 'error' && !document.body.contains(script); // Script was blocked
                 
+                console.log('🔍 Adblocker check:', {
+                    isAdblockerBlock,
+                    scriptFound: !!document.querySelector('script[src*="proxycheck.io"]'),
+                    scriptInBody: document.body.contains(script),
+                    errorType: error.type
+                });
+
                 if (isAdblockerBlock) {
                     console.log('🛑 ADBLOCKER DETECTED via script blocking!');
                     const err = new Error('ADBLOCKER_DETECTED');
