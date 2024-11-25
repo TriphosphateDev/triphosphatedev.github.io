@@ -1,0 +1,24 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Create config file
+        run: |
+          echo "export const config = {
+            PROXYCHECK_API_KEY: '${{ secrets.PROXYCHECK_API_KEY }}',
+            PROXYCHECK_PUBLIC_KEY: '${{ secrets.PROXYCHECK_PUBLIC_KEY }}',
+            PROXYCHECK_API_ENDPOINT: 'https://proxycheck.io/v2',
+            RECAPTCHA_SITE_KEY: '6LewkogqAAAAANUh-L1KOeelY9mBl2I6evdrhRAr',
+            GOOGLE_SHEETS_ENDPOINT: '${{ secrets.GOOGLE_SHEETS_ENDPOINT }}',
+            GA_TRACKING_ID: 'G-CWBEE471XP'
+          };" > src/config.js
+      
+      # Add deployment steps here
