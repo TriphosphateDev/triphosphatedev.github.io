@@ -79,29 +79,53 @@ async function fetchWithRetry(url) {
                     console.log('Script already removed');
                 }
                 
-                // Check if this was an adblocker block
+                // Enhanced error detection
                 const errorText = error.toString().toLowerCase();
-                const isAdblockerBlock = 
+                const isBlockedRequest = 
                     errorText.includes('ad_blocker') ||
-                    errorText.includes('adblocker');
+                    errorText.includes('adblocker') ||
+                    errorText.includes('blocked') ||
+                    errorText.includes('security') ||
+                    error.type === 'error' && !error.message; // Opera's silent blocking
                 
-                if (isAdblockerBlock) {
-                    console.log('🛑 ADBLOCKER DETECTED!');
-                    const err = new Error('ADBLOCKER_DETECTED');
-                    err.isAdblocker = true;
+                if (isBlockedRequest) {
+                    console.log('🛑 REQUEST BLOCKED - likely by browser security/adblocker');
+                    const err = new Error('BROWSER_SECURITY_BLOCK');
+                    err.isSecurityBlock = true;
                     reject(err);
                 } else {
-                    // If not an adblocker, try to resolve with default safe response
-                    console.log('⚠️ JSONP failed but not adblocker, using default response');
-                    resolve({
-                        status: "ok",
-                        [ip]: {
-                            proxy: "no",
-                            type: "residential",
-                            risk: 0,
-                            provider: "Unknown (Error)"
-                        }
-                    });
+                    // If not blocked, try direct fetch as fallback
+                    console.log('⚠️ JSONP failed but might work with direct fetch');
+                    try {
+                        // Attempt direct fetch with modified URL
+                        const fetchUrl = url.replace('callback=' + callbackName, 'format=json');
+                        fetch(fetchUrl)
+                            .then(response => response.json())
+                            .then(data => resolve(data))
+                            .catch(fetchError => {
+                                console.log('⚠️ Direct fetch also failed, using safe response');
+                                resolve({
+                                    status: "ok",
+                                    [ip]: {
+                                        proxy: "no",
+                                        type: "residential",
+                                        risk: 0,
+                                        provider: "Unknown (Error)"
+                                    }
+                                });
+                            });
+                    } catch (fetchError) {
+                        console.log('⚠️ Fetch attempt failed:', fetchError);
+                        resolve({
+                            status: "ok",
+                            [ip]: {
+                                proxy: "no",
+                                type: "residential",
+                                risk: 0,
+                                provider: "Unknown (Error)"
+                            }
+                        });
+                    }
                 }
             };
             
