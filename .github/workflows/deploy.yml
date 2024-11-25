@@ -15,7 +15,8 @@ jobs:
       - name: Create config file
         run: |
           echo "export const config = {
-            GOOGLE_SHEETS_ENDPOINT: '${{ secrets.GOOGLE_SHEETS_ENDPOINT }}'
+            GOOGLE_SHEETS_ENDPOINT: '${{ secrets.GOOGLE_SHEETS_ENDPOINT }}',
+            GA_TRACKING_ID: 'G-CWBEE471XP'
           };" > src/config.js
       
       - name: Commit config file
