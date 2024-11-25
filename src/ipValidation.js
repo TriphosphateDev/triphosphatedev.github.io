@@ -29,19 +29,26 @@ async function fetchWithRetry(url) {
         console.log('📝 Error message:', error.message);
 
         // Check for adblocker in multiple ways
-        const errorText = error.toString().toLowerCase();
-        const errorMsg = error.message.toLowerCase();
+        const errorString = error.toString().toLowerCase();
+        const messageString = error.message.toLowerCase();
+        const stackString = error.stack?.toLowerCase() || '';
+
+        // Look for adblocker signatures in all error text
         const isAdblockerError = 
-            errorText.includes('err_blocked_by_adblocker') || 
-            errorMsg.includes('err_blocked_by_adblocker') ||
-            errorText.includes('net::err_blocked_by_adblocker');
+            errorString.includes('err_blocked_by_adblocker') ||
+            messageString.includes('err_blocked_by_adblocker') ||
+            stackString.includes('err_blocked_by_adblocker') ||
+            // Add additional checks for failed fetch due to adblocker
+            (messageString === 'failed to fetch' && 
+             stackString.includes('proxycheck.io'));
 
         if (isAdblockerError) {
             console.log('🛑 ADBLOCKER DETECTED!');
-            throw new Error('ADBLOCKER_DETECTED');
+            const error = new Error('ADBLOCKER_DETECTED');
+            error.isAdblocker = true;  // Add a flag for easier checking
+            throw error;
         }
 
-        // For any other error, just throw it
         throw error;
     }
 }
