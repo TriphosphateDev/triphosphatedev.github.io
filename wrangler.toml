@@ -1,0 +1,13 @@
+name = "form-handler"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+NOTIFICATION_EMAIL = "triphosphatelp@gmail.com"
+
+# Routes
+[[routes]]
+pattern = "tripmixes.com/*"
+zone_id = "745313294601ce924f0e49745603a937"  # Get this from Cloudflare dashboard
+
+# Remove the triggers section if you don't need cron jobs

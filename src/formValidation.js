@@ -5,6 +5,13 @@ export function validateFormSubmission(event) {
     const form = event.target;
     const requiredFields = ['nameOrArtistName', 'email', 'projectDescription'];
     
+    // Check Turnstile token
+    const token = turnstile.getResponse();
+    if (!token) {
+        throw new Error('Please complete the security check');
+    }
+    
+    // Check required fields
     for (const fieldName of requiredFields) {
         const field = form.elements[fieldName];
         if (!field.value.trim()) {
@@ -22,6 +29,10 @@ export async function handleFormSubmit(event, formData) {
         if (!validateFormSubmission(event)) {
             return false;
         }
+
+        // Add Turnstile token to formData
+        const token = turnstile.getResponse();
+        formData.append('cf-turnstile-response', token);
 
         // Submit to Google Sheets
         const response = await submitToGoogleSheets(formData);

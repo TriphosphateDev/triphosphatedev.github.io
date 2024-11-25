@@ -1,7 +1,32 @@
 function doPost(e) {
     try {
-        const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Form Responses");
         const data = e.parameter;
+        
+        // Verify Turnstile token
+        const token = data['cf-turnstile-response'];
+        if (!token) {
+            return ContentService.createTextOutput(JSON.stringify({
+                status: 'error',
+                message: 'Security verification failed'
+            })).setMimeType(ContentService.MimeType.JSON);
+        }
+        
+        // Verify token with Cloudflare
+        const cfResponse = UrlFetchApp.fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+            method: 'post',
+            payload: {
+                secret: 'YOUR_SECRET_KEY',
+                response: token
+            }
+        });
+        
+        const cfResult = JSON.parse(cfResponse.getContentText());
+        if (!cfResult.success) {
+            return ContentService.createTextOutput(JSON.stringify({
+                status: 'error',
+                message: 'Security check failed'
+            })).setMimeType(ContentService.MimeType.JSON);
+        }
         
         // Check honeypot
         if (data.hiddenHoneypotField) {
@@ -11,16 +36,8 @@ function doPost(e) {
             })).setMimeType(ContentService.MimeType.JSON);
         }
         
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
-            return ContentService.createTextOutput(JSON.stringify({
-                status: 'error',
-                message: 'Invalid email address'
-            })).setMimeType(ContentService.MimeType.JSON);
-        }
-        
-        // Log submission
+        // Process form submission as before
+        const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Form Responses");
         sheet.appendRow([
             new Date(),
             data.nameOrArtistName,
