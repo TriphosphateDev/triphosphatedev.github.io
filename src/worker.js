@@ -26,26 +26,24 @@ export default {
 
     try {
       const formData = await request.formData();
-      console.log('Form data received:', Object.fromEntries(formData));
+      
+      // Get client IP
+      const clientIP = request.headers.get('cf-connecting-ip');
 
-      // Updated honeypot check
+      // Honeypot check
       if (formData.get('u_verify')) {
         return new Response(JSON.stringify({
           status: 'error',
           message: 'Unable to process request'
-        }), { 
-          status: 400,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-          }
-        });
+        }), { status: 400 });
       }
 
-      // Log D1 operation start
-      console.log('Starting D1 database insertion...');
+      // Check if this IP has already converted
+      const previousConversion = await env.DB.prepare(
+        "SELECT ip FROM conversion_tracking WHERE ip = ?"
+      ).bind(clientIP).first();
 
-      // Insert into D1 database
+      // Insert form data as normal
       const result = await env.DB.prepare(`
         INSERT INTO submissions (
           name_or_artist_name,
@@ -64,10 +62,17 @@ export default {
         formData.get('projectDescription')
       ).run();
 
-      console.log('Database insertion result:', result);
-      
+      // If it's a new conversion, track the IP
+      if (!previousConversion) {
+        await env.DB.prepare(
+          "INSERT INTO conversion_tracking (ip) VALUES (?)"
+        ).bind(clientIP).run();
+      }
+
+      // Return success with a flag indicating if this is a first-time conversion
       return new Response(JSON.stringify({
-        status: 'success'
+        status: 'success',
+        isNewConversion: !previousConversion,
       }), { 
         status: 200,
         headers: {

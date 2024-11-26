@@ -2,6 +2,14 @@ function doPost(e) {
     try {
         const data = e.parameter;
         
+        // Validate submission
+        if (data.u_verify) {
+            return ContentService.createTextOutput(JSON.stringify({
+                status: 'error',
+                message: 'Unable to process request'
+            })).setMimeType(ContentService.MimeType.JSON);
+        }
+        
         // Verify Turnstile token
         const token = data['cf-turnstile-response'];
         if (!token) {
@@ -25,14 +33,6 @@ function doPost(e) {
             return ContentService.createTextOutput(JSON.stringify({
                 status: 'error',
                 message: 'Security check failed'
-            })).setMimeType(ContentService.MimeType.JSON);
-        }
-        
-        // Check honeypot
-        if (data.hiddenHoneypotField) {
-            return ContentService.createTextOutput(JSON.stringify({
-                status: 'error',
-                message: 'Invalid submission'
             })).setMimeType(ContentService.MimeType.JSON);
         }
         
