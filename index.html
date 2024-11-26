@@ -505,10 +505,16 @@
                 isLoading: true
             },
             mounted() {
-                this.player = SC.Widget('soundcloud-player');
-                this.player.bind(SC.Widget.Events.READY, () => {
-                    this.isLoading = false;
-                });
+                // Add a small delay to ensure iframe is loaded
+                setTimeout(() => {
+                    const iframe = document.getElementById('soundcloud-player');
+                    if (iframe) {
+                        this.player = SC.Widget(iframe);
+                        this.player.bind(SC.Widget.Events.READY, () => {
+                            this.isLoading = false;
+                        });
+                    }
+                }, 1000);
             },
             methods: {
                 nextTrack() {
