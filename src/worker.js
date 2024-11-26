@@ -1,5 +1,9 @@
 export default {
   async fetch(request, env) {
+    console.log('Worker started processing request');
+    console.log('Request URL:', request.url);
+    console.log('Request method:', request.method);
+
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
@@ -7,7 +11,6 @@ export default {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'POST, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Accept',
-          'Access-Control-Max-Age': '86400',
         },
       });
     }
@@ -24,7 +27,7 @@ export default {
     try {
       const formData = await request.formData();
       console.log('Form data received:', Object.fromEntries(formData));
-      
+
       // Honeypot check
       if (formData.get('hiddenHoneypotField')) {
         return new Response(JSON.stringify({
@@ -39,8 +42,11 @@ export default {
         });
       }
 
+      // Log D1 operation start
+      console.log('Starting D1 database insertion...');
+
       // Insert into D1 database
-      const stmt = env.DB.prepare(`
+      const result = await env.DB.prepare(`
         INSERT INTO submissions (
           name_or_artist_name,
           email,
@@ -49,9 +55,7 @@ export default {
           contact_preference,
           project_description
         ) VALUES (?, ?, ?, ?, ?, ?)
-      `);
-
-      await stmt.bind(
+      `).bind(
         formData.get('nameOrArtistName'),
         formData.get('email'),
         formData.get('phone') || null,
@@ -60,7 +64,7 @@ export default {
         formData.get('projectDescription')
       ).run();
 
-      console.log('Successfully saved to database');
+      console.log('Database insertion result:', result);
       
       return new Response(JSON.stringify({
         status: 'success'
