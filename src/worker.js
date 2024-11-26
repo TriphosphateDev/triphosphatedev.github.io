@@ -1,4 +1,4 @@
-// Add the sendEmail function
+// Define the sendEmail function before using it
 async function sendEmail({ to, subject, formData }) {
   return fetch('https://api.mailchannels.net/tx/v1/send', {
     method: 'POST',
@@ -34,9 +34,9 @@ Project Description: ${formData.projectDescription}
   });
 }
 
-export default {
+// Create the Worker object
+const worker = {
   async fetch(request, env) {
-    // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
@@ -58,11 +58,9 @@ export default {
     }
 
     try {
-      // Parse form data
       const formData = await request.formData();
       console.log('Received form data:', Object.fromEntries(formData));
       
-      // Honeypot check
       if (formData.get('hiddenHoneypotField')) {
         return new Response(JSON.stringify({
           status: 'error',
@@ -76,7 +74,6 @@ export default {
         });
       }
 
-      // Send email notification
       await sendEmail({
         to: env.NOTIFICATION_EMAIL,
         subject: 'New Consultation Request',
@@ -107,4 +104,7 @@ export default {
       });
     }
   }
-}; 
+};
+
+// Export the worker
+export default worker; 
