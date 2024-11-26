@@ -28,11 +28,11 @@ export default {
       const formData = await request.formData();
       console.log('Form data received:', Object.fromEntries(formData));
 
-      // Honeypot check
-      if (formData.get('hiddenHoneypotField')) {
+      // Updated honeypot check
+      if (formData.get('u_verify')) {
         return new Response(JSON.stringify({
           status: 'error',
-          message: 'Invalid submission'
+          message: 'Unable to process request'
         }), { 
           status: 400,
           headers: {

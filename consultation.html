@@ -131,6 +131,14 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Obscure the honeypot CSS */
+        .user-details {
+            position: fixed;
+            transform: translateX(-100vw);
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -178,11 +186,13 @@
             </div>
             
             <!-- Honeypot Field -->
-            <input type="text" 
-                   name="hiddenHoneypotField" 
-                   class="honeypot" 
-                   tabindex="-1" 
-                   autocomplete="off">
+            <div class="form-group user-details">
+                <input type="text" 
+                       name="u_verify" 
+                       class="contact-field" 
+                       tabindex="-1" 
+                       autocomplete="off">
+            </div>
             
             <button type="submit">Submit</button>
         </form>
