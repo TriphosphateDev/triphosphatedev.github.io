@@ -37,12 +37,10 @@ Project Description: ${formData.projectDescription}
 // Create the Worker object
 const worker = {
   async fetch(request, env) {
-    // Add request logging
-    console.log('Worker received request:', {
-      url: request.url,
-      method: request.method,
-      headers: Object.fromEntries(request.headers)
-    });
+    // Add explicit logging
+    console.log('Worker started processing request');
+    console.log('Request URL:', request.url);
+    console.log('Request method:', request.method);
 
     if (request.method === 'OPTIONS') {
       console.log('Handling CORS preflight');
@@ -53,15 +51,6 @@ const worker = {
           'Access-Control-Allow-Headers': 'Content-Type, Accept',
           'Access-Control-Max-Age': '86400',
         },
-      });
-    }
-
-    if (request.method !== 'POST') {
-      return new Response('Method not allowed', { 
-        status: 405,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        }
       });
     }
 
@@ -84,13 +73,15 @@ const worker = {
 
       // Log email attempt
       console.log('Attempting to send email to:', env.NOTIFICATION_EMAIL);
-      
+
       await sendEmail({
         to: env.NOTIFICATION_EMAIL,
         subject: 'New Consultation Request',
         formData: Object.fromEntries(formData)
       });
       
+      console.log('Email sent successfully');
+
       return new Response(JSON.stringify({
         status: 'success'
       }), { 

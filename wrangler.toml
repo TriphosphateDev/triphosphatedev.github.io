@@ -5,9 +5,13 @@ compatibility_date = "2024-01-01"
 [vars]
 NOTIFICATION_EMAIL = "triphosphatelp@gmail.com"
 
+# Enable logging
+[observability.logs]
+enabled = true
+
 # Routes
 [[routes]]
-pattern = "tripmixes.com/submit-form"
-zone_id = "745313294601ce924f0e49745603a937"  # Get this from Cloudflare dashboard
+pattern = "tripmixes.com/submit-form*"
+zone_id = "745313294601ce924f0e49745603a937"
 
 # Remove the triggers section if you don't need cron jobs
