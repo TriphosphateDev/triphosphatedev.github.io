@@ -69,6 +69,9 @@
     <script>
         console.log('Before GTM load - index.html');
     </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+    </script>
     <script>(function(w,d,s,l,i){
         console.log('GTM initialization starting - index.html');
         w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -445,19 +448,16 @@
             <nav class="buttons" aria-label="Contact options">
                 <a href="consultation.html" 
                    class="btn" 
-                   id="consultButton"
-                   onclick="gtag_report_conversion(this.href)">
+                   id="consultButton">
                     Book a Free Consultation
                 </a>
                 <a class="btn" 
-                   href="mailto:triphosphateLP@gmail.com" 
-                   onclick="gtag_report_conversion(this.href)">
+                   href="mailto:triphosphateLP@gmail.com">
                     Email Direct
                 </a>
                 <a class="btn" 
                    href="https://discord.com/channels/@me/Triphosphate/" 
-                   rel="noopener" 
-                   onclick="gtag_report_conversion(this.href)">
+                   rel="noopener">
                     Discord Message
                 </a>
                 <a class="btn" href="faq.html">FAQ</a>
@@ -539,6 +539,21 @@
     <script type="module">
         import { config } from './src/config.js';
         window.CONFIG = config;
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click tracking for buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        'event': 'button_click',
+                        'button_text': this.textContent.trim(),
+                        'button_url': this.href
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>

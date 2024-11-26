@@ -147,6 +147,9 @@
     <script>
         console.log('Before GTM load - consultation.html');
     </script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+    </script>
     <script>(function(w,d,s,l,i){
         console.log('GTM initialization starting - consultation.html');
         w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -232,17 +235,22 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Only fire conversion if it's new
-                    if (result.isNewConversion) {
-                        gtag('event', 'conversion', {
-                            'send_to': 'AW-16777349124/IfN6COvfye0ZEISQiMA-'
-                        });
-                    }
+                    // Push to dataLayer instead of using gtag directly
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        'event': 'form_submission',
+                        'formType': 'consultation',
+                        'isNewConversion': result.isNewConversion
+                    });
                     
-                    // ... rest of success handling ...
+                    // Show success message and redirect
+                    document.querySelector('.success-message').style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '/success.html';
+                    }, 2000);
                 }
             } catch (error) {
-                // ... error handling ...
+                console.error('Form submission error:', error);
             }
         });
     </script>
