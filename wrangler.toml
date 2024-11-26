@@ -15,3 +15,8 @@ pattern = "tripmixes.com/submit-form*"
 zone_id = "745313294601ce924f0e49745603a937"
 
 # Remove the triggers section if you don't need cron jobs
+
+[[d1_databases]]
+binding = "DB" # Can be any name
+database_name = "formsubmissions"
+database_id = "YOUR-DATABASE-ID" # You got this when you created the database

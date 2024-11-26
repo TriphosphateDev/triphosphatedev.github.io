@@ -1,49 +1,7 @@
-// Define the sendEmail function before using it
-async function sendEmail({ to, subject, formData }) {
-  return fetch('https://api.mailchannels.net/tx/v1/send', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      personalizations: [
-        {
-          to: [{ email: to }],
-        },
-      ],
-      from: {
-        email: 'noreply@tripmixes.com',
-        name: 'Consultation Form',
-      },
-      subject: subject,
-      content: [
-        {
-          type: 'text/plain',
-          value: `
-New consultation request:
-Name: ${formData.nameOrArtistName}
-Email: ${formData.email}
-Phone: ${formData.phone || 'Not provided'}
-Discord: ${formData.discord || 'Not provided'}
-Contact Preference: ${formData.contactPreference}
-Project Description: ${formData.projectDescription}
-          `.trim()
-        },
-      ],
-    }),
-  });
-}
-
-// Create the Worker object
-const worker = {
+export default {
   async fetch(request, env) {
-    // Add explicit logging
-    console.log('Worker started processing request');
-    console.log('Request URL:', request.url);
-    console.log('Request method:', request.method);
-
+    // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-      console.log('Handling CORS preflight');
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -54,10 +12,20 @@ const worker = {
       });
     }
 
+    if (request.method !== 'POST') {
+      return new Response('Method not allowed', { 
+        status: 405,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        }
+      });
+    }
+
     try {
       const formData = await request.formData();
       console.log('Form data received:', Object.fromEntries(formData));
       
+      // Honeypot check
       if (formData.get('hiddenHoneypotField')) {
         return new Response(JSON.stringify({
           status: 'error',
@@ -71,17 +39,29 @@ const worker = {
         });
       }
 
-      // Log email attempt
-      console.log('Attempting to send email to:', env.NOTIFICATION_EMAIL);
+      // Insert into D1 database
+      const stmt = env.DB.prepare(`
+        INSERT INTO submissions (
+          name_or_artist_name,
+          email,
+          phone,
+          discord,
+          contact_preference,
+          project_description
+        ) VALUES (?, ?, ?, ?, ?, ?)
+      `);
 
-      await sendEmail({
-        to: env.NOTIFICATION_EMAIL,
-        subject: 'New Consultation Request',
-        formData: Object.fromEntries(formData)
-      });
+      await stmt.bind(
+        formData.get('nameOrArtistName'),
+        formData.get('email'),
+        formData.get('phone') || null,
+        formData.get('discord') || null,
+        formData.get('contactPreference'),
+        formData.get('projectDescription')
+      ).run();
+
+      console.log('Successfully saved to database');
       
-      console.log('Email sent successfully');
-
       return new Response(JSON.stringify({
         status: 'success'
       }), { 
@@ -106,7 +86,4 @@ const worker = {
       });
     }
   }
-};
-
-// Export the worker
-export default worker; 
+}; 
