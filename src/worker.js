@@ -37,7 +37,15 @@ Project Description: ${formData.projectDescription}
 // Create the Worker object
 const worker = {
   async fetch(request, env) {
+    // Add request logging
+    console.log('Worker received request:', {
+      url: request.url,
+      method: request.method,
+      headers: Object.fromEntries(request.headers)
+    });
+
     if (request.method === 'OPTIONS') {
+      console.log('Handling CORS preflight');
       return new Response(null, {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -59,7 +67,7 @@ const worker = {
 
     try {
       const formData = await request.formData();
-      console.log('Received form data:', Object.fromEntries(formData));
+      console.log('Form data received:', Object.fromEntries(formData));
       
       if (formData.get('hiddenHoneypotField')) {
         return new Response(JSON.stringify({
@@ -74,6 +82,9 @@ const worker = {
         });
       }
 
+      // Log email attempt
+      console.log('Attempting to send email to:', env.NOTIFICATION_EMAIL);
+      
       await sendEmail({
         to: env.NOTIFICATION_EMAIL,
         subject: 'New Consultation Request',
