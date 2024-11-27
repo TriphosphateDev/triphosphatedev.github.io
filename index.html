@@ -296,21 +296,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://w.soundcloud.com">
+    <link rel="stylesheet" href="styles/main.css">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            color: #fff;
-            background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
         #app {
             min-height: 100vh;
             position: relative;
@@ -349,15 +337,9 @@
         }
 
         @keyframes float {
-            0% {
-                transform: translate(-50%, -50%);
-            }
-            50% {
-                transform: translate(-50%, -60%);
-            }
-            100% {
-                transform: translate(-50%, -50%);
-            }
+            0% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -60%); }
+            100% { transform: translate(-50%, -50%); }
         }
 
         h1 {
@@ -370,47 +352,6 @@
             letter-spacing: 2px;
         }
 
-        @media screen and (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .logo {
-                width: 600px;
-                height: 600px;
-            }
-
-            .content {
-                padding-top: 1rem;
-                justify-content: flex-start;
-            }
-
-            h1 {
-                margin-top: 1rem;
-            }
-        }
-
-        @media screen and (max-width: 375px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .logo {
-                width: 360px;
-                height: 360px;
-                margin-top: 1.5rem;
-            }
-
-            .content {
-                padding: 1rem;
-            }
-
-            .btn {
-                padding: 0.8rem 1.5rem;
-                font-size: 1rem;
-            }
-        }
-
         .buttons {
             display: flex;
             flex-direction: column;
@@ -419,209 +360,26 @@
             width: 100%;
         }
 
-        .btn {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #8a7bf4 0%, #4834b8 100%);
-            color: white;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(74, 52, 184, 0.3);
-        }
-
-        .btn:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(74, 52, 184, 0.5);
-        }
-
-        .btn:active {
-            transform: scale(0.98) translateY(0);
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .contact-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .form-group label {
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-group input, 
-        .form-group textarea {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .playlist-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 2rem auto;
-            border-radius: 12px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        }
-
         @media screen and (max-width: 768px) {
-            .playlist-container {
-                max-width: 90%;
+            h1 { font-size: 2.5rem; }
+            .logo {
+                width: 600px;
+                height: 600px;
+            }
+            .content {
+                padding-top: 1rem;
+                justify-content: flex-start;
             }
         }
 
-        .player-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .player-btn {
-            background: linear-gradient(135deg, #8a7bf4 0%, #4834b8 100%);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-            font-size: 1.2rem;
-        }
-
-        .player-btn:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #9d91ff 0%, #5842d8 100%);
-        }
-
-        .playlist-container iframe {
-            height: 80px !important;
-        }
-
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.3) 100%);
-        }
-
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .service-description {
-            max-width: 600px;
-            margin: 1rem auto 2rem;
-            padding: 0 1rem;
-            line-height: 1.6;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .social-proof {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .social-link {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .social-link:hover {
-            color: #8a7bf4;
-        }
-
-        .btn:disabled {
-            background: linear-gradient(135deg, #666 0%, #444 100%);
-            transform: none !important;
-            box-shadow: none !important;
-        }
-        
-        #consultationBtn {
-            transition: opacity 0.3s ease, background 0.3s ease, transform 0.3s ease;
+        @media screen and (max-width: 375px) {
+            h1 { font-size: 2rem; }
+            .logo {
+                width: 360px;
+                height: 360px;
+                margin-top: 1.5rem;
+            }
+            .content { padding: 1rem; }
         }
     </style>
 </head>
@@ -661,15 +419,13 @@
                    rel="noopener">
                     Discord Message
                 </a>
-                <a class="btn" href="faq.html">FAQ</a>
+                <a class="btn" href="/resources/faq">FAQ</a>
             </nav>
 
             <div class="social-proof">
                 <a href="https://engineears.com/triphosphate" class="social-link" target="_blank" rel="noopener">EngineEars Profile</a>
                 <a href="https://soundcloud.com/triphosphate" class="social-link" target="_blank" rel="noopener">SoundCloud</a>
                 <a href="https://www.instagram.com/triphosphate_music" class="social-link" target="_blank" rel="noopener">Instagram</a>
-                <span class="social-stat">⭐ 4.9/5 Rating</span>
-                <span class="social-stat">🎵 50+ Reviews</span>
             </div>
 
             <section class="playlist-container" :class="{ 'loading': isLoading }" aria-label="Music portfolio">
@@ -692,10 +448,21 @@
                 </div>
             </section>
 
-            <section class="service-description" style="font-size: 0.95rem; margin-top: 2rem;">
-                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">Professional Experience</h3>
+            <section class="service-description">
+                <h3>Professional Experience</h3>
                 <p>Professional mixing services with over a decade of experience. Trained under Latin Grammy winning engineer Charles Dye, specializing in affordable solutions for independent artists and bedroom producers. Bringing Grammy-winning studio techniques to independent budgets.</p>
-                <p style="margin-top: 1rem;">Recent projects include artists from New York, London, Toronto, and worldwide. Typical turnaround: 3-5 business days.</p>
+                <p>Recent projects include artists from New York, London, Toronto, and worldwide. Typical turnaround: 3-5 business days.</p>
+            </section>
+
+            <section class="consultation-offer" style="
+                background: rgba(138, 123, 244, 0.1);
+                padding: 1.5rem;
+                border-radius: 10px;
+                margin: 2rem 0;
+                border: 1px solid rgba(138, 123, 244, 0.3);
+                max-width: 600px;">
+                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #8a7bf4;">First Time Working with a Mix Engineer?</h3>
+                <p style="color: rgba(255, 255, 255, 0.9);">Check out our <a href="/services/track-prep" class="social-link">Track Preparation Guide</a> and download our free <a href="/resources/checklists" class="social-link">Production Checklists</a> to get started.</p>
             </section>
         </main>
     </div>
@@ -767,5 +534,77 @@
         <p>Serving independent artists worldwide through remote collaboration. Recent projects from New York, London, Toronto, Sydney, and more.</p>
       </section>
     </div>
+    <div class="bottom-drawer">
+        <div class="drawer-tab">
+            <span class="drawer-icon">^</span>
+            <span>Resources</span>
+        </div>
+        <div class="drawer-content">
+            <nav class="drawer-menu">
+                <!-- Mixing Services Hub -->
+                <div class="drawer-section">
+                    <h3>Mixing Services</h3>
+                    <a href="/services/vocal-mixing">Vocal Mixing Guide</a>
+                    <a href="/services/track-prep">Track Preparation</a>
+                    <a href="/services/genres">Genre Techniques</a>
+                    <a href="/portfolio/before-after">Before & After Examples</a>
+                    <a href="/services/mastering">Mastering Services</a>
+                </div>
+
+                <!-- Artist Resources Hub -->
+                <div class="drawer-section">
+                    <h3>Artist Resources</h3>
+                    <a href="/resources/home-recording">Home Recording Guide</a>
+                    <a href="/resources/production-tips">DIY Production Tips</a>
+                    <a href="/resources/tutorials">Genre Tutorials</a>
+                    <a href="/resources/equipment">Equipment Reviews</a>
+                </div>
+
+                <!-- Content Assets -->
+                <div class="drawer-section">
+                    <h3>Free Downloads</h3>
+                    <a href="/resources/templates">Mixing Templates</a>
+                    <a href="/resources/checklists">Production Checklists</a>
+                </div>
+
+                <!-- Main Pages -->
+                <div class="drawer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/about">About</a>
+                    <a href="/portfolio">Portfolio</a>
+                    <a href="/resources/faq">FAQ</a>
+                    <a href="/getstarted">Get Started</a>
+                    <a href="/resources/contents">Table of Contents</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            // Close drawer when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            // Optional: Close drawer when scrolling up rapidly
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
 </body>
 </html>

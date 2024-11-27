@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table of Contents | Triphosphate Music</title>
+    <meta name="description" content="Navigate through our comprehensive guides and resources for mixing, recording, and music production.">
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        .contents-section {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .contents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .content-category {
+            padding: 1.5rem;
+            background: rgba(138, 123, 244, 0.15);
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .content-category:hover {
+            transform: translateY(-2px);
+        }
+
+        .content-category h3 {
+            color: #8a7bf4;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .content-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .content-list li {
+            margin-bottom: 0.8rem;
+        }
+
+        .content-list a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-list a:hover {
+            color: #8a7bf4;
+        }
+
+        .icon {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <main class="content-wrapper">
+        <article class="guide-header">
+            <h1>Table of Contents</h1>
+            <p>Your Guide to Everything Triphosphate Music</p>
+        </article>
+
+        <section class="contents-section">
+            <div class="contents-grid">
+                <div class="content-category">
+                    <h3>🎚️ Mixing Services</h3>
+                    <ul class="content-list">
+                        <li><a href="/services/vocal-mixing">Vocal Mixing Guide</a></li>
+                        <li><a href="/services/track-prep">Track Preparation</a></li>
+                        <li><a href="/services/genres">Genre Techniques</a></li>
+                        <li><a href="/portfolio/before-after">Before & After Examples</a></li>
+                        <li><a href="/services/mastering">Mastering Services</a></li>
+                    </ul>
+                </div>
+
+                <div class="content-category">
+                    <h3>🎹 Artist Resources</h3>
+                    <ul class="content-list">
+                        <li><a href="/resources/home-recording">Home Recording Guide</a></li>
+                        <li><a href="/resources/production-tips">DIY Production Tips</a></li>
+                        <li><a href="/resources/tutorials">Genre Tutorials</a></li>
+                        <li><a href="/resources/equipment">Equipment Reviews</a></li>
+                    </ul>
+                </div>
+
+                <div class="content-category">
+                    <h3>📥 Free Downloads</h3>
+                    <ul class="content-list">
+                        <li><a href="/resources/templates">Mixing Templates</a></li>
+                        <li><a href="/resources/checklists">Production Checklists</a></li>
+                    </ul>
+                </div>
+
+                <div class="content-category">
+                    <h3>🔍 Quick Access</h3>
+                    <ul class="content-list">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/portfolio">Portfolio</a></li>
+                        <li><a href="/resources/faq">FAQ</a></li>
+                        <li><a href="/getstarted">Get Started</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="bottom-drawer">
+        <div class="drawer-tab">
+            <span class="drawer-icon">^</span>
+            <span>Resources</span>
+        </div>
+        <div class="drawer-content">
+            <nav class="drawer-menu">
+                <div class="drawer-section">
+                    <h3>Mixing Services</h3>
+                    <a href="/services/vocal-mixing">Vocal Mixing Guide</a>
+                    <a href="/services/track-prep">Track Preparation</a>
+                    <a href="/services/genres">Genre Techniques</a>
+                    <a href="/portfolio/before-after">Before & After Examples</a>
+                    <a href="/services/mastering">Mastering Services</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Artist Resources</h3>
+                    <a href="/resources/home-recording">Home Recording Guide</a>
+                    <a href="/resources/production-tips">DIY Production Tips</a>
+                    <a href="/resources/tutorials">Genre Tutorials</a>
+                    <a href="/resources/equipment">Equipment Reviews</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Free Downloads</h3>
+                    <a href="/resources/templates">Mixing Templates</a>
+                    <a href="/resources/checklists">Production Checklists</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/portfolio">Portfolio</a>
+                    <a href="/resources/faq">FAQ</a>
+                    <a href="/getstarted">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
+</body>
+</html> 
