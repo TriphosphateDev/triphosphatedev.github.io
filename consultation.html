@@ -223,9 +223,8 @@
                 if (result.status === 'success') {
                     // Track conversion if it's new
                     if (result.isNewConversion) {
-                        const conversionId = `trip_${Date.now()}`;
                         rdt('track', 'CustomLead', {
-                            conversion_id: conversionId
+                            conversion_id: result.conversionId
                         });
                     }
                     
