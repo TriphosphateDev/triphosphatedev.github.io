@@ -81,7 +81,7 @@ export default {
               'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlNIQTI1NjpzS3dsMnlsV0VtMjVmcXhwTU40cWY4MXE2OWFFdWFyMnpLMUdhVGxjdWNZIiwidHlwIjoiSldUIn0.eyJzdWIiOiJ1c2VyIiwiZXhwIjo0ODg4NTI4NTMzLjUxODk5NywiaWF0IjoxNzMyNzY4NTMzLjUxODk5NywianRpIjoiUWx0enU1UW9ZT0ZqUFlzTFBSd2JkX0wtbU80SlB3IiwiY2lkIjoiMVExRU96VFBXbll2ZXJocHR2Z1dzUSIsImxpZCI6InQyXzFkdnowdmpxNnciLCJhaWQiOiJ0Ml8xZHZ6MHZqcTZ3IiwibGNhIjoxNzMyNzY4NDg0NTE1LCJzY3AiOiJlSnlLVmtwTUtVN096eXRMTFNyT3pNOHJWb29GQkFBQV9fOUJGZ2J1IiwiZmxvIjoxMCwibGwiOnRydWV9.LSgsBA8ZFuQQDQJenMNUQOuMTntV9JEvH9xwt6CTltlGTCqgYLFwq8CgsanhEC6t4fcrjtTvEwBrzZ00VMz-Nn0iQTI9elxb6gxWG_0aYT419pBKaD2YW_gN0MVfTQUXEjFSJgDHqhYtltZJPqA73NhlUYDgKwlXvSdXGfq1mfHWPzAzRTSGCBwMMVkXll0SlR0GxUrt9lKu9D4NcZ1kPFFdSVnxavpoGk7knSzrezDIsOR5_Oe-buRHn36cvb-MRVh5PCXxfd_MBwxXxmZZ1mzjCAyBd5UogCEn5azKz7h2kLmWEI6BKRUdfImBrzgRhW058CZOXVs9gSqDyGQd-w'
             },
             body: JSON.stringify({
-              test_mode: true,
+              test_mode: false,
               events: [{
                 event_at: new Date().toISOString(),
                 event_type: {
