@@ -20,6 +20,6 @@ binding = "DB"
 database_name = "formsubmissions"
 database_id = "a8283608-a362-410a-80d8-76bddfa1df8c"
 
-# Add this section to declare the secret (but not its value)
-[secrets]
-REDDIT_BEARER_TOKEN
+# Secrets
+[vars]
+REDDIT_BEARER_TOKEN = ""
