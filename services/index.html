@@ -29,13 +29,34 @@
         }
 
         .service-card {
-            background: rgba(138, 123, 244, 0.1);
-            border: 1px solid rgba(138, 123, 244, 0.3);
-            border-radius: 12px;
+            position: relative;
+            min-height: 280px;
             padding: 2rem;
+            border-radius: 12px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             text-decoration: none;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(44, 62, 80, 0.5), rgba(0, 0, 0, 0.9));
+            z-index: 1;
+        }
+
+        .service-card h2,
+        .service-card p,
+        .service-card .service-link {
+            position: relative;
+            z-index: 2;
         }
 
         .service-card:hover {
@@ -74,6 +95,67 @@
 
         .service-card:hover .service-link::after {
             transform: translateX(4px);
+        }
+
+        .cta-box {
+            position: relative;
+            background: rgba(138, 123, 244, 0.1);
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            margin: 4rem auto;
+            text-align: center;
+            overflow: hidden;
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .cta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-repeat: no-repeat;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .cta-box h2,
+        .cta-box p,
+        .cta-box .btn {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-box h2 {
+            color: #8a7bf4;
+            margin-bottom: 1rem;
+        }
+
+        .cta-box p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .discord-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .cta-box:hover .discord-icon {
+            transform: scale(1.1);
         }
     </style>
 
@@ -114,43 +196,36 @@
         </article>
 
         <div class="services-grid">
-            <a href="/services/mastering" class="service-card">
+            <a href="/services/mastering" class="service-card" style="background: url('/services/mastering/pexels-techivation-76108219-10681799.jpg') no-repeat center/cover;">
                 <h2>Mastering Services</h2>
                 <p>Get your tracks ready for streaming platforms with professional mastering. Achieve competitive loudness while maintaining dynamics and clarity.</p>
                 <span class="service-link">Learn More</span>
             </a>
 
-            <a href="/services/vocal-mixing" class="service-card">
+            <a href="/services/vocal-mixing" class="service-card" style="background: url('/services/vocal-mixing/pexels-cottonbro-9419242.jpg') no-repeat center/cover;">
                 <h2>Vocal Mixing Guide</h2>
                 <p>Learn professional vocal mixing techniques or let us handle it for you. From EQ to effects, get that radio-ready vocal sound.</p>
                 <span class="service-link">Learn More</span>
             </a>
 
-            <a href="/services/track-prep" class="service-card">
+            <a href="/services/track-prep" class="service-card" style="background: url('/services/track-prep/pexels-cottonbro-5657665.jpg') no-repeat center/cover;">
                 <h2>Track Preparation</h2>
                 <p>Set your project up for success. Learn how to properly organize and export your tracks for professional mixing.</p>
                 <span class="service-link">Learn More</span>
             </a>
 
-            <a href="/services/genres" class="service-card">
+            <a href="/services/genres" class="service-card" style="background: url('/services/genres/pexels-wendywei-1540406.jpg') no-repeat center/cover;">
                 <h2>Genre Mixing Tips</h2>
                 <p>Free guide to mixing different genres. From hip-hop to hyperpop, learn professional techniques to achieve genre-specific sounds.</p>
                 <span class="service-link">Learn More</span>
             </a>
         </div>
 
-        <section class="consultation-offer" style="
-            background: rgba(138, 123, 244, 0.1);
-            padding: 2rem;
-            border-radius: 12px;
-            margin: 4rem 0;
-            border: 1px solid rgba(138, 123, 244, 0.3);
-            text-align: center;">
-            <h2 style="color: #8a7bf4; margin-bottom: 1rem;">Not Sure Which Service You Need?</h2>
-            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem;">Book a free consultation and let's discuss your project. We'll find the perfect solution for your music.</p>
-            <div style="display: flex; justify-content: center;">
-                <a href="/getstarted" class="btn">Get Started</a>
-            </div>
+        <section class="cta-box">
+            <div class="cta-bg" style="background-image: url('/services/genres/pexels-harrisonhaines-2921568.jpg'); background-position: center 25%;"></div>
+            <h2>Ready to Get Started?</h2>
+            <p>Let's discuss your project and create something amazing together.</p>
+            <a href="/getstarted/" class="btn">Get Started</a>
         </section>
     </main>
 

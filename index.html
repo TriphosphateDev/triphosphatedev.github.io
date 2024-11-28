@@ -381,6 +381,36 @@
             }
             .content { padding: 1rem; }
         }
+
+        .discord-icon {
+            width: 48px;
+            height: 48px;
+            margin-top: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .cta-box:hover .discord-icon {
+            transform: scale(1.1);
+        }
+
+        .discord-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.2s ease;
+        }
+
+        .cta-box:hover .discord-icon {
+            transform: scale(1.1);
+        }
     </style>
 
     <!-- Reddit Pixel -->
@@ -410,15 +440,23 @@
             <h1>Triphosphate Music</h1>
             <h2 style="font-size: 1.5rem; margin-bottom: 2rem;">Affordable Mixing Services for Independent Artists</h2>
             
-            <section class="consultation-offer" style="
+            <section class="consultation-offer" onclick="window.location.href='https://discord.com/channels/@me/Triphosphate/';" style="
                 background: rgba(138, 123, 244, 0.1);
                 padding: 1.5rem;
                 border-radius: 10px;
                 margin-bottom: 2rem;
                 border: 1px solid rgba(138, 123, 244, 0.3);
-                max-width: 600px;">
+                max-width: 600px;
+                cursor: pointer;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;">
                 <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #8a7bf4;">Free Consultation</h3>
                 <p style="color: rgba(255, 255, 255, 0.9);">Not sure if professional mixing is right for you? Let's talk! Book a free consultation to discuss your music and creative goals. No commitment required.</p>
+                <img src="/636e0a6ca814282eca7172c6_icon_clyde_white_RGB.svg" 
+                     alt="Message on Discord" 
+                     style="width: 48px; height: 48px; margin-top: 1rem; transition: transform 0.2s ease; opacity: 0.65;">
             </section>
 
             <nav class="buttons" aria-label="Contact options">
@@ -431,19 +469,15 @@
                    class="btn">
                     Meet Your Engineer
                 </a>
-                <a class="btn" 
-                   href="mailto:triphosphateLP@gmail.com">
-                    Email Direct
-                </a>
-                <a class="btn" 
-                   href="https://discord.com/channels/@me/Triphosphate/" 
-                   rel="noopener">
-                    Discord Message
-                </a>
-                <a class="btn" href="/resources/faq">FAQ</a>
+                <a class="btn" href="/services/">Services</a>
+                <a class="btn" href="/resources/">Resources</a>
+                <a class="btn" href="/resources/faq/">FAQ</a>
+
             </nav>
 
             <div class="social-proof">
+                <a href="mailto:triphosphateLP@gmail.com" class="social-link" target="_blank">E-mail</a>
+                <a href="https://discord.com/channels/@me/Triphosphate/" class="social-link">Discord</a>
                 <a href="https://engineears.com/triphosphate" class="social-link" target="_blank" rel="noopener">EngineEars Profile</a>
                 <a href="https://soundcloud.com/triphosphate" class="social-link" target="_blank" rel="noopener">SoundCloud</a>
                 <a href="https://www.instagram.com/triphosphate_music" class="social-link" target="_blank" rel="noopener">Instagram</a>

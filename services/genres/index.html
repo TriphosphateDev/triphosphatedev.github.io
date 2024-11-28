@@ -82,7 +82,9 @@
             position: relative;
             min-height: 100vh;
             overflow-x: hidden;
-            background: linear-gradient(to bottom, rgba(44, 62, 80, 0.95), rgba(0, 0, 0, 0.98));
+            background: linear-gradient(to bottom, rgba(44, 62, 80, 0.78), rgba(0, 0, 0, 0.85)), 
+                        url('/services/genres/pexels-wendywei-1540406.jpg') no-repeat center 80% fixed;
+            background-size: cover;
         }
     </style>
 
@@ -140,6 +142,7 @@
     </script>
 </head>
 <body>
+    <div class="parallax-bg" style="background-image: url('/services/genres/pexels-wendywei-1540406.jpg');"></div>
     <main class="content-wrapper">
         <nav class="breadcrumb-nav" aria-label="Breadcrumb">
             <ol class="breadcrumb-list">
@@ -284,7 +287,7 @@
         </section>
 
         <div class="cta-box">
-            <div class="cta-bg" style="background-image: url('/services/genres/pexels-harrisonhaines-2921568.jpg');"></div>
+            <div class="cta-bg" style="background-image: url('/services/genres/pexels-harrisonhaines-2921568.jpg'); background-position: center 25%;"></div>
             
             <h2>Ready to Perfect Your Genre Sound?</h2>
             <p>Let's discuss your project and create something amazing together.</p>
@@ -341,5 +344,33 @@
             </nav>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            // Close drawer when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            // Optional: Close drawer when scrolling up rapidly
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
 </body>
 </html>
