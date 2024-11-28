@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Before & After Examples | Triphosphate Music</title>
+    <meta name="description" content="Hear the difference professional mixing and mastering can make. Listen to real examples and imagine how your track could sound.">
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        .showcase-section {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .feature-cta {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(138, 123, 244, 0.2);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .soundcloud-container {
+            margin: 2rem 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .player-controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: rgba(138, 123, 244, 0.2);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(138, 123, 244, 0.3);
+        }
+
+        .loading-overlay {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            padding: 1rem;
+        }
+    </style>
+    <script src="https://connect.soundcloud.com/sdk/sdk-3.3.2.js"></script>
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+</head>
+<body>
+    <main class="content-wrapper">
+        <article class="guide-header">
+            <h1>Before & After Examples</h1>
+            <p>Hear the Difference Professional Processing Makes</p>
+        </article>
+
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/portfolio" class="breadcrumb-link">Portfolio</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Before & After</span>
+                </li>
+            </ol>
+        </nav>
+
+        <section class="showcase-section">
+            <h2>Featured Transformations</h2>
+            <div class="soundcloud-container" id="app">
+                <div v-if="isLoading" class="loading-overlay">
+                    Loading...
+                </div>
+                <iframe id="soundcloud-player"
+                        width="100%" 
+                        height="450" 
+                        scrolling="no" 
+                        frameborder="no" 
+                        allow="autoplay" 
+                        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1912013239%3Fsecret_token%3Ds-r61q4L3W9ly&color=%236c5ce7&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false&show_artwork=false">
+                </iframe>
+                <p>
+                    <a href="https://soundcloud.com/triphosphate" 
+                       target="_blank" 
+                       rel="noopener"
+                       style="color: #8a7bf4; text-decoration: none;">
+                        View Full Portfolio on SoundCloud →
+                    </a>
+                </p>
+            </div>
+        </section>
+
+        <div class="feature-cta">
+            <h2>Your Track Could Be Featured Here!</h2>
+            <p>Ready to transform your sound? Let's work together to make your music shine.</p>
+            <div style="margin-top: 1.5rem;">
+                <a href="/getstarted" class="btn">Get Started</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="bottom-drawer">
+        <div class="drawer-tab">
+            <span class="drawer-icon">^</span>
+            <span>Resources</span>
+        </div>
+        <div class="drawer-content">
+            <nav class="drawer-menu">
+                <div class="drawer-section">
+                    <h3>Mixing Services</h3>
+                    <a href="/services/vocal-mixing">Vocal Mixing Guide</a>
+                    <a href="/services/track-prep">Track Preparation</a>
+                    <a href="/services/genres">Genre Techniques</a>
+                    <a href="/portfolio/before-after">Before & After Examples</a>
+                    <a href="/services/mastering">Mastering Services</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Artist Resources</h3>
+                    <a href="/resources/home-recording">Home Recording Guide</a>
+                    <a href="/resources/production-tips">DIY Production Tips</a>
+                    <a href="/resources/tutorials">Genre Tutorials</a>
+                    <a href="/resources/equipment">Equipment Reviews</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Free Downloads</h3>
+                    <a href="/resources/templates">Mixing Templates</a>
+                    <a href="/resources/checklists">Production Checklists</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/portfolio">Portfolio</a>
+                    <a href="/resources/faq">FAQ</a>
+                    <a href="/getstarted">Get Started</a>
+                    <a href="/resources/contents">Table of Contents</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            new Vue({
+                el: '#app',
+                data: {
+                    player: null,
+                    isLoading: true
+                },
+                mounted() {
+                    console.log('Vue mounted'); // Debug log
+                    setTimeout(() => {
+                        const iframe = document.getElementById('soundcloud-player');
+                        if (iframe) {
+                            console.log('SoundCloud iframe found'); // Debug log
+                            this.player = SC.Widget(iframe);
+                            this.player.bind(SC.Widget.Events.READY, () => {
+                                console.log('SoundCloud player ready'); // Debug log
+                                this.isLoading = false;
+                            });
+                        } else {
+                            console.log('SoundCloud iframe not found'); // Debug log
+                        }
+                    }, 1000);
+                },
+                methods: {
+                    nextTrack() {
+                        if (this.player) {
+                            this.player.next();
+                        }
+                    },
+                    previousTrack() {
+                        if (this.player) {
+                            this.player.prev();
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
+</body>
+</html>

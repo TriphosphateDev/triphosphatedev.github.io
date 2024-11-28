@@ -13,7 +13,37 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://tripmixes.com/services/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://tripmixes.com/faq</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/services/mastering/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/services/track-prep/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/resources/equipment/rf-x/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/resources/equipment/rcmpro/</loc>
     <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

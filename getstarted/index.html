@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started | Triphosphate Music</title>
+    <meta name="description" content="Take the first step towards professional-sounding music. Learn about our process and book a free consultation.">
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        .guide-section {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8a7bf4 0%, #4834b8 100%);
+            color: #fff;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .feature-list {
+            margin: 1.5rem 0;
+            padding-left: 1.2rem;
+        }
+
+        .feature-list li {
+            margin-bottom: 0.8rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .highlight-box {
+            background: rgba(138, 123, 244, 0.2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .highlight-box h3 {
+            color: #8a7bf4;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="content-wrapper">
+        <article class="guide-header">
+            <h1>Get Started</h1>
+            <p>Let's Create Something Amazing Together</p>
+        </article>
+
+        <section class="guide-section">
+            <h2>How It Works</h2>
+            <div class="section-content">
+                <p>Taking your music to the next level starts with a conversation. My consultations are designed to assess your goals and craft a personalized plan to achieve the sound you're dreaming of—all completely free.</p>
+                
+                <ol class="feature-list">
+                    <li><strong>Book Your Free Consultation</strong><br>
+                    Schedule a time that works for you using our simple booking form.</li>
+                    
+                    <li><strong>Discuss Your Project Goals</strong><br>
+                    We'll talk about your vision, challenges, and the sound you're aiming for.</li>
+                    
+                    <li><strong>Get a Custom Plan and Quote</strong><br>
+                    Receive a detailed plan of action with transparent pricing—no hidden fees.</li>
+                    
+                    <li><strong>Transform Your Music</strong><br>
+                    Watch your project come to life as we create something extraordinary together.</li>
+                </ol>
+
+                <div style="text-align: center;">
+                    <a href="/consultation.html" class="cta-button">Book Your Free Consultation</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="guide-section">
+            <h2>Tools & Expertise at Your Disposal</h2>
+            <div class="section-content">
+                <p>With years of experience and industry-grade tools, we offer comprehensive solutions:</p>
+                <ul class="feature-list">
+                    <li>Restoration & Clean-up</li>
+                    <li>Vocal Timing & Layer Alignment</li>
+                    <li>Pitch Correction</li>
+                    <li>Creative Effects & Sound Design</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="highlight-box">
+            <h3>Why Choose Triphosphate Music?</h3>
+            <ul class="feature-list">
+                <li><strong>Affordable for Independent Artists</strong> - Industry-quality sound at indie-friendly prices</li>
+                <li><strong>Flexible and Collaborative</strong> - Your vision guides the process</li>
+                <li><strong>Transparent Pricing</strong> - Clear quotes and no hidden fees</li>
+                <li><strong>Under-Budget Wins</strong> - Pay less if we complete ahead of schedule</li>
+            </ul>
+            <div style="text-align: center;">
+                <a href="/consultation.html" class="cta-button">Book Your Free Consultation</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="bottom-drawer">
+        <div class="drawer-tab">
+            <span class="drawer-icon">^</span>
+            <span>Resources</span>
+        </div>
+        <div class="drawer-content">
+            <nav class="drawer-menu">
+                <div class="drawer-section">
+                    <h3>Mixing Services</h3>
+                    <a href="/services/vocal-mixing">Vocal Mixing Guide</a>
+                    <a href="/services/track-prep">Track Preparation</a>
+                    <a href="/services/genres">Genre Techniques</a>
+                    <a href="/portfolio/before-after">Before & After Examples</a>
+                    <a href="/services/mastering">Mastering Services</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Artist Resources</h3>
+                    <a href="/resources/home-recording">Home Recording Guide</a>
+                    <a href="/resources/production-tips">DIY Production Tips</a>
+                    <a href="/resources/tutorials">Genre Tutorials</a>
+                    <a href="/resources/equipment">Equipment Reviews</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Free Downloads</h3>
+                    <a href="/resources/templates">Mixing Templates</a>
+                    <a href="/resources/checklists">Production Checklists</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/portfolio">Portfolio</a>
+                    <a href="/resources/faq">FAQ</a>
+                    <a href="/resources/contents">Table of Contents</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
+</body>
+</html>

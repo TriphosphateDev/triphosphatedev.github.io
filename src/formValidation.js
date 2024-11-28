@@ -34,14 +34,19 @@ export async function handleFormSubmit(event, formData) {
         const token = turnstile.getResponse();
         formData.append('cf-turnstile-response', token);
 
-        // Submit to Google Sheets
-        const response = await submitToGoogleSheets(formData);
+        // Submit to Worker
+        const response = await fetch('/api/submit', {
+            method: 'POST',
+            body: formData
+        });
         
-        if (response.status === 'success') {
+        const result = await response.json();
+        
+        if (result.status === 'success') {
             window.location.href = '/success.html';
             return true;
         } else {
-            window.alert(response.message || 'An error occurred. Please try again.');
+            window.alert(result.message || 'An error occurred. Please try again.');
             return false;
         }
     } catch (error) {

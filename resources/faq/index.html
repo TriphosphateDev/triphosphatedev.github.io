@@ -34,7 +34,7 @@
         "name": "Do you offer a free consultation?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, I offer a free consultation to discuss your project, goals, and how I can help. Reach out through the contact form, email, or Discord to schedule yours!"
+          "text": "Yes, I offer a free consultation to discuss your project, goals, and how I can help. Visit our Get Started page or reach out through email/Discord to schedule yours!"
         }
       }, {
         "@type": "Question",
@@ -112,106 +112,101 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="../../styles/main.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            color: #fff;
-            background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
-        }
-
-        h1 {
+        .guide-header {
             text-align: center;
-            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .guide-section {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
             margin: 2rem 0;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .faq-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
         .faq-item {
-            margin-bottom: 2rem;
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
         }
 
         .faq-item h2 {
             color: #8a7bf4;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
 
         .faq-item p {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 1rem;
+            line-height: 1.6;
         }
 
-        .back-btn {
-            display: block;
-            width: fit-content;
-            margin: 2rem auto;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #8a7bf4 0%, #4834b8 100%);
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
+        .consultation-offer {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 4rem 0;
             text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 52, 184, 0.3);
         }
 
-        .back-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(74, 52, 184, 0.5);
+        .consultation-offer h2 {
+            color: #8a7bf4;
+            margin-bottom: 1rem;
         }
 
-        .back-btn:active {
-            transform: scale(0.98);
+        .consultation-offer p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 1rem 0 2rem;
         }
 
         @media screen and (max-width: 768px) {
-            .content {
-                padding: 1rem;
+            .faq-item {
+                padding: 1.5rem;
             }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .faq-container {
-                padding: 1rem;
+            
+            .consultation-offer {
+                padding: 1.5rem;
+                margin: 2rem 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="content">
-        <h1>Frequently Asked Questions</h1>
+    <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/resources" class="breadcrumb-link">Resources</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">FAQ</span>
+                </li>
+            </ol>
+        </nav>
+
+        <article class="guide-header">
+            <h1>Frequently Asked Questions</h1>
+            <p>Get answers about our mixing services, process, and more</p>
+        </article>
+        
         <div class="faq-container">
             <div class="faq-item">
                 <h2>Do you offer a free consultation?</h2>
-                <p>Yes, I offer a free consultation to discuss your project, goals, and how I can help. Reach out through the contact form, email, or Discord to schedule yours!</p>
+                <p>Yes, I offer a free consultation to discuss your project, goals, and how I can help. Visit our Get Started page or reach out through email/Discord to schedule yours!</p>
             </div>
 
             <div class="faq-item">
@@ -264,7 +259,82 @@
                 <p>You can reach me through the Contact Form, email me at triphosphateLP@gmail.com, or send me a message on Discord.</p>
             </div>
         </div>
-        <a href="/" class="back-btn">Back to Home</a>
+
+        <section class="consultation-offer">
+            <h2>Ready to Get Started?</h2>
+            <p>Let's take your music to the next level—together.</p>
+            <div style="display: flex; justify-content: center;">
+                <a href="/getstarted" class="btn">Get Started</a>
+            </div>
+        </section>
+    </main>
+
+    <div class="bottom-drawer">
+        <div class="drawer-tab">
+            <span class="drawer-icon">^</span>
+            <span>Resources</span>
+        </div>
+        <div class="drawer-content">
+            <nav class="drawer-menu">
+                <div class="drawer-section">
+                    <h3>Mixing Services</h3>
+                    <a href="/services/vocal-mixing">Vocal Mixing Guide</a>
+                    <a href="/services/track-prep">Track Preparation</a>
+                    <a href="/services/genres">Genre Techniques</a>
+                    <a href="/portfolio/before-after">Before & After Examples</a>
+                    <a href="/services/mastering">Mastering Services</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Artist Resources</h3>
+                    <a href="/resources/home-recording">Home Recording Guide</a>
+                    <a href="/resources/production-tips">DIY Production Tips</a>
+                    <a href="/resources/tutorials">Genre Tutorials</a>
+                    <a href="/resources/equipment">Equipment Reviews</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Free Downloads</h3>
+                    <a href="/resources/templates">Mixing Templates</a>
+                    <a href="/resources/checklists">Production Checklists</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/portfolio">Portfolio</a>
+                    <a href="/getstarted">Get Started</a>
+                    <a href="/resources/contents">Table of Contents</a>
+                </div>
+            </nav>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
 </body>
 </html> 

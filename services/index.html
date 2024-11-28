@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>Professional Audio Services | Triphosphate Music</title>
+    <meta name="description" content="Professional mixing and mastering services for independent artists. From vocal mixing to track preparation, find the right service for your music.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tripmixes.com/services/">
+    <meta property="og:title" content="Professional Audio Services | Triphosphate Music">
+    <meta property="og:description" content="Professional mixing and mastering services for independent artists. Find the right service for your music.">
+    <meta property="og:site_name" content="Triphosphate Music">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://tripmixes.com/services/">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/main.css">
+
+    <style>
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .service-card {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            display: block;
+        }
+
+        .service-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(138, 123, 244, 0.2);
+        }
+
+        .service-card h2 {
+            color: #8a7bf4;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .service-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .service-link {
+            color: #8a7bf4;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-link::after {
+            content: "→";
+            transition: transform 0.2s ease;
+        }
+
+        .service-card:hover .service-link {
+            color: #fff;
+        }
+
+        .service-card:hover .service-link::after {
+            transform: translateX(4px);
+        }
+    </style>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://tripmixes.com/"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Services",
+        "item": "https://tripmixes.com/services/"
+      }]
+    }
+    </script>
+</head>
+<body>
+    <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Services</span>
+                </li>
+            </ol>
+        </nav>
+
+        <article class="guide-header">
+            <h1>Professional Audio Services</h1>
+            <p>Find the right service to elevate your sound</p>
+        </article>
+
+        <div class="services-grid">
+            <a href="/services/mastering" class="service-card">
+                <h2>Mastering Services</h2>
+                <p>Get your tracks ready for streaming platforms with professional mastering. Achieve competitive loudness while maintaining dynamics and clarity.</p>
+                <span class="service-link">Learn More</span>
+            </a>
+
+            <a href="/services/vocal-mixing" class="service-card">
+                <h2>Vocal Mixing Guide</h2>
+                <p>Learn professional vocal mixing techniques or let us handle it for you. From EQ to effects, get that radio-ready vocal sound.</p>
+                <span class="service-link">Learn More</span>
+            </a>
+
+            <a href="/services/track-prep" class="service-card">
+                <h2>Track Preparation</h2>
+                <p>Set your project up for success. Learn how to properly organize and export your tracks for professional mixing.</p>
+                <span class="service-link">Learn More</span>
+            </a>
+
+            <a href="/services/genres" class="service-card">
+                <h2>Genre Mixing Tips</h2>
+                <p>Free guide to mixing different genres. From hip-hop to hyperpop, learn professional techniques to achieve genre-specific sounds.</p>
+                <span class="service-link">Learn More</span>
+            </a>
+        </div>
+
+        <section class="consultation-offer" style="
+            background: rgba(138, 123, 244, 0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 4rem 0;
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            text-align: center;">
+            <h2 style="color: #8a7bf4; margin-bottom: 1rem;">Not Sure Which Service You Need?</h2>
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem;">Book a free consultation and let's discuss your project. We'll find the perfect solution for your music.</p>
+            <div style="display: flex; justify-content: center;">
+                <a href="/getstarted" class="btn">Get Started</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Include the bottom drawer navigation -->
+    <div class="bottom-drawer">
+        <div class="drawer-tab">
+            <span class="drawer-icon">^</span>
+            <span>Resources</span>
+        </div>
+        <div class="drawer-content">
+            <nav class="drawer-menu">
+                <div class="drawer-section">
+                    <h3>Mixing Services</h3>
+                    <a href="/services/vocal-mixing">Vocal Mixing Guide</a>
+                    <a href="/services/track-prep">Track Preparation</a>
+                    <a href="/services/genres">Genre Techniques</a>
+                    <a href="/portfolio/before-after">Before & After Examples</a>
+                    <a href="/services/mastering">Mastering Services</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Artist Resources</h3>
+                    <a href="/resources/home-recording">Home Recording Guide</a>
+                    <a href="/resources/production-tips">DIY Production Tips</a>
+                    <a href="/resources/tutorials">Genre Tutorials</a>
+                    <a href="/resources/equipment">Equipment Reviews</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Free Downloads</h3>
+                    <a href="/resources/templates">Mixing Templates</a>
+                    <a href="/resources/checklists">Production Checklists</a>
+                </div>
+
+                <div class="drawer-section">
+                    <h3>Quick Links</h3>
+                    <a href="/">Home</a>
+                    <a href="/about">About</a>
+                    <a href="/portfolio">Portfolio</a>
+                    <a href="/resources/faq">FAQ</a>
+                    <a href="/getstarted">Get Started</a>
+                    <a href="/resources/contents">Table of Contents</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const drawer = document.querySelector('.bottom-drawer');
+            const tab = document.querySelector('.drawer-tab');
+            
+            tab.addEventListener('click', () => {
+                drawer.classList.toggle('open');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!drawer.contains(e.target)) {
+                    drawer.classList.remove('open');
+                }
+            });
+
+            let lastScroll = 0;
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll < lastScroll && currentScroll > 100) {
+                    drawer.classList.remove('open');
+                }
+                lastScroll = currentScroll;
+            });
+        });
+    </script>
+</body>
+</html> 
