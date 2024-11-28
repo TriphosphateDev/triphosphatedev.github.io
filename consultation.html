@@ -223,7 +223,7 @@
                 if (result.status === 'success') {
                     // Track conversion if it's new
                     if (result.isNewConversion) {
-                        rdt('track', 'CustomLead', {
+                        rdt('track', 'Lead', {
                             conversion_id: result.conversionId
                         });
                     }

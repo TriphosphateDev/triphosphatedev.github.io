@@ -114,7 +114,8 @@ export default {
       // Return response
       return new Response(JSON.stringify({
         status: 'success',
-        isNewConversion: !previousConversion,
+        isNewConversion: false,
+        conversionId: null
       }), { 
         status: 200,
         headers: {
