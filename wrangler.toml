@@ -14,9 +14,12 @@ enabled = true
 pattern = "tripmixes.com/submit-form*"
 zone_id = "745313294601ce924f0e49745603a937"
 
-# Remove the triggers section if you don't need cron jobs
-
+# D1 Database
 [[d1_databases]]
-binding = "DB" # Can be any name
+binding = "DB"
 database_name = "formsubmissions"
 database_id = "a8283608-a362-410a-80d8-76bddfa1df8c"
+
+# Add this section to declare the secret (but not its value)
+[secrets]
+REDDIT_BEARER_TOKEN
