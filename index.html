@@ -390,6 +390,15 @@
     <!-- End Reddit Pixel -->
 </head>
 <body>
+    <div class="privacy-banner" id="privacyBanner">
+        <div class="privacy-content">
+            <div class="privacy-text">
+                🔒 We value your privacy. We only collect anonymous usage data to improve our services. 
+                <a href="/privacy-policy" class="privacy-link">Read our Privacy Policy</a>
+            </div>
+            <button class="privacy-dismiss" aria-label="Dismiss privacy notice" id="privacyDismiss">×</button>
+        </div>
+    </div>
     <div class="particles"></div>
     <img src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" 
          alt="Triphosphate Music - Professional mixing and mastering services for independent artists" 
@@ -413,10 +422,10 @@
             </section>
 
             <nav class="buttons" aria-label="Contact options">
-                <a href="consultation.html" 
+                <a href="/getstarted" 
                    class="btn" 
                    id="consultButton">
-                    Book a Free Consultation
+                    Get Started
                 </a>
                 <a href="/about" 
                    class="btn">
@@ -650,6 +659,30 @@
                     }
                 });
             }
+        });
+    </script>
+    <script>
+        // Privacy Banner Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const privacyBanner = document.getElementById('privacyBanner');
+            const privacyDismiss = document.getElementById('privacyDismiss');
+
+            // Check if the user has previously dismissed the banner
+            if (!localStorage.getItem('privacyBannerDismissed')) {
+                privacyBanner.style.display = 'block';
+            } else {
+                privacyBanner.style.display = 'none';
+            }
+
+            privacyDismiss.addEventListener('click', function() {
+                privacyBanner.classList.add('dismissed');
+                // After animation completes, hide the banner
+                setTimeout(() => {
+                    privacyBanner.style.display = 'none';
+                }, 300);
+                // Store the dismissal in localStorage
+                localStorage.setItem('privacyBannerDismissed', 'true');
+            });
         });
     </script>
 </body>

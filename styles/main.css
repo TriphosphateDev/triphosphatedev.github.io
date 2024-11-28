@@ -356,4 +356,147 @@ html {
         width: 100%;
         justify-content: center;
     }
+}
+
+/* Base CTA Box Styles */
+.cta-box {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    margin: 3rem auto;
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(138, 123, 244, 0.2);
+}
+
+/* Optional: Background zoom on hover */
+.cta-box:hover .cta-bg {
+    transform: scale(1.05);
+    transition: transform 0.5s ease;
+}
+
+/* Overlay gradient that works with any background */
+.cta-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        rgba(44, 62, 80, 0.85), 
+        rgba(0, 0, 0, 0.95)
+    );
+    z-index: -1;
+}
+
+/* Background image container */
+.cta-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    animation: slowZoom 20s infinite alternate;
+}
+
+@keyframes slowZoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}
+
+.cta-box h2 {
+    color: #8a7bf4;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    position: relative;
+}
+
+.cta-box p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    position: relative;
+}
+
+.photo-credits {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.photo-credits a {
+    color: #8a7bf4;
+    text-decoration: none;
+}
+
+.photo-credits a:hover {
+    text-decoration: underline;
+}
+
+/* Add these styles to your main.css */
+.privacy-banner {
+    position: relative;
+    background: rgba(138, 123, 244, 0.1);
+    border-bottom: 1px solid rgba(138, 123, 244, 0.3);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    transition: transform 0.3s ease-out;
+}
+
+.privacy-banner.dismissed {
+    transform: translateY(-100%);
+}
+
+.privacy-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.privacy-text {
+    flex: 1;
+}
+
+.privacy-link {
+    color: #8a7bf4;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.privacy-link:hover {
+    text-decoration: underline;
+}
+
+.privacy-dismiss {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    padding: 4px;
+    font-size: 20px;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.privacy-dismiss:hover {
+    color: rgba(255, 255, 255, 0.9);
 } 

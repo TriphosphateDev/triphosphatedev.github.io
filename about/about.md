@@ -49,3 +49,10 @@ Whether you’re chasing punchy hip-hop beats, dreamy pop soundscapes, or crunch
 ---
 
 Does this align with your vision? Would you like to add a section for testimonials or personal anecdotes to strengthen the connection with visitors?
+
+
+Photo by Yusuf Miah: https://www.pexels.com/photo/control-panel-of-an-audio-mixer-14828529/
+Photo by David Maat: https://www.pexels.com/photo/close-up-of-audio-mixer-faders-in-studio-setting-28930613/
+Photo by Erkan  Utu: https://www.pexels.com/photo/grayscale-condenser-microphone-302655/
+Photo by Daniel Reche: https://www.pexels.com/photo/black-and-silver-headphones-on-black-surface-3721941/
+Photo by Seej Nguyen: https://www.pexels.com/photo/gold-condenser-microphone-near-laptop-computer-755416/

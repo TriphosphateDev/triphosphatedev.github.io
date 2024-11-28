@@ -123,6 +123,88 @@
         .highlight-link:hover {
             color: #9f96f5;
         }
+
+        .about-section {
+            position: relative;
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .about-section-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                rgba(44, 62, 80, 0.85), 
+                rgba(0, 0, 0, 0.95)
+            );
+            z-index: -1;
+        }
+
+        .about-section h2 {
+            color: #8a7bf4;
+            margin-bottom: 1.5rem;
+            position: relative;
+            text-align: center;
+        }
+
+        .about-section .section-content {
+            position: relative;
+        }
+
+        .revision-policy {
+            background: rgba(138, 123, 244, 0.05);
+            border: 1px solid rgba(138, 123, 244, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .revision-policy h3 {
+            color: #8a7bf4;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .revision-policy p {
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .revision-policy ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .revision-policy li {
+            margin-bottom: 0.4rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .revision-policy strong {
+            color: rgba(255, 255, 255, 0.9);
+        }
     </style>
     <!-- Schema.org markup -->
     <script type="application/ld+json">
@@ -210,7 +292,8 @@
             <p>Over two decades of experience serving independent artists</p>
         </article>
 
-        <section class="guide-section">
+        <section class="about-section">
+            <div class="about-section-bg" style="background-image: url('/about/pexels-erkan-302655.jpg');"></div>
             <h2>My Story</h2>
             <div class="section-content">
                 <p>I bring over two decades of experience in music production and mixing to your project, helping independent artists and producers like you create professional, polished tracks from your home setup.</p>
@@ -238,7 +321,8 @@
             </div>
         </section>
 
-        <section class="guide-section">
+        <section class="about-section">
+            <div class="about-section-bg" style="background-image: url('/about/pexels-daniel-reche-718241-3721941.jpg');"></div>
             <h2>My Philosophy</h2>
             <div class="section-content">
                 <p>I believe that every track is a story waiting to be told. My role is to ensure your vision shines through with clarity and impact, no matter the genre.</p>
@@ -260,7 +344,8 @@
             </div>
         </section>
 
-        <section class="guide-section">
+        <section class="about-section">
+            <div class="about-section-bg" style="background-image: url('/about/pexels-seej-nguyen-249333-755416.jpg');"></div>
             <h2>What Sets Me Apart</h2>
             <div class="section-content">
                 <div class="expertise-list">
@@ -284,31 +369,31 @@
             </div>
         </section>
 
-        <section class="guide-section">
-            <div class="pro-tip" style="margin-top: 2rem;">
-                <h3 style="color: #8a7bf4; margin-bottom: 1rem;">* About Our Revision Policy</h3>
-                <p style="margin-bottom: 1rem;">While I proudly offer unlimited revisions to ensure your satisfaction, this policy operates within reasonable limits and at my discretion:</p>
-                <ul style="list-style-type: none; padding-left: 0;">
-                    <li style="margin-bottom: 0.5rem;">• <strong>Guaranteed Revisions:</strong> A specific number of revisions is guaranteed in our agreement to align with your project's scope.</li>
-                    <li style="margin-bottom: 0.5rem;">• <strong>Flexibility Beyond Scope:</strong> Additional revisions outside the agreement are often provided free of charge but are subject to my discretion based on the project's progress.</li>
-                    <li style="margin-bottom: 0.5rem;">• <strong>Clear Feedback:</strong> To keep the process efficient, I kindly ask for detailed and focused feedback to ensure timely and high-quality results.</li>
-                </ul>
-            </div>
+        <div class="cta-box">
+            <div class="cta-bg" style="background-image: url('/about/pexels-david-maat-1867522268-28930613.jpg');"></div>
+            
+            <h2>Ready to Transform Your Sound?</h2>
+            <p>Let's discuss your project and create something amazing together.</p>
+            <a href="/getstarted/" class="btn">Get Started</a>
+        </div>
+
+        <section class="revision-policy">
+            <h3>* About Our Revision Policy</h3>
+            <p>While I proudly offer unlimited revisions to ensure your satisfaction, this policy operates within reasonable limits and at my discretion:</p>
+            <ul>
+                <li><strong>Guaranteed Revisions:</strong> A specific number of revisions is guaranteed in our agreement to align with your project's scope.</li>
+                <li><strong>Flexibility Beyond Scope:</strong> Additional revisions outside the agreement are often provided free of charge but are subject to my discretion based on the project's progress.</li>
+                <li><strong>Clear Feedback:</strong> To keep the process efficient, I kindly ask for detailed and focused feedback to ensure timely and high-quality results.</li>
+            </ul>
         </section>
 
-        <section class="consultation-offer" style="
-            margin: 4rem 0;
-            text-align: center;
-            background: rgba(138, 123, 244, 0.1);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(138, 123, 244, 0.3);">
-            <h2>Ready to Transform Your Sound?</h2>
-            <p style="margin: 1rem 0 2rem;">Let's discuss your project and create something amazing together.</p>
-            <div style="display: flex; justify-content: center;">
-                <a href="/getstarted" class="btn">Get Started</a>
-            </div>
-        </section>
+        <div class="photo-credits">
+            <p>Images by:</p>
+            <p><a href="https://www.pexels.com/photo/grayscale-condenser-microphone-302655/">Erkan Utu</a>, 
+               <a href="https://www.pexels.com/photo/black-and-silver-headphones-on-black-surface-3721941/">Daniel Reche</a>, 
+               <a href="https://www.pexels.com/photo/gold-condenser-microphone-near-laptop-computer-755416/">Seej Nguyen</a>, and
+               <a href="https://www.pexels.com/photo/close-up-of-audio-mixer-faders-in-studio-setting-28930613/">David Maat</a> on Pexels</p>
+        </div>
     </main>
 
     <div class="bottom-drawer">

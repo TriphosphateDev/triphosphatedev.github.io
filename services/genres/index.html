@@ -77,6 +77,13 @@
                 margin: 1.5rem 0;
             }
         }
+
+        body {
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(to bottom, rgba(44, 62, 80, 0.95), rgba(0, 0, 0, 0.98));
+        }
     </style>
 
     <!-- Schema markup will be added in next message -->
@@ -275,6 +282,20 @@
                 </ul>
             </div>
         </section>
+
+        <div class="cta-box">
+            <div class="cta-bg" style="background-image: url('/services/genres/pexels-harrisonhaines-2921568.jpg');"></div>
+            
+            <h2>Ready to Perfect Your Genre Sound?</h2>
+            <p>Let's discuss your project and create something amazing together.</p>
+            <a href="/getstarted/" class="btn">Get Started</a>
+        </div>
+
+        <div class="photo-credits">
+            <p>Images by:</p>
+            <p><a href="https://www.pexels.com/photo/person-recording-in-studio-2921568/">Harrison Haines</a> and 
+               <a href="https://www.pexels.com/photo/person-playing-string-instruments-1540406/">Wendy Wei</a> on Pexels</p>
+        </div>
     </main>
 
     <div class="bottom-drawer">
@@ -320,31 +341,5 @@
             </nav>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const drawer = document.querySelector('.bottom-drawer');
-            const tab = document.querySelector('.drawer-tab');
-            
-            tab.addEventListener('click', () => {
-                drawer.classList.toggle('open');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!drawer.contains(e.target)) {
-                    drawer.classList.remove('open');
-                }
-            });
-
-            let lastScroll = 0;
-            window.addEventListener('scroll', () => {
-                const currentScroll = window.pageYOffset;
-                if (currentScroll < lastScroll && currentScroll > 100) {
-                    drawer.classList.remove('open');
-                }
-                lastScroll = currentScroll;
-            });
-        });
-    </script>
 </body>
 </html>
