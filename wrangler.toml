@@ -2,8 +2,10 @@ name = "form-handler"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
+# All variables in one [vars] section
 [vars]
 NOTIFICATION_EMAIL = "triphosphatelp@gmail.com"
+REDDIT_BEARER_TOKEN = ""  # Placeholder for the secret
 
 # Enable logging
 [observability.logs]
@@ -19,7 +21,3 @@ zone_id = "745313294601ce924f0e49745603a937"
 binding = "DB"
 database_name = "formsubmissions"
 database_id = "a8283608-a362-410a-80d8-76bddfa1df8c"
-
-# Secrets
-[vars]
-REDDIT_BEARER_TOKEN = ""
