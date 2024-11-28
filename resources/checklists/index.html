@@ -67,6 +67,20 @@
 </head>
 <body>
     <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/resources" class="breadcrumb-link">Resources</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Production Checklists</span>
+                </li>
+            </ol>
+        </nav>
+
         <article class="guide-header">
             <h1>Production Checklists</h1>
             <p>Essential guides for preparing your tracks</p>
@@ -181,6 +195,31 @@
                 lastScroll = currentScroll;
             });
         });
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "Production Checklists",
+      "description": "Step-by-step checklists for recording, mixing, and mastering your music",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Recording Checklist",
+          "text": "Essential steps for capturing professional audio"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Mixing Checklist",
+          "text": "Complete guide to mixing your tracks"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Mastering Checklist",
+          "text": "Final steps before release"
+        }
+      ]
+    }
     </script>
 </body>
 </html>

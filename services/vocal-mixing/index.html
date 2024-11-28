@@ -275,9 +275,27 @@
 </head>
 <body>
     <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/services" class="breadcrumb-link">Services</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Vocal Mixing Guide</span>
+                </li>
+            </ol>
+        </nav>
         <article class="guide-header">
             <div class="header-image">
-                <img src="pexels-chuck-3587478.jpg" alt="Professional studio microphone setup">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" 
+                     data-src="pexels-chuck-3587478.jpg" 
+                     alt="Professional studio microphone setup for vocal recording and mixing" 
+                     class="lazy"
+                     width="800"
+                     height="300">
             </div>
             <h1>Vocal Mixing Guide</h1>
             <p>A polished vocal mix is the centerpiece of any track, whether you're recording pop, hip-hop, or acoustic ballads.</p>
@@ -297,7 +315,12 @@
         </section>
 
         <div class="technique-image">
-            <img src="pexels-pixabay-159206.jpg" alt="Professional audio mixing equipment">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" 
+                 data-src="pexels-pixabay-159206.jpg" 
+                 alt="Professional audio mixing equipment and studio setup" 
+                 class="lazy"
+                 width="600"
+                 height="200">
         </div>
 
         <section class="guide-section">
@@ -361,11 +384,66 @@
             </div>
         </section>
 
+        <section class="guide-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="section-content">
+                <div class="faq-item">
+                    <h3>How should I record my vocals for the best mix?</h3>
+                    <p>Record in a treated space using a quality microphone, proper gain staging, and a pop filter. Aim for peaks around -6dB and record multiple takes for options during editing.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>What plugins do you recommend for vocal mixing?</h3>
+                    <p>While specific plugins matter less than technique, I often use FabFilter Pro-Q 3 for EQ, Pro-C 2 for compression, and Valhalla Room for reverb. Stock DAW plugins can also achieve great results when used properly.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>How do you handle pitch correction?</h3>
+                    <p>I use Melodyne for natural-sounding pitch correction, with the amount varying based on genre and artistic intent. Auto-Tune is available for creative effects when desired.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Can you fix a poorly recorded vocal?</h3>
+                    <p>While modern tools can improve issues like background noise or room reflections, starting with a clean recording always yields better results. I can advise on recording techniques to improve your future recordings.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>How many vocal layers should I record?</h3>
+                    <p>It depends on the genre and desired effect. For pop and hip-hop, I typically recommend recording main vocals, doubles for choruses, and additional layers for harmonies or ad-libs as needed.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="consultation-offer" style="
+            background: rgba(138, 123, 244, 0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 4rem 0;
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            text-align: center;">
+            <h2 style="color: #8a7bf4; margin-bottom: 1rem;">Ready to Perfect Your Vocals?</h2>
+            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem;">Let's discuss your project and create a mixing strategy tailored to your sound. Book a free consultation today!</p>
+            <div style="display: flex; justify-content: center;">
+                <a href="/getstarted" class="btn">Get Started</a>
+            </div>
+        </section>
+
         <div class="photo-credits">
             <p>Images by:</p>
             <p><a href="https://www.pexels.com/photo/black-headset-on-condenser-microphone-3587478/">Wallace Chuck</a> and 
                <a href="https://www.pexels.com/photo/black-disc-jockey-music-pad-159206/">Pixabay</a> on Pexels</p>
         </div>
+
+        <nav class="guide-navigation">
+            <a href="/services/track-prep/" class="nav-link previous">
+                <span class="keyboard-hint">←</span>
+                Previous Guide: Track Preparation
+            </a>
+            <a href="/services/mastering/" class="nav-link next">
+                Next Guide: Mastering
+                <span class="keyboard-hint">→</span>
+            </a>
+        </nav>
     </main>
 
     <div class="bottom-drawer">
@@ -440,6 +518,64 @@
                 }
                 lastScroll = currentScroll;
             });
+        });
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "How should I record my vocals for the best mix?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Record in a treated space using a quality microphone, proper gain staging, and a pop filter. Aim for peaks around -6dB and record multiple takes for options during editing."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What plugins do you recommend for vocal mixing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "While specific plugins matter less than technique, I often use FabFilter Pro-Q 3 for EQ, Pro-C 2 for compression, and Valhalla Room for reverb. Stock DAW plugins can also achieve great results when used properly."
+        }
+      }, {
+        "@type": "Question",
+        "name": "How do you handle pitch correction?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "I use Melodyne for natural-sounding pitch correction, with the amount varying based on genre and artistic intent. Auto-Tune is available for creative effects when desired."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Can you fix a poorly recorded vocal?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "While modern tools can improve issues like background noise or room reflections, starting with a clean recording always yields better results. I can advise on recording techniques to improve your future recordings."
+        }
+      }, {
+        "@type": "Question",
+        "name": "How many vocal layers should I record?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It depends on the genre and desired effect. For pop and hip-hop, I typically recommend recording main vocals, doubles for choruses, and additional layers for harmonies or ad-libs as needed."
+        }
+      }]
+    }
+    </script>
+
+    <script>
+        document.addEventListener('keydown', (e) => {
+            // Only handle if not in an input/textarea
+            if (e.target.matches('input, textarea')) return;
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.nav-link.previous');
+                if (prevLink) window.location.href = prevLink.href;
+            } else if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.nav-link.next');
+                if (nextLink) window.location.href = nextLink.href;
+            }
         });
     </script>
 </body>

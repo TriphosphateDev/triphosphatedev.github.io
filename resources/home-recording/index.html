@@ -101,6 +101,29 @@
     }
     </script>
     
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://tripmixes.com/"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Resources",
+        "item": "https://tripmixes.com/resources/"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Home Recording Guide",
+        "item": "https://tripmixes.com/resources/home-recording/"
+      }]
+    }
+    </script>
+    
     <link rel="canonical" href="https://tripmixes.com/resources/home-recording/">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../styles/main.css">
@@ -171,6 +194,20 @@
 </head>
 <body>
     <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/resources" class="breadcrumb-link">Resources</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Home Recording Guide</span>
+                </li>
+            </ol>
+        </nav>
+
         <article class="guide-header">
             <h1>Home Recording Guide</h1>
             <p>Transform your space into a professional recording environment</p>
@@ -253,6 +290,17 @@
                 <a href="/getstarted" class="btn">Get Started</a>
             </div>
         </section>
+
+        <nav class="guide-navigation">
+            <a href="/" class="nav-link previous">
+                <span class="keyboard-hint">←</span>
+                Previous: Home
+            </a>
+            <a href="/resources/production-tips/" class="nav-link next">
+                Next: Production Tips
+                <span class="keyboard-hint">→</span>
+            </a>
+        </nav>
     </main>
 
     <!-- Bottom Drawer Navigation -->
@@ -322,6 +370,21 @@
                 }
                 lastScroll = currentScroll;
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('keydown', (e) => {
+            // Only handle if not in an input/textarea
+            if (e.target.matches('input, textarea')) return;
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.nav-link.previous');
+                if (prevLink) window.location.href = prevLink.href;
+            } else if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.nav-link.next');
+                if (nextLink) window.location.href = nextLink.href;
+            }
         });
     </script>
 </body>

@@ -134,6 +134,43 @@
 </head>
 <body>
     <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/services" class="breadcrumb-link">Services</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Genre Mixing Guide</span>
+                </li>
+            </ol>
+        </nav>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://tripmixes.com/"
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Services",
+            "item": "https://tripmixes.com/services/"
+          },{
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Genre Mixing Guide",
+            "item": "https://tripmixes.com/services/genres/"
+          }]
+        }
+        </script>
+
         <article class="guide-header">
             <h1>Genre-Specific Mixing Guide</h1>
             <p>Every genre presents unique mixing challenges. Learn professional techniques for hip-hop, pop, electronic, and hyperpop to achieve the perfect sound for your style.</p>
