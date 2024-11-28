@@ -17,16 +17,37 @@
   - Path: Home > Services > Track Preparation Guide
 
 ## Phase 2: Resource Pages
+- [x] resources/home-recording/index.html
+  - Schema: ✓ Done
+  - UI: ✓ Added breadcrumb navigation
+  - Path: Home > Resources > Home Recording Guide
+
+- [x] resources/production-tips/index.html
+  - Schema: ✓ Done
+  - UI: ✓ Added breadcrumb navigation
+  - Path: Home > Resources > Production Tips Guide
+
+- [x] resources/equipment/index.html
+  - Schema: ✓ Done
+  - UI: ✓ Added breadcrumb navigation
+  - Path: Home > Resources > Equipment Reviews
+
 - [x] resources/equipment/rf-x/index.html
   - Schema: ✓ Done
   - UI: ✓ Added breadcrumb navigation
-  - Path: Home > Resources > Equipment > RF-X Review ✓
+  - Path: Home > Resources > Equipment Reviews > RF-X Review
 
-## Phase 3: Future Pages (Not Yet Created)
+- [x] resources/equipment/rcmpro/index.html
+  - Schema: ✓ Done
+  - UI: ✓ Added breadcrumb navigation
+  - Path: Home > Resources > Equipment Reviews > RCM Pro Review
+
 - [x] resources/faq/index.html
   - Schema: ✓ Done
-  - Path: Home > Resources > FAQ ✓
+  - UI: ✓ Added breadcrumb navigation
+  - Path: Home > Resources > FAQ
 
+## Phase 3: Future Pages (Not Yet Created)
 - [ ] resources/tutorials/index.html
   - Schema: Needs implementation
   - Path: Home > Resources > Tutorials
@@ -118,6 +139,44 @@ color: rgba(255, 255, 255, 0.9);
 - Refresh testimonials
 - Review/update meta descriptions
 - Monitor Core Web Vitals
+
+## Google Tag Manager Implementation
+Add GTM noscript tag to body of all pages:
+html
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLBCKCXF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+### Core Service Pages
+- [x] services/mastering/index.html
+- [x] services/vocal-mixing/index.html
+- [x] services/track-prep/index.html
+
+### Resource Pages
+- [x] resources/home-recording/index.html
+- [x] resources/production-tips/index.html
+- [x] resources/equipment/index.html
+- [x] resources/equipment/rf-x/index.html
+- [x] resources/equipment/rcmpro/index.html
+- [x] resources/faq/index.html
+
+### Future Pages (When Created)
+- [ ] resources/tutorials/index.html
+- [ ] portfolio/before-after/index.html
+
+### Implementation Notes:
+- [x] Add immediately after opening <body> tag
+- [ ] Verify implementation with GTM Preview mode
+- [ ] Test across different browsers and devices
+
+### Progress:
+- [x] Phase 1: Core Service Pages (3/3)
+- [x] Phase 2: Resource Pages (6/6)
+- [ ] Phase 3: Future Pages (Deferred)
+
+
 
 ---
 
