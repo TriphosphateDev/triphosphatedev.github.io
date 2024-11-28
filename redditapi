@@ -1,0 +1,27 @@
+a2_g2pig4wsi4fe
+
+<!-- Reddit Pixel -->
+<script>
+!function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};p.callQueue=[];var t=d.createElement("script");t.src="https://www.redditstatic.com/ads/pixel.js",t.async=!0;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}(window,document);rdt('init','a2_g2pig4wsi4fe');rdt('track', 'PageVisit');
+</script>
+<!-- DO NOT MODIFY UNLESS TO REPLACE A USER IDENTIFIER -->
+<!-- End Reddit Pixel -->
+
+Step 3: Set up match keys
+We strongly suggest adding advanced matching to the init call, especially if using the Event Setup Tool to create conversion events.
+<!-- Example of advanced matching in your init call. -->
+rdt('init', 'a2_g2pig4wsi4fe', {
+    email: '<EMAIL-HERE>',
+    externalId: '<EXTERNAL-ID-HERE>',
+    idfa: '<IDFA-HERE>',
+    aaid: '<AAID-HERE>',
+});
+
+Step 4: Add the code to your website
+Paste the code inside the <head></head> tags of your ad's landing page and each page where you want to track conversion events.
+<!-- Example -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    PASTE PIXEL CODE HERE
+  </head>
