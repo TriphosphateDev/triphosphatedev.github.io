@@ -385,10 +385,9 @@
 </head>
 <body>
     <div class="particles"></div>
-    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" 
-         data-src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" 
+    <img src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" 
          alt="Triphosphate Music - Professional mixing and mastering services for independent artists" 
-         class="logo lazy"
+         class="logo"
          width="900"
          height="900">
     <div id="app">
@@ -607,6 +606,40 @@
                 }
                 lastScroll = currentScroll;
             });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            if (lazyImage.dataset.src) {
+                                lazyImage.src = lazyImage.dataset.src;
+                                lazyImage.removeAttribute("data-src");
+                                lazyImage.classList.remove("lazy");
+                                observer.unobserve(lazyImage);
+                            }
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            } else {
+                // Fallback for browsers without IntersectionObserver
+                lazyImages.forEach(function(lazyImage) {
+                    if (lazyImage.dataset.src) {
+                        lazyImage.src = lazyImage.dataset.src;
+                        lazyImage.removeAttribute("data-src");
+                        lazyImage.classList.remove("lazy");
+                    }
+                });
+            }
         });
     </script>
 </body>
