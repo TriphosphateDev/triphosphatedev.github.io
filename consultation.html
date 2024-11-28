@@ -209,6 +209,10 @@
     <script>
         document.getElementById('consultationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Show loading overlay
+            document.querySelector('.loading-overlay').style.display = 'flex';
+            
             try {
                 const response = await fetch('/submit-form', {
                     method: 'POST',
@@ -216,14 +220,31 @@
                 });
                 const result = await response.json();
                 
-                if (result.status === 'success' && result.isNewConversion) {
-                    const conversionId = `trip_${Date.now()}`;
-                    rdt('track', 'CustomLead', {
-                        conversion_id: conversionId
-                    });
+                if (result.status === 'success') {
+                    // Track conversion if it's new
+                    if (result.isNewConversion) {
+                        const conversionId = `trip_${Date.now()}`;
+                        rdt('track', 'CustomLead', {
+                            conversion_id: conversionId
+                        });
+                    }
+                    
+                    // Show success message
+                    document.querySelector('.success-message').style.display = 'block';
+                    
+                    // Redirect after delay
+                    setTimeout(() => {
+                        window.location.href = '/success.html';
+                    }, 2000);
+                } else {
+                    throw new Error(result.message || 'Submission failed');
                 }
             } catch (error) {
                 console.error('Form submission error:', error);
+                alert('There was an error submitting your form. Please try again.');
+            } finally {
+                // Hide loading overlay
+                document.querySelector('.loading-overlay').style.display = 'none';
             }
         });
     </script>
