@@ -297,6 +297,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://w.soundcloud.com">
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
         #app {
@@ -411,6 +412,98 @@
         .cta-box:hover .discord-icon {
             transform: scale(1.1);
         }
+
+        .audio-player {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .track-info {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .track-name {
+            display: block;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .artist-name {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .progress-area {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background: #8a7bf4;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-counter {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .control-btn:hover {
+            color: #8a7bf4;
+        }
+
+        .volume-slider {
+            position: relative;
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .volume-progress {
+            height: 100%;
+            background: #8a7bf4;
+            border-radius: 2px;
+            width: 100%;
+        }
     </style>
 
     <!-- Reddit Pixel -->
@@ -483,23 +576,41 @@
                 <a href="https://www.instagram.com/triphosphate_music" class="social-link" target="_blank" rel="noopener">Instagram</a>
             </div>
 
-            <section class="playlist-container" :class="{ 'loading': isLoading }" aria-label="Music portfolio">
+            <section class="playlist-container" aria-label="Music portfolio">
                 <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">Listen to My Recent Work</h3>
-                <div class="loading-overlay" v-if="isLoading">
-                    <div class="loading-spinner"></div>
-                </div>
-                <iframe 
-                    id="soundcloud-player"
-                    width="100%" 
-                    height="80" 
-                    scrolling="no" 
-                    frameborder="no" 
-                    allow="autoplay" 
-                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1912013239%3Fsecret_token%3Ds-r61q4L3W9ly&color=%236c5ce7&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false&show_artwork=false">
-                </iframe>
-                <div class="player-controls">
-                    <button class="player-btn" @click="previousTrack">⏮</button>
-                    <button class="player-btn" @click="nextTrack">⏭</button>
+                <div class="audio-player">
+                    <div class="track-info">
+                        <span class="track-name">{{ playlist[currentTrackIndex].title }}</span>
+                        <span class="artist-name">{{ playlist[currentTrackIndex].artist }}</span>
+                    </div>
+                    
+                    <div class="progress-area">
+                        <div class="progress-bar" @click="seek">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="time-counter">
+                            <span class="current">{{ formatTime(currentTime) }}</span>
+                            <span class="duration">{{ formatTime(duration) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="control-btn previous" @click="previousTrack">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button class="control-btn play-pause" @click="togglePlay">
+                            <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+                        </button>
+                        <button class="control-btn next" @click="nextTrack">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <button class="control-btn volume" @click="toggleMute">
+                            <i :class="audio && audio.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
+                        </button>
+                        <div class="volume-slider" @click="updateVolume">
+                            <div class="volume-progress" :style="{ width: (volume * 100) + '%' }"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -527,35 +638,124 @@
             new Vue({
                 el: '#app',
                 data: {
-                    showModal: false,
-                    player: null,
-                    isLoading: true
+                    audio: null,
+                    isPlaying: false,
+                    currentTime: 0,
+                    duration: 0,
+                    volume: 0.5,
+                    hasInteracted: false,
+                    playlist: [
+                        {
+                            title: 'Violet Mixing Demo',
+                            artist: 'Triphosphate Music',
+                            file: '/portfolio/violet mixing demo.mp3'
+                        }
+                        // Add more tracks here as needed
+                    ],
+                    currentTrackIndex: 0
                 },
                 mounted() {
-                    console.log('Vue mounted'); // Debug log
-                    setTimeout(() => {
-                        const iframe = document.getElementById('soundcloud-player');
-                        if (iframe) {
-                            console.log('SoundCloud iframe found'); // Debug log
-                            this.player = SC.Widget(iframe);
-                            this.player.bind(SC.Widget.Events.READY, () => {
-                                console.log('SoundCloud player ready'); // Debug log
-                                this.isLoading = false;
-                            });
-                        } else {
-                            console.log('SoundCloud iframe not found'); // Debug log
-                        }
-                    }, 1000);
+                    this.initializeAudio();
+                    this.setupInteractionListeners();
                 },
                 methods: {
-                    nextTrack() {
-                        if (this.player) {
-                            this.player.next();
+                    setupInteractionListeners() {
+                        const interactions = ['click', 'touchstart', 'scroll', 'keydown', 'mousemove'];
+                        
+                        const handleFirstInteraction = () => {
+                            if (!this.hasInteracted && this.audio) {
+                                this.hasInteracted = true;
+                                // Add a small delay to ensure the interaction is registered
+                                setTimeout(() => {
+                                    this.audio.play().then(() => {
+                                        this.isPlaying = true;
+                                        console.log('Playback started successfully');
+                                    }).catch(error => {
+                                        // More informative error message
+                                        console.log('Playback failed, waiting for explicit user interaction with player:', error);
+                                        this.hasInteracted = false; // Reset the flag to try again
+                                    });
+                                }, 100);
+                                
+                                // Remove listeners only after successful playback
+                                this.audio.addEventListener('playing', () => {
+                                    interactions.forEach(event => {
+                                        document.removeEventListener(event, handleFirstInteraction);
+                                    });
+                                }, { once: true });
+                            }
+                        };
+
+                        // Add listeners for all interaction types
+                        interactions.forEach(event => {
+                            document.addEventListener(event, handleFirstInteraction);
+                        });
+                    },
+                    initializeAudio() {
+                        this.audio = new Audio(this.playlist[this.currentTrackIndex].file);
+                        
+                        this.audio.addEventListener('timeupdate', this.updateProgress);
+                        this.audio.addEventListener('loadedmetadata', () => {
+                            this.duration = this.audio.duration;
+                            this.audio.volume = this.volume;
+                            console.log('Audio metadata loaded, duration:', this.duration);
+                        });
+
+                        // Add error handling for audio loading
+                        this.audio.addEventListener('error', (e) => {
+                            console.error('Audio loading error:', e);
+                        });
+                    },
+                    togglePlay() {
+                        if (this.audio.paused) {
+                            this.audio.play();
+                            this.isPlaying = true;
+                        } else {
+                            this.audio.pause();
+                            this.isPlaying = false;
                         }
                     },
+                    updateProgress() {
+                        this.currentTime = this.audio.currentTime;
+                        const progress = document.querySelector('.progress');
+                        const value = (this.currentTime / this.duration) * 100;
+                        progress.style.width = value + '%';
+                    },
+                    seek(event) {
+                        const progressBar = document.querySelector('.progress-bar');
+                        const rect = progressBar.getBoundingClientRect();
+                        const percent = (event.clientX - rect.left) / rect.width;
+                        this.audio.currentTime = percent * this.duration;
+                    },
+                    formatTime(seconds) {
+                        const mins = Math.floor(seconds / 60);
+                        const secs = Math.floor(seconds % 60);
+                        return `${mins}:${secs.toString().padStart(2, '0')}`;
+                    },
+                    updateVolume(event) {
+                        const slider = document.querySelector('.volume-slider');
+                        const rect = slider.getBoundingClientRect();
+                        const percent = (event.clientX - rect.left) / rect.width;
+                        this.volume = Math.max(0, Math.min(1, percent));
+                        this.audio.volume = this.volume;
+                        document.querySelector('.volume-progress').style.width = (this.volume * 100) + '%';
+                    },
+                    toggleMute() {
+                        this.audio.muted = !this.audio.muted;
+                    },
                     previousTrack() {
-                        if (this.player) {
-                            this.player.prev();
+                        this.currentTrackIndex = (this.currentTrackIndex - 1 + this.playlist.length) % this.playlist.length;
+                        this.loadTrack();
+                    },
+                    nextTrack() {
+                        this.currentTrackIndex = (this.currentTrackIndex + 1) % this.playlist.length;
+                        this.loadTrack();
+                    },
+                    loadTrack() {
+                        const wasPlaying = !this.audio.paused;
+                        this.audio.src = this.playlist[this.currentTrackIndex].file;
+                        if (wasPlaying) {
+                            this.audio.play();
                         }
                     }
                 }
