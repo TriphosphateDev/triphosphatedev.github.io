@@ -320,7 +320,7 @@
             padding-top: 2rem;
         }
 
-        .logo {
+        .logo.fallback-bg {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -328,19 +328,15 @@
             width: 900px;
             height: 900px;
             border-radius: 50%;
-            opacity: 0.15;
             z-index: -1;
-            animation: float 6s ease-in-out infinite;
-            box-shadow: 
-                0 4px 8px rgba(0, 0, 0, 0.3),
-                0 8px 16px rgba(0, 0, 0, 0.2),
-                0 0 0 2px rgba(255, 255, 255, 0.1);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        @keyframes float {
-            0% { transform: translate(-50%, -50%); }
-            50% { transform: translate(-50%, -60%); }
-            100% { transform: translate(-50%, -50%); }
+        body.visualizer-failed .logo.fallback-bg {
+            display: block;
+            opacity: 0.15;
         }
 
         h1 {
@@ -679,14 +675,17 @@
             <button class="privacy-dismiss" aria-label="Dismiss privacy notice" id="privacyDismiss">×</button>
         </div>
     </div>
+    
+    <!-- Add canvas first -->
     <canvas id="visualizer" class="background-canvas"></canvas>
-    <div class="canvas-overlay"></div>
-    <div class="particles"></div>
+    
+    <!-- Add fallback image -->
     <img src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" 
          alt="Triphosphate Music" 
          class="logo fallback-bg"
          width="900"
          height="900">
+         
     <div id="app">
         <main class="content">
             <!-- Title Box -->
@@ -845,6 +844,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Vue app
             new Vue({
                 el: '#app',
                 data: {
@@ -892,15 +892,19 @@
                     // Initialize audio without auto-play
                     this.initializeAudio();
                     
-                    // Force visualizer reconnection after a short delay
-                    setTimeout(() => {
+                    // Wait for visualizer to be ready
+                    const checkVisualizer = setInterval(() => {
                         const visualizer = document.querySelector('#visualizer').__visualizer;
                         if (visualizer) {
                             visualizer.reconnectAudio().catch(e => {
                                 console.error('Error reconnecting visualizer:', e);
                             });
+                            clearInterval(checkVisualizer);
                         }
-                    }, 500);
+                    }, 100);
+
+                    // Clear check after 5 seconds to prevent infinite checking
+                    setTimeout(() => clearInterval(checkVisualizer), 5000);
                 },
                 methods: {
                     initializeAudio() {
