@@ -8,10 +8,16 @@
 body {
     font-family: 'Montserrat', sans-serif;
     color: #fff;
-    background: none;
-    overflow-x: hidden;
     min-height: 100vh;
     position: relative;
+    overflow-x: hidden;
+    /* Default gradient background for non-home pages */
+    background: linear-gradient(to bottom, rgba(44, 62, 80, 0.88), rgba(0, 0, 0, 0.95));
+}
+
+/* Home page specific styles - clear background for visualizer */
+body.home {
+    background: none;
 }
 
 /* Backup background image */

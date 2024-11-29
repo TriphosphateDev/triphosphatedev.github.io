@@ -701,6 +701,16 @@
                 grid-template-columns: 1fr !important;
             }
         }
+
+        /* Home page specific styles */
+        body.home {
+            background: none; /* Remove background for home page */
+        }
+
+        /* All other pages will use the default gradient from main.css */
+        body:not(.home) {
+            background: linear-gradient(135deg, #1a1f35 0%, #0f1623 100%);
+        }
     </style>
 
     <!-- Reddit Pixel -->
@@ -709,7 +719,7 @@
     </script>
     <!-- End Reddit Pixel -->
 </head>
-<body>
+<body class="home">
     <div class="privacy-banner" id="privacyBanner">
         <div class="privacy-content">
             <div class="privacy-text">
