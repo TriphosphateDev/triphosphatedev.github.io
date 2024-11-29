@@ -547,4 +547,24 @@ html {
 
 .privacy-dismiss:hover {
     color: rgba(255, 255, 255, 0.9);
+}
+
+.background-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+}
+
+.fallback-bg {
+    opacity: 0.15;
+    z-index: -1;
+    display: none; /* Hidden by default */
+}
+
+/* Show fallback when visualizer fails or is loading */
+.visualizer-failed .fallback-bg {
+    display: block;
 } 
