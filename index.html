@@ -318,6 +318,7 @@
             background: transparent;
             z-index: 1;
             padding-top: 2rem;
+            padding-bottom: 4rem;
         }
 
         .logo.fallback-bg {
@@ -364,8 +365,9 @@
                 height: 600px;
             }
             .content {
-                padding-top: 1rem;
-                justify-content: flex-start;
+                padding: 1rem;
+                padding-bottom: 3rem;
+                gap: 0.75rem;
             }
         }
 
@@ -657,6 +659,39 @@
                 gap: 0.75rem; /* Even tighter on mobile */
             }
         }
+
+        /* Update social container mobile styles */
+        @media screen and (max-width: 768px) {
+            .social-container {
+                padding: 0.75rem !important;
+                margin-bottom: 1rem !important;
+            }
+
+            .social-proof {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem !important;
+                text-align: center;
+            }
+
+            /* Hide dots on mobile */
+            .social-proof span {
+                display: none !important;
+            }
+
+            .social-link {
+                font-size: 0.9rem;
+                padding: 0.5rem 0;
+                width: 100%;
+            }
+        }
+
+        /* Even smaller screens - single column */
+        @media screen and (max-width: 375px) {
+            .social-proof {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 
     <!-- Reddit Pixel -->
@@ -892,6 +927,22 @@
                     // Initialize audio without auto-play
                     this.initializeAudio();
                     
+                    // Add mobile-specific initialization
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    if (isMobile) {
+                        // Add touch event listener to initialize audio on first interaction
+                        document.addEventListener('touchstart', () => {
+                            if (!this.hasInteracted) {
+                                this.hasInteracted = true;
+                                // Resume AudioContext for visualizer
+                                const visualizer = document.querySelector('#visualizer').__visualizer;
+                                if (visualizer && visualizer.audioContext) {
+                                    visualizer.audioContext.resume();
+                                }
+                            }
+                        }, { once: true });
+                    }
+                    
                     // Wait for visualizer to be ready
                     const checkVisualizer = setInterval(() => {
                         const visualizer = document.querySelector('#visualizer').__visualizer;
@@ -903,7 +954,6 @@
                         }
                     }, 100);
 
-                    // Clear check after 5 seconds to prevent infinite checking
                     setTimeout(() => clearInterval(checkVisualizer), 5000);
                 },
                 methods: {
@@ -933,9 +983,28 @@
                         }
                     },
                     togglePlay() {
+                        if (!this.hasInteracted) {
+                            this.hasInteracted = true;
+                        }
+                        
                         if (this.audio.paused) {
-                            this.audio.play();
-                            this.isPlaying = true;
+                            // Resume AudioContext before playing
+                            const visualizer = document.querySelector('#visualizer').__visualizer;
+                            if (visualizer && visualizer.audioContext) {
+                                visualizer.audioContext.resume().then(() => {
+                                    this.audio.play().then(() => {
+                                        this.isPlaying = true;
+                                    }).catch(error => {
+                                        console.error('Error playing audio:', error);
+                                    });
+                                });
+                            } else {
+                                this.audio.play().then(() => {
+                                    this.isPlaying = true;
+                                }).catch(error => {
+                                    console.error('Error playing audio:', error);
+                                });
+                            }
                         } else {
                             this.audio.pause();
                             this.isPlaying = false;
