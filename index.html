@@ -297,6 +297,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://w.soundcloud.com">
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
         #app {
@@ -411,6 +412,255 @@
         .cta-box:hover .discord-icon {
             transform: scale(1.1);
         }
+
+        .audio-player {
+            background: rgba(98, 83, 204, 0.35);
+            border: 1px solid rgba(138, 123, 244, 0.5);
+            border-radius: 10px;
+            padding: 1rem;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .track-info {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .track-name {
+            display: block;
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .artist-name {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .progress-area {
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background: #8a7bf4;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .time-counter {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .control-btn:hover {
+            color: #8a7bf4;
+        }
+
+        .volume-slider {
+            position: relative;
+            width: 100px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1.5px;
+            cursor: pointer;
+        }
+
+        .volume-progress {
+            height: 100%;
+            background: #8a7bf4;
+            border-radius: 2px;
+            width: 100%;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .title-container h1 {
+            margin-bottom: 1rem;
+        }
+
+        .nav-container .buttons {
+            max-width: 100%;
+        }
+
+        .social-container .social-proof {
+            margin: 0;
+        }
+
+        .social-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .social-link:hover {
+            color: #8a7bf4;
+        }
+
+        @media screen and (max-width: 768px) {
+            .content {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+
+            .title-container,
+            .nav-container,
+            .social-container,
+            .service-description {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Update box backgrounds with darker purple and less transparency */
+        .audio-player,
+        .consultation-offer,
+        .title-container,
+        .nav-container,
+        .social-container,
+        .service-description {
+            background: rgba(98, 83, 204, 0.25) !important; /* Slightly more transparent */
+            backdrop-filter: blur(8px) !important; /* Add subtle blur effect */
+            -webkit-backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(138, 123, 244, 0.5) !important;
+        }
+
+        /* Update privacy banner style */
+        .privacy-banner {
+            background: rgba(5, 10, 25, 0.98) !important; /* Almost fully opaque */
+            border-bottom: 1px solid rgba(138, 123, 244, 0.5);
+        }
+
+        /* Update hover states for interactive elements */
+        .btn:hover {
+            background: rgba(138, 123, 244, 0.45) !important;
+        }
+
+        /* Ensure text remains highly readable */
+        .consultation-offer p,
+        .service-description p {
+            color: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        /* Add gradient overlay to visualizer */
+        .background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+
+        /* Add overlay between visualizer and content */
+        .canvas-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                circle at center,
+                rgba(5, 10, 25, 0.3) 0%,
+                rgba(5, 10, 25, 0.6) 50%,
+                rgba(5, 10, 25, 0.8) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .main-play-button:hover {
+            transform: scale(1.05);
+            background: rgba(138, 123, 244, 0.6);
+            box-shadow: 0 0 20px rgba(138, 123, 244, 0.3);
+        }
+
+        .main-play-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Update content container spacing */
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem; /* Reduced from 2rem */
+            padding: 1.5rem; /* Reduced from 2rem */
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Update individual box margins */
+        .title-container {
+            margin-bottom: 1rem !important; /* Reduced from 2rem */
+        }
+
+        .consultation-offer,
+        .playlist-container,
+        .nav-container,
+        .social-container,
+        .service-description {
+            margin: 0 !important; /* Remove default margins */
+        }
+
+        /* Adjust padding inside boxes */
+        .audio-player {
+            padding: 0.75rem !important; /* Reduced padding */
+        }
+
+        .consultation-offer,
+        .nav-container,
+        .social-container,
+        .service-description {
+            padding: 1.25rem !important; /* Consistent padding */
+        }
+
+        /* Mobile adjustments */
+        @media screen and (max-width: 768px) {
+            .content {
+                padding: 1rem;
+                gap: 0.75rem; /* Even tighter on mobile */
+            }
+        }
     </style>
 
     <!-- Reddit Pixel -->
@@ -429,17 +679,31 @@
             <button class="privacy-dismiss" aria-label="Dismiss privacy notice" id="privacyDismiss">×</button>
         </div>
     </div>
+    <canvas id="visualizer" class="background-canvas"></canvas>
+    <div class="canvas-overlay"></div>
     <div class="particles"></div>
     <img src="https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg" 
-         alt="Triphosphate Music - Professional mixing and mastering services for independent artists" 
-         class="logo"
+         alt="Triphosphate Music" 
+         class="logo fallback-bg"
          width="900"
          height="900">
     <div id="app">
         <main class="content">
-            <h1>Triphosphate Music</h1>
-            <h2 style="font-size: 1.5rem; margin-bottom: 2rem;">Affordable Mixing Services for Independent Artists</h2>
+            <!-- Title Box -->
+            <div class="title-container" style="
+                background: rgba(138, 123, 244, 0.1);
+                border: 1px solid rgba(138, 123, 244, 0.3);
+                border-radius: 12px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                text-align: center;
+                max-width: 800px;
+                width: 100%;">
+                <h1>Triphosphate Music</h1>
+                <h2 style="font-size: 1.5rem; margin-bottom: 0;">Affordable Mixing Services for Independent Artists</h2>
+            </div>
             
+            <!-- Consultation Box (already styled) -->
             <section class="consultation-offer" onclick="window.location.href='https://discord.com/channels/@me/Triphosphate/';" style="
                 background: rgba(138, 123, 244, 0.1);
                 padding: 1.5rem;
@@ -459,56 +723,113 @@
                      style="width: 48px; height: 48px; margin-top: 1rem; transition: transform 0.2s ease; opacity: 0.65;">
             </section>
 
-            <nav class="buttons" aria-label="Contact options">
-                <a href="/getstarted" 
-                   class="btn" 
-                   id="consultButton">
-                    Get Started
-                </a>
-                <a href="/about" 
-                   class="btn">
-                    Meet Your Engineer
-                </a>
-                <a class="btn" href="/services/">Services</a>
-                <a class="btn" href="/resources/">Resources</a>
-                <a class="btn" href="/resources/faq/">FAQ</a>
+            <!-- Move the audio player section here, between consultation box and nav buttons -->
+            <section class="playlist-container" aria-label="Music portfolio" style="
+                width: 100%;
+                max-width: 400px;
+                margin: 2rem 0;">
+                <div class="audio-player" style="padding: 1rem;">
+                    <div class="progress-area" style="margin-bottom: 0.5rem;">
+                        <div class="progress-bar" @click="seek">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="time-counter" style="
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 0.8rem;
+                            color: rgba(255, 255, 255, 0.7);
+                            margin-top: 0.25rem;">
+                            <span class="current">{{ formatTime(currentTime) }}</span>
+                            <span class="duration">{{ formatTime(duration) }}</span>
+                        </div>
+                    </div>
 
-            </nav>
-
-            <div class="social-proof">
-                <a href="mailto:triphosphateLP@gmail.com" class="social-link" target="_blank">E-mail</a>
-                <a href="https://discord.com/channels/@me/Triphosphate/" class="social-link">Discord</a>
-                <a href="https://engineears.com/triphosphate" class="social-link" target="_blank" rel="noopener">EngineEars Profile</a>
-                <a href="https://soundcloud.com/triphosphate" class="social-link" target="_blank" rel="noopener">SoundCloud</a>
-                <a href="https://www.instagram.com/triphosphate_music" class="social-link" target="_blank" rel="noopener">Instagram</a>
-            </div>
-
-            <section class="playlist-container" :class="{ 'loading': isLoading }" aria-label="Music portfolio">
-                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: #fff;">Listen to My Recent Work</h3>
-                <div class="loading-overlay" v-if="isLoading">
-                    <div class="loading-spinner"></div>
-                </div>
-                <iframe 
-                    id="soundcloud-player"
-                    width="100%" 
-                    height="80" 
-                    scrolling="no" 
-                    frameborder="no" 
-                    allow="autoplay" 
-                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1912013239%3Fsecret_token%3Ds-r61q4L3W9ly&color=%236c5ce7&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false&show_artwork=false">
-                </iframe>
-                <div class="player-controls">
-                    <button class="player-btn" @click="previousTrack">⏮</button>
-                    <button class="player-btn" @click="nextTrack">⏭</button>
+                    <div class="controls" style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 1rem;">
+                        <button class="control-btn previous" @click="previousTrack">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        <button class="control-btn play-pause" @click="togglePlay" style="
+                            font-size: 1.2rem;
+                            padding: 0.5rem 0.7rem;">
+                            <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+                        </button>
+                        <button class="control-btn next" @click="nextTrack">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                        <button class="control-btn volume" @click="toggleMute">
+                            <i :class="audio && audio.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
+                        </button>
+                        <div class="volume-slider" @click="updateVolume" style="width: 60px;">
+                            <div class="volume-progress" :style="{ width: (volume * 100) + '%' }"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <section class="service-description">
+            <!-- Navigation Buttons Box -->
+            <nav class="nav-container" style="
+                background: rgba(138, 123, 244, 0.1);
+                border: 1px solid rgba(138, 123, 244, 0.3);
+                border-radius: 12px;
+                padding: 2rem;
+                margin-bottom: 2rem;
+                width: 100%;
+                max-width: 600px;">
+                <div class="buttons" aria-label="Contact options">
+                    <a href="/getstarted" class="btn" id="consultButton">Get Started</a>
+                    <a href="/about" class="btn">Meet Your Engineer</a>
+                    <a class="btn" href="/services/">Services</a>
+                    <a class="btn" href="/resources/">Resources</a>
+                    <a class="btn" href="/resources/faq/">FAQ</a>
+                </div>
+            </nav>
+
+            <!-- Social Links Box - Modified styling -->
+            <div class="social-container" style="
+                background: rgba(138, 123, 244, 0.1);
+                border: 1px solid rgba(138, 123, 244, 0.3);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+                width: 100%;
+                max-width: 600px;">
+                <div class="social-proof" style="
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 1rem;
+                    line-height: 1.5;">
+                    <a href="mailto:triphosphateLP@gmail.com" class="social-link">E-mail</a>
+                    <span style="color: rgba(255, 255, 255, 0.3);">•</span>
+                    <a href="https://discord.com/channels/@me/Triphosphate/" class="social-link">Discord</a>
+                    <span style="color: rgba(255, 255, 255, 0.3);">•</span>
+                    <a href="https://engineears.com/triphosphate" class="social-link">EngineEars</a>
+                    <span style="color: rgba(255, 255, 255, 0.3);">•</span>
+                    <a href="https://soundcloud.com/triphosphate" class="social-link">SoundCloud</a>
+                    <span style="color: rgba(255, 255, 255, 0.3);">•</span>
+                    <a href="https://www.instagram.com/triphosphate_music" class="social-link">Instagram</a>
+                </div>
+            </div>
+
+            <!-- Service Description Box -->
+            <section class="service-description" style="
+                background: rgba(138, 123, 244, 0.1);
+                border: 1px solid rgba(138, 123, 244, 0.3);
+                border-radius: 12px;
+                padding: 2rem;
+                margin: 2rem 0;
+                width: 100%;
+                max-width: 600px;">
                 <h3>Professional Experience</h3>
                 <p>Professional mixing services with over a decade of experience. Trained under Latin Grammy winning engineer Charles Dye, specializing in affordable solutions for independent artists and bedroom producers. Bringing Grammy-winning studio techniques to independent budgets.</p>
                 <p>Recent projects include artists from New York, London, Toronto, and worldwide. Typical turnaround: 3-5 business days.</p>
             </section>
 
+            <!-- Final CTA Box (already styled) -->
             <section class="consultation-offer" style="
                 background: rgba(138, 123, 244, 0.1);
                 padding: 1.5rem;
@@ -527,35 +848,148 @@
             new Vue({
                 el: '#app',
                 data: {
-                    showModal: false,
-                    player: null,
-                    isLoading: true
+                    audio: null,
+                    isPlaying: false,
+                    currentTime: 0,
+                    duration: 0,
+                    volume: 0.5,
+                    hasInteracted: false,
+                    playlist: [
+                        {
+                            title: 'Violet Mixing Demo',
+                            artist: 'VioletJuly',
+                            file: '/portfolio/violet mixing demo.mp3'
+                        },
+                        {
+                            title: 'Contents Under Pressure',
+                            artist: 'Triphosphate Music',
+                            file: '/portfolio/pressure_2.mp3'
+                        },
+                        {
+                            title: 'WDYW',
+                            artist: 'Warpwhistl',
+                            file: '/portfolio/warp 7.28_3draft2.mp3'
+                        },
+                        {
+                            title: 'Warcry',
+                            artist: 'Triphosphate Music',
+                            file: '/portfolio/Warcry v2.mp3'
+                        },
+                        {
+                            title: 'Ocean',
+                            artist: 'Triphosphate Music',
+                            file: '/portfolio/OCean Master_2.mp3'
+                        }
+                    ],
+                    currentTrackIndex: 0
                 },
                 mounted() {
-                    console.log('Vue mounted'); // Debug log
+                    // Create audio element with proper settings
+                    this.audio = new Audio();
+                    this.audio.crossOrigin = "anonymous";
+                    this.audio.preload = "auto";
+                    
+                    // Initialize audio without auto-play
+                    this.initializeAudio();
+                    
+                    // Force visualizer reconnection after a short delay
                     setTimeout(() => {
-                        const iframe = document.getElementById('soundcloud-player');
-                        if (iframe) {
-                            console.log('SoundCloud iframe found'); // Debug log
-                            this.player = SC.Widget(iframe);
-                            this.player.bind(SC.Widget.Events.READY, () => {
-                                console.log('SoundCloud player ready'); // Debug log
-                                this.isLoading = false;
+                        const visualizer = document.querySelector('#visualizer').__visualizer;
+                        if (visualizer) {
+                            visualizer.reconnectAudio().catch(e => {
+                                console.error('Error reconnecting visualizer:', e);
                             });
-                        } else {
-                            console.log('SoundCloud iframe not found'); // Debug log
                         }
-                    }, 1000);
+                    }, 500);
                 },
                 methods: {
-                    nextTrack() {
-                        if (this.player) {
-                            this.player.next();
+                    initializeAudio() {
+                        if (this.audio) {
+                            this.audio.src = this.playlist[this.currentTrackIndex].file;
+                            this.audio.volume = this.volume;
+                            
+                            // Store reference to audio element for visualizer
+                            document.querySelector('#app').__vue__.audio = this.audio;
+                            
+                            this.audio.addEventListener('timeupdate', this.updateProgress);
+                            this.audio.addEventListener('loadedmetadata', () => {
+                                this.duration = this.audio.duration;
+                                console.log('Audio metadata loaded, duration:', this.duration);
+                            });
+                            
+                            this.audio.addEventListener('ended', () => {
+                                console.log('Track ended, playing next track');
+                                this.nextTrack();
+                            });
+                            
+                            this.audio.addEventListener('error', (e) => {
+                                console.error('Audio loading error:', e);
+                                this.loadTrack();
+                            });
                         }
                     },
+                    togglePlay() {
+                        if (this.audio.paused) {
+                            this.audio.play();
+                            this.isPlaying = true;
+                        } else {
+                            this.audio.pause();
+                            this.isPlaying = false;
+                        }
+                    },
+                    updateProgress() {
+                        this.currentTime = this.audio.currentTime;
+                        const progress = document.querySelector('.progress');
+                        const value = (this.currentTime / this.duration) * 100;
+                        progress.style.width = value + '%';
+                    },
+                    seek(event) {
+                        const progressBar = document.querySelector('.progress-bar');
+                        const rect = progressBar.getBoundingClientRect();
+                        const percent = (event.clientX - rect.left) / rect.width;
+                        this.audio.currentTime = percent * this.duration;
+                    },
+                    formatTime(seconds) {
+                        const mins = Math.floor(seconds / 60);
+                        const secs = Math.floor(seconds % 60);
+                        return `${mins}:${secs.toString().padStart(2, '0')}`;
+                    },
+                    updateVolume(event) {
+                        const slider = document.querySelector('.volume-slider');
+                        const rect = slider.getBoundingClientRect();
+                        const percent = (event.clientX - rect.left) / rect.width;
+                        this.volume = Math.max(0, Math.min(1, percent));
+                        this.audio.volume = this.volume;
+                        document.querySelector('.volume-progress').style.width = (this.volume * 100) + '%';
+                    },
+                    toggleMute() {
+                        this.audio.muted = !this.audio.muted;
+                    },
                     previousTrack() {
-                        if (this.player) {
-                            this.player.prev();
+                        this.currentTrackIndex = (this.currentTrackIndex - 1 + this.playlist.length) % this.playlist.length;
+                        this.loadTrack();
+                    },
+                    nextTrack() {
+                        this.currentTrackIndex = (this.currentTrackIndex + 1) % this.playlist.length;
+                        this.loadTrack();
+                        // Ensure playback starts for auto-play
+                        this.audio.play().then(() => {
+                            this.isPlaying = true;
+                        }).catch(error => {
+                            console.error('Error auto-playing next track:', error);
+                            this.isPlaying = false;
+                        });
+                    },
+                    loadTrack() {
+                        const wasPlaying = !this.audio.paused;
+                        this.audio.src = this.playlist[this.currentTrackIndex].file;
+                        if (wasPlaying) {
+                            this.audio.play().then(() => {
+                                this.isPlaying = true;
+                            }).catch(error => {
+                                console.error('Error playing next track:', error);
+                                this.isPlaying = false;
+                            });
                         }
                     }
                 }
@@ -719,5 +1153,6 @@
             });
         });
     </script>
+    <script src="/src/visualizer.js"></script>
 </body>
 </html>

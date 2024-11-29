@@ -1,0 +1,183 @@
+body, html{
+	margin: 0;
+	padding: 0;
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
+	overflow-x: hidden;
+}
+canvas{
+	position: absolute;
+	background-color: transparent;
+}
+/*	
+	Slider menu button	
+*/
+#settings-button{
+	position: absolute;
+	top: 15;
+	left: 15;
+	background-color: #33b5e5;
+	border-radius: 50%;
+	padding: 12px 13px 12px 15px;
+	transition: 0.4s;
+	transform: translate(0px, 0px);
+	z-index: 15;
+}
+#settings-button:hover{
+	background-color: white;
+	cursor: pointer;
+}
+
+/*
+	Slide-out side menu
+*/
+#side-menu{
+	height: calc(100% - 25px);
+	width: 510px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-right-color: rgba(15, 15, 15, 0.65);
+	overflow-x: hidden;
+	overflow-y: auto;
+	transition: 0.4s;
+	background-color: rgba(25, 25, 45, 0.65);
+	transform: translate(-600px, 0px);
+	z-index: 15;
+	cursor: default;
+	padding: 5px 0px 20px 0px;
+}
+
+#side-menu::-webkit-scrollbar-track{
+	border-radius: 10px;
+}
+
+#side-menu::-webkit-scrollbar{
+	border-radius: 10px;
+	width: 1px;
+}
+#side-menu::-webkit-scrollbar-thumb{
+	border-radius: 10px;
+	background-color: rgba(0, 0, 0, 0.65);
+}
+
+.section-header{
+	color: #33b5e5;
+	padding: 10px 0px 10px 15px;
+	font-family: "Muli", sans-serif;
+	font-size: 25px;
+	background-color: rgba(0, 0, 0, 0.65);
+	margin: 15px 30px 0px 30px;
+}
+
+.settings-subsection{
+	color: #33b5e5;
+	padding: 10px 17px;
+	margin: 0px 30px;
+	font-family: Candara, Calibri, Segoe, "Segoe UI", Optinma, Arial, sans-serif;
+	font-size: 21px;
+}
+.settings-subsection p{
+	margin: 0;
+	padding: 12px 0px 0px 1px;
+	color: #DEDEDE;
+	font-size: 17px;
+}
+
+/*
+	Visualization Style Picker Stuff
+*/
+.generic-menu-item{
+	color: #DEDEDE;
+	padding: 10px 0px 10px 17px;
+	font-size: 18px;
+	margin: 0px 30px;
+	cursor: pointer;
+	font-family: Candara, Calibri, Segoe, "Segoe UI", Optinma, Arial, sans-serif;
+}
+.generic-menu-item.selected{
+	background-color: rgba(65, 65, 65, 0.65);
+}
+
+.generic-menu-item:hover{
+	background-color: rgba(65, 65, 65, 0.65);
+}
+
+/*	Visualization Style Settings	*/
+.settings-item-container{
+	margin: 0px 30px;
+	padding: 10px 6px 10px 17px;
+}
+.slider-label{
+	display: inline-block;
+	font-family: Arial, sans-serif;
+	color: #DEDEDE;
+	font-size: 15px;
+	width: 160px;
+}
+.slider-value{
+	float: right;
+}
+.slider{
+	display: inline-block;
+	width: 240px;
+	float: right;
+	margin-top: 7px;
+}
+
+/*	Toggle switch	*/
+.switch{
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 23px;
+	margin-right: 28px;
+}
+.switch input{
+	display: none;
+}
+.toggle-switch{
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 2px;
+	right: 0;
+	bottom: 0;
+	transition: .4s;
+	border-radius: 34px;
+	background-color: rgba(65, 65, 65, 0.65);
+}
+.toggle-switch:before{
+	position: absolute;
+	content: "";
+	height: 19px;
+	width: 19px;
+	left: 4px;
+	bottom: 2px;
+	background-color: #dedede;
+	transition: .4s;
+	border-radius: 34px;
+}
+input:checked + .toggle-switch{
+	background-color: #23a5d5;
+}
+input:checked + .toggle-switch:before {
+  transform: translateX(22px);
+}
+.toggle-label{
+	padding: 0px 10px 15px 0px;
+	display: inline-block;
+	vertical-align: middle;
+	font-family: Arial, sans-serif;
+	color: #DEDEDE;
+	font-size: 15px;
+}
+#bars-settings{
+	display: none;
+}
+.hide{
+	display: none;
+}
