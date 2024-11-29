@@ -3,112 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
     <title>Get Started | Triphosphate Music</title>
-    <meta name="description" content="Take the first step towards professional-sounding music. Learn about our process and book a free consultation.">
-    <link rel="stylesheet" href="/styles/main.css">
+    <meta name="description" content="Transform your music with professional mixing and mastering services. Book a free consultation and let's create something extraordinary together.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tripmixes.com/getstarted/">
+    <meta property="og:title" content="Get Started | Triphosphate Music">
+    <meta property="og:description" content="Book your free consultation and let's elevate your sound together.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/main.css">
+
     <style>
-        .guide-section {
+        .guide-header {
+            position: relative;
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 4rem 2rem;
             background: rgba(138, 123, 244, 0.1);
             border: 1px solid rgba(138, 123, 244, 0.3);
             border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
+            overflow: hidden;
         }
 
-        .cta-button {
+        .guide-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+                        url('/services/genres/pexels-wendywei-1540406.jpg') no-repeat center/cover;
+            z-index: -1;
+        }
+
+        .guide-header h1 {
+            font-size: 3.5rem;
+            color: #8a7bf4;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .guide-header p {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 3rem 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .process-card {
+            position: relative;
+            padding: 2.5rem;
+            border-radius: 12px;
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .process-card:hover {
+            transform: translateY(-2px);
+            background: rgba(138, 123, 244, 0.15);
+        }
+
+        .process-card h3 {
+            color: #8a7bf4;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .process-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .process-card li {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .process-card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #8a7bf4;
+        }
+
+        .pro-tip {
+            background: rgba(138, 123, 244, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .cta-box {
+            position: relative;
+            text-align: center;
+            margin: 5rem auto;
+            padding: 4rem 2rem;
+            background: rgba(138, 123, 244, 0.15);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+            border-radius: 12px;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)),
+                        url('/services/track-prep/pexels-cottonbro-5657665.jpg') no-repeat center/cover;
+            z-index: -1;
+        }
+
+        .guide-header h1,
+        .guide-header p,
+        .guide-header .btn,
+        .cta-box h2,
+        .cta-box p,
+        .cta-box .btn {
+            position: relative;
+            z-index: 1;
+        }
+
+        .guide-header .btn {
             display: inline-block;
-            background: linear-gradient(135deg, #8a7bf4 0%, #4834b8 100%);
+            background: #8a7bf4;
             color: #fff;
             padding: 1rem 2rem;
             border-radius: 8px;
             text-decoration: none;
-            margin-top: 1.5rem;
-            transition: transform 0.2s;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            transition: transform 0.2s ease, background-color 0.2s ease;
         }
 
-        .cta-button:hover {
+        .guide-header .btn:hover {
+            background: #9d92f5;
             transform: translateY(-2px);
         }
 
-        .feature-list {
-            margin: 1.5rem 0;
-            padding-left: 1.2rem;
-        }
-
-        .feature-list li {
-            margin-bottom: 0.8rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .highlight-box {
-            background: rgba(138, 123, 244, 0.2);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 2rem 0;
-        }
-
-        .highlight-box h3 {
-            color: #8a7bf4;
-            margin-bottom: 1rem;
+        .step-number {
+            position: absolute;
+            top: -1rem;
+            left: -1rem;
+            background: #8a7bf4;
+            color: #fff;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
     <main class="content-wrapper">
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <ol class="breadcrumb-list">
+                <li class="breadcrumb-item">
+                    <a href="/" class="breadcrumb-link">Home</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span class="breadcrumb-current">Get Started</span>
+                </li>
+            </ol>
+        </nav>
+
         <article class="guide-header">
-            <h1>Get Started</h1>
-            <p>Let's Create Something Amazing Together</p>
+            <h1>Let's Create Something Amazing</h1>
+            <p>Transform your music with professional mixing and mastering. Start with a free consultation to discuss your vision.</p>
+            <a href="/consultation.html" class="btn">Book Free Consultation</a>
         </article>
 
         <section class="guide-section">
-            <h2>How It Works</h2>
-            <div class="section-content">
-                <p>Taking your music to the next level starts with a conversation. My consultations are designed to assess your goals and craft a personalized plan to achieve the sound you're dreaming of—all completely free.</p>
-                
-                <ol class="feature-list">
-                    <li><strong>Book Your Free Consultation</strong><br>
-                    Schedule a time that works for you using our simple booking form.</li>
-                    
-                    <li><strong>Discuss Your Project Goals</strong><br>
-                    We'll talk about your vision, challenges, and the sound you're aiming for.</li>
-                    
-                    <li><strong>Get a Custom Plan and Quote</strong><br>
-                    Receive a detailed plan of action with transparent pricing—no hidden fees.</li>
-                    
-                    <li><strong>Transform Your Music</strong><br>
-                    Watch your project come to life as we create something extraordinary together.</li>
-                </ol>
+            <h2>The Process</h2>
+            <div class="services-grid">
+                <div class="process-card">
+                    <span class="step-number">1</span>
+                    <h3>Free Consultation</h3>
+                    <ul>
+                        <li>Discuss your project goals and vision</li>
+                        <li>Review your tracks and identify opportunities</li>
+                        <li>Get personalized recommendations</li>
+                    </ul>
+                    <div class="pro-tip">
+                        <strong>Pro Tip:</strong> Come prepared with reference tracks to help communicate your desired sound.
+                    </div>
+                </div>
 
-                <div style="text-align: center;">
-                    <a href="/consultation.html" class="cta-button">Book Your Free Consultation</a>
+                <div class="process-card">
+                    <span class="step-number">2</span>
+                    <h3>Custom Plan & Quote</h3>
+                    <ul>
+                        <li>Receive a detailed project timeline</li>
+                        <li>Get transparent pricing with no hidden fees</li>
+                        <li>Flexible payment options for larger projects</li>
+                    </ul>
+                </div>
+
+                <div class="process-card">
+                    <span class="step-number">3</span>
+                    <h3>Professional Results</h3>
+                    <ul>
+                        <li>Regular updates throughout the process</li>
+                        <li>Multiple revision rounds included</li>
+                        <li>Delivery in all formats you need</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <section class="guide-section">
-            <h2>Tools & Expertise at Your Disposal</h2>
-            <div class="section-content">
-                <p>With years of experience and industry-grade tools, we offer comprehensive solutions:</p>
-                <ul class="feature-list">
-                    <li>Restoration & Clean-up</li>
-                    <li>Vocal Timing & Layer Alignment</li>
-                    <li>Pitch Correction</li>
-                    <li>Creative Effects & Sound Design</li>
-                </ul>
-            </div>
-        </section>
-
-        <div class="highlight-box">
-            <h3>Why Choose Triphosphate Music?</h3>
-            <ul class="feature-list">
-                <li><strong>Affordable for Independent Artists</strong> - Industry-quality sound at indie-friendly prices</li>
-                <li><strong>Flexible and Collaborative</strong> - Your vision guides the process</li>
-                <li><strong>Transparent Pricing</strong> - Clear quotes and no hidden fees</li>
-                <li><strong>Under-Budget Wins</strong> - Pay less if we complete ahead of schedule</li>
-            </ul>
-            <div style="text-align: center;">
-                <a href="/consultation.html" class="cta-button">Book Your Free Consultation</a>
-            </div>
+        <div class="cta-box">
+            <h2>Ready to Transform Your Sound?</h2>
+            <p>Book your free consultation and let's discuss how to take your music to the next level.</p>
+            <a href="/consultation.html" class="btn">Book Free Consultation</a>
         </div>
     </main>
 
