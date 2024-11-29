@@ -97,6 +97,30 @@ export default {
           console.error('Reddit conversion tracking error:', error);
         }
 
+        // Send Google Ads conversion event
+        try {
+          await fetch('https://www.google-analytics.com/mp/collect', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              client_id: clientIP,
+              events: [{
+                name: 'conversion',
+                params: {
+                  send_to: 'AW-16777349124/IfN6COvfye0ZEISQiMA-',
+                  value: 1,
+                  currency: 'USD'
+                }
+              }]
+            })
+          });
+          console.log('Google Ads conversion tracked successfully');
+        } catch (error) {
+          console.error('Google Ads conversion tracking error:', error);
+        }
+
         // Return the conversion ID to client
         return new Response(JSON.stringify({
           status: 'success',

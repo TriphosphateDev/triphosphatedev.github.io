@@ -13,16 +13,34 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://tripmixes.com/getstarted/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/about/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/portfolio/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://tripmixes.com/services/</loc>
     <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://tripmixes.com/faq</loc>
+    <loc>https://tripmixes.com/services/vocal-mixing/</loc>
     <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://tripmixes.com/services/mastering/</loc>
@@ -37,15 +55,27 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://tripmixes.com/resources/equipment/rf-x/</loc>
+    <loc>https://tripmixes.com/resources/faq/</loc>
     <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://tripmixes.com/resources/equipment/rcmpro/</loc>
+    <loc>https://tripmixes.com/resources/checklists/</loc>
     <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/resources/equipment/rf-x/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tripmixes.com/resources/equipment/rcmpro/</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset> 
