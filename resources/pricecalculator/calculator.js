@@ -172,7 +172,7 @@ export function generateQuoteSummary(state) {
         });
     }
 
-    // Calculate bulk discount
+    // Calculate bulk 
     const bulkDiscount = calculateBulkDiscount(subtotal, state.songCount);
 
     // Calculate stem organization fee/savings

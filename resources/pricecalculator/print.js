@@ -211,31 +211,28 @@ export function generatePriceBreakdown(summary) {
         `;
     }
 
-    // Calculate subtotal WITHOUT track prep fee
-    const subtotalBeforeDiscount = summary.baseService.price + 
-                                 summary.baseService.extraTracks.total + 
-                                 summary.features.reduce((total, feature) => {
-                                     if (feature.name === 'layerAlignment') {
-                                         const totalTracks = parseInt(feature.details);
-                                         const alignedTracks = totalTracks - 1;
-                                         return total + (alignedTracks * CONFIG.featurePrices[feature.name] * summary.baseService.songCount);
-                                     }
-                                     return total + feature.price;
-                                 }, 0);
+    // Calculate subtotal
+    const subtotal = summary.baseService.price + 
+                    summary.baseService.extraTracks.total + 
+                    summary.features.reduce((total, feature) => {
+                        if (feature.name === 'layerAlignment') {
+                            const totalTracks = parseInt(feature.details);
+                            const alignedTracks = totalTracks - 1;
+                            return total + (alignedTracks * CONFIG.featurePrices[feature.name] * summary.baseService.songCount);
+                        }
+                        return total + feature.price;
+                    }, 0);
 
-    // Calculate bulk discount on subtotal without prep fee
+    // Calculate bulk discount
     const bulkDiscount = summary.baseService.songCount >= 5 ? 
-                        subtotalBeforeDiscount * (summary.baseService.songCount >= 10 ? 0.20 : 0.10) : 
+                        subtotal * (summary.baseService.songCount >= 10 ? 0.20 : 0.10) : 
                         0;
 
-    // Add track prep fee AFTER bulk discount calculation
-    const finalTotal = subtotalBeforeDiscount - bulkDiscount + 
-                      (summary.preparation.type === 'professionalPrep' ? summary.preparation.price : 0);
-
+    // Add subtotal row
     html += `
         <div class="breakdown-row subtotal">
             <span class="label">Subtotal</span>
-            <span class="amount">$${subtotalBeforeDiscount.toFixed(2)}</span>
+            <span class="amount">$${subtotal.toFixed(2)}</span>
         </div>
     `;
 
@@ -258,6 +255,10 @@ export function generatePriceBreakdown(summary) {
             </div>
         `;
     }
+
+    // Calculate final total
+    const finalTotal = subtotal - bulkDiscount + 
+                      (summary.preparation.type === 'professionalPrep' ? summary.preparation.price : 0);
 
     // Final Total
     html += `

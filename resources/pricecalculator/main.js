@@ -170,11 +170,22 @@ function navigateToStep(step) {
             showError('Please select a track preparation option');
             return;
         }
+        
+        // Show the step first
+        showStep(step);
+        
+        // Scroll to top of page smoothly
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    } else {
+        // For other steps, just show the step
+        showStep(step);
     }
     
     // Update state and UI
     state.currentStep = step;
-    showStep(step);
     updateProgressIndicator(step);
     updateNavigationButtons(step);
 
@@ -183,7 +194,6 @@ function navigateToStep(step) {
     if (finishStep) {
         if (step === 2) {
             finishStep.classList.add('pulse');
-            // Add click handler
             finishStep.style.cursor = 'pointer';
             finishStep.addEventListener('click', () => {
                 if (validateFeatureSelections()) {
@@ -193,7 +203,6 @@ function navigateToStep(step) {
         } else {
             finishStep.classList.remove('pulse');
             finishStep.style.cursor = 'default';
-            // Remove click handler
             finishStep.replaceWith(finishStep.cloneNode(true));
         }
     }
@@ -424,6 +433,7 @@ function initializeCounters() {
 }
 
 function initializeFeatureHandlers() {
+    // Handle regular features
     const featureBoxes = document.querySelectorAll('.feature-box:not(.included):not(.rush)');
     
     featureBoxes.forEach(box => {
@@ -513,18 +523,23 @@ function initializeFeatureHandlers() {
         });
     });
 
+    /* Comment out rush order section
     // Handle rush order separately
-    const rushOrder = document.getElementById('rushOrder');
-    if (rushOrder) {
-        rushOrder.addEventListener('change', () => {
-            state.rushOrder = rushOrder.checked;
-            const rushBox = rushOrder.closest('.feature-box');
-            if (rushBox) {
-                rushBox.classList.toggle('selected', rushOrder.checked);
-            }
+    const rushBox = document.querySelector('.feature-box.rush');
+    if (rushBox) {
+        rushBox.addEventListener('click', () => {
+            const checkbox = rushBox.querySelector('input[type="checkbox"]');
+            if (!checkbox) return;
+
+            checkbox.checked = !checkbox.checked;
+            rushBox.classList.toggle('selected');
+            state.rushOrder = checkbox.checked;
+            
+            // Don't add to selectedFeatures since it's a fee, not a feature
             updatePriceDisplay();
         });
     }
+    */
 }
 
 function toggleServiceSpecificOptions(serviceType) {
@@ -594,15 +609,23 @@ function updatePriceDisplay() {
     const features = calculateFeaturePrice(state.selectedFeatures, state.songCount, state.featureTrackCounts);
     
     // Calculate subtotal before rush fee
-    let subtotal = basePrice + extraTrackTotal + features;
+    const subtotalBeforeRush = basePrice + extraTrackTotal + features;
 
-    // Apply rush order fee if selected
+    /* Comment out rush fee calculation
+    // Calculate rush fee
+    let rushFee = 0;
     if (state.rushOrder) {
-        const rushFee = subtotal * 0.25;
-        subtotal += rushFee;
+        rushFee = subtotalBeforeRush * 0.25;
     }
 
-    // Calculate bulk discount
+    // Calculate final subtotal including rush fee
+    const subtotal = subtotalBeforeRush + rushFee;
+    */
+
+    // Replace with direct assignment
+    const subtotal = subtotalBeforeRush;
+
+    // Calculate bulk discount based on total including rush fee
     const bulkDiscount = calculateBulkDiscount(subtotal, state.songCount);
     
     // Calculate stem organization fee/savings
@@ -646,8 +669,8 @@ function updatePriceDisplay() {
         }
     }
 
-    // Update feature breakdown
-    updateFeatureBreakdown();
+    // Update feature breakdown with the calculated values
+    updateFeatureBreakdown(basePrice, extraTrackTotal, features);
 
     // Show/hide bulk discount row
     if (bulkDiscountItem) {
@@ -690,58 +713,74 @@ function initializeFeatureBreakdown() {
     });
 }
 
-function updateFeatureBreakdown() {
+function updateFeatureBreakdown(basePrice, extraTrackTotal, features) {
     const detailsContainer = document.querySelector('.feature-details-breakdown');
-    const expandBtn = document.querySelector('.feature-expand-btn');
-    if (!detailsContainer || !expandBtn) return;
+    if (!detailsContainer) return;
+
+    let detailsHTML = '';
 
     // If no features selected, show a message
     if (state.selectedFeatures.length === 0) {
-        detailsContainer.innerHTML = `
+        detailsHTML = `
             <div class="feature-detail-item">
                 <span style="color: rgba(255,255,255,0.5);">No features selected</span>
             </div>
         `;
-        return;
-    }
+    } else {
+        // Add regular features first
+        state.selectedFeatures.forEach(feature => {
+            if (feature === 'rushOrder') return; // Skip rush order, we'll add it after
 
-    // Build feature details HTML
-    let detailsHTML = '';
-    state.selectedFeatures.forEach(feature => {
-        let amount = 0;
-        let calcText = '';
+            let amount = 0;
+            let calcText = '';
 
-        if (feature === 'melodynePitchCorrection') {
-            const tracks = state.featureTrackCounts[feature];
-            amount = tracks * CONFIG.featurePrices[feature] * state.songCount;
-            calcText = `${tracks} tracks × $${CONFIG.featurePrices[feature]}/track × ${state.songCount} songs`;
-        } else if (feature === 'layerAlignment') {
-            const totalTracks = state.featureTrackCounts[feature];
-            const alignedTracks = Math.max(0, totalTracks - 1);
-            amount = alignedTracks * CONFIG.featurePrices[feature] * state.songCount;
-            calcText = `${alignedTracks} aligned tracks × $${CONFIG.featurePrices[feature]}/track × ${state.songCount} songs`;
-        } else if (feature === 'audioRestoration') {
-            const tracks = state.featureTrackCounts[feature];
-            amount = tracks * CONFIG.featurePrices[feature];
-            calcText = `${tracks} tracks × $${CONFIG.featurePrices[feature]}/track`;
-        } else if (feature === 'realTimeSession') {
-            amount = CONFIG.featurePrices[feature] * state.songCount;
-            calcText = `${state.songCount} one-hour sessions × $${CONFIG.featurePrices[feature]}/session`;
-        } else {
-            amount = CONFIG.featurePrices[feature] * state.songCount;
-            calcText = `$${CONFIG.featurePrices[feature]} × ${state.songCount} songs`;
-        }
+            if (feature === 'melodynePitchCorrection') {
+                const tracks = state.featureTrackCounts[feature];
+                amount = tracks * CONFIG.featurePrices[feature] * state.songCount;
+                calcText = `${tracks} tracks × $${CONFIG.featurePrices[feature]}/track × ${state.songCount} songs`;
+            } else if (feature === 'layerAlignment') {
+                const totalTracks = state.featureTrackCounts[feature];
+                const alignedTracks = Math.max(0, totalTracks - 1);
+                amount = alignedTracks * CONFIG.featurePrices[feature] * state.songCount;
+                calcText = `${alignedTracks} aligned tracks × $${CONFIG.featurePrices[feature]}/track × ${state.songCount} songs`;
+            } else if (feature === 'audioRestoration') {
+                const tracks = state.featureTrackCounts[feature];
+                amount = tracks * CONFIG.featurePrices[feature];
+                calcText = `${tracks} tracks × $${CONFIG.featurePrices[feature]}/track`;
+            } else if (feature === 'realTimeSession') {
+                amount = CONFIG.featurePrices[feature] * state.songCount;
+                calcText = `${state.songCount} one-hour sessions × $${CONFIG.featurePrices[feature]}/session`;
+            } else {
+                amount = CONFIG.featurePrices[feature] * state.songCount;
+                calcText = `$${CONFIG.featurePrices[feature]} × ${state.songCount} songs`;
+            }
 
-        detailsHTML += `
-            <div class="feature-detail-item">
-                <div class="feature-detail-left">
-                    <span>${getFeatureDisplayName(feature)}</span>
-                    <div class="detail-calc">${calcText}</div>
+            detailsHTML += `
+                <div class="feature-detail-item">
+                    <div class="feature-detail-left">
+                        <span>${getFeatureDisplayName(feature)}</span>
+                        <div class="detail-calc">${calcText}</div>
+                    </div>
+                    <div class="amount">$${amount.toFixed(2)}</div>
                 </div>
-                <div class="amount">$${amount.toFixed(2)}</div>
-            </div>
-        `;
-    });
+            `;
+        });
+
+        // Add rush order fee last, after calculating subtotal
+        if (state.rushOrder) {
+            const subtotalBeforeRush = basePrice + extraTrackTotal + features;
+            const rushFee = subtotalBeforeRush * 0.25;
+            detailsHTML += `
+                <div class="feature-detail-item">
+                    <div class="feature-detail-left">
+                        <span>Priority Processing</span>
+                        <div class="detail-calc">25% of subtotal ($${subtotalBeforeRush.toFixed(2)})</div>
+                    </div>
+                    <div class="amount">$${rushFee.toFixed(2)}</div>
+                </div>
+            `;
+        }
+    }
 
     // Update content
     detailsContainer.innerHTML = detailsHTML;
@@ -1189,7 +1228,7 @@ function updateQuoteSummary() {
         elements.serviceType.textContent = summary.baseService.type === 'twoTrack' ? '2-Track Mixdown' : 'Group Stem Mixdown';
         elements.serviceDesc.innerHTML = `
             Perfect for finished instrumentals or beats with vocals. 
-            Professional-grade mixing that brings clarity, punch, and radio-ready polish to your tracks.
+            Professional-grade mixing with streaming-ready mastering that brings clarity, punch, and radio-ready polish to your tracks.
         `;
         if (elements.songCount) {
             let songText = `${summary.baseService.songCount} song${summary.baseService.songCount > 1 ? 's' : ''}`;
@@ -1216,6 +1255,10 @@ function updateQuoteSummary() {
                 desc: 'Natural-sounding pitch correction included at no extra cost'
             },
             {
+                feature: 'Streaming-Ready Mastering',
+                desc: 'Professional mastering optimized for all streaming platforms'
+            },
+            {
                 feature: 'Up to 4 Vocal Tracks',
                 desc: 'Perfect for main vocals, doubles, and basic harmonies'
             },
@@ -1237,6 +1280,10 @@ function updateQuoteSummary() {
                 desc: 'Multiple stages of processing for each instrument group'
             },
             {
+                feature: 'Professional Mastering',
+                desc: 'Advanced mastering with detailed control over the final sound'
+            },
+            {
                 feature: 'Up to 4 Vocal Tracks',
                 desc: 'Professional vocal processing with group-based control'
             },
@@ -1245,7 +1292,7 @@ function updateQuoteSummary() {
                 desc: 'Fine-tune your mix until it\'s exactly right'
             }
         ];
-        
+
         elements.includedFeatures.innerHTML = baseFeatures.map(feature => `
             <li>
                 <strong>${feature.feature}</strong>
@@ -1279,6 +1326,32 @@ function updateQuoteSummary() {
                     priceText = `$${feature.price.toFixed(2)} (${summary.baseService.songCount} songs)`;
                 } else if (feature.name === 'audioRestoration') {
                     priceText = `$${feature.price.toFixed(2)} (${feature.details})`;
+                } else if (feature.name === 'rushOrder') {
+                    const subtotalBeforeRush = summary.baseService.price + 
+                                             summary.baseService.extraTracks.total + 
+                                             summary.features.reduce((total, f) => {
+                                                 if (f.name === 'layerAlignment') {
+                                                     const totalTracks = parseInt(f.details);
+                                                     const alignedTracks = totalTracks - 1;
+                                                     return total + (alignedTracks * CONFIG.featurePrices[f.name] * summary.baseService.songCount);
+                                                 }
+                                                 return total + f.price;
+                                             }, 0);
+                    const rushFee = subtotalBeforeRush * 0.25;
+                    priceText = `$${rushFee.toFixed(2)} (25% of subtotal)`;
+                    displayDetails = 'Expedited processing';
+
+                    return `
+                        <div class="enhancement-item">
+                            <h4>Priority Processing</h4>
+                            <p class="enhancement-desc">Fast-tracked processing and delivery with priority queue placement.</p>
+                            <p class="enhancement-benefit">Expedited turnaround time based on current workload.</p>
+                            <div class="enhancement-details">
+                                <span>${displayDetails}</span>
+                                <div class="enhancement-price">${priceText}</div>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     priceText = `$${feature.price.toFixed(2)}`;
                 }
