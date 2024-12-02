@@ -241,98 +241,134 @@
 /* Song Number Slider Styles */
 .slider-container {
     position: relative;
-    padding: 0.75rem 1rem 1rem;
+    padding: 3.5rem 1.5rem 1.5rem;
     margin: 0;
+    background: #222222;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
+/* Base range input styling */
 input[type="range"] {
+    -webkit-appearance: none;
     width: 100%;
     height: 6px;
-    -webkit-appearance: none;
-    background: transparent; /* Remove default background */
+    background: transparent;
     position: relative;
     z-index: 2;
     cursor: pointer;
 }
 
-/* Create track background */
-.slider-container::before {
-    content: '';
-    position: absolute;
-    left: 1rem;
-    right: 1rem;
-    top: 50%;
+/* Track styling */
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
     height: 6px;
     background: rgba(138, 123, 244, 0.1);
     border-radius: 3px;
-    transform: translateY(-50%);
-    z-index: 1;
+    border: none;
 }
 
-/* Create filled progress */
-.slider-container::after {
-    content: '';
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    height: 6px;
-    background: var(--accent-color);
-    border-radius: 3px;
-    transform: translateY(-50%);
-    z-index: 1;
-    width: calc((var(--slider-value) - 1) * (100% - 2rem) / 19); /* 19 is max-min */
-    transition: width 0.1s ease;
-}
-
-/* Thumb styling */
+/* Thumb (handle) styling */
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background: var(--accent-color);
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
+    background: var(--accent-color);
     cursor: pointer;
     border: 2px solid rgba(255, 255, 255, 0.9);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: -9px; /* Centers the thumb on the track */
     position: relative;
     z-index: 3;
+    transition: all 0.2s ease;
 }
 
+/* Hover and active states for thumb */
 input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.1);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 8px rgba(138, 123, 244, 0.4);
 }
 
 input[type="range"]::-webkit-slider-thumb:active {
     transform: scale(1.15);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 10px rgba(138, 123, 244, 0.5);
 }
 
-/* Value display */
-.slider-value {
+/* Progress track */
+.slider-progress {
     position: absolute;
-    top: -0.5rem;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 1.5rem;
+    top: 50%;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 3px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: width 0.1s ease;
+    z-index: 1;
+}
+
+/* Tick marks container */
+.slider-ticks {
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 20px;
+    pointer-events: none;
+}
+
+/* Individual tick marks */
+.slider-tick {
+    position: absolute;
+    width: 2px;
+    height: 8px;
     background: rgba(138, 123, 244, 0.2);
-    padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    font-weight: 500;
+    transform: translateX(-50%);
+    top: -10px;
     transition: all 0.2s ease;
-    cursor: default;
 }
 
-.slider-value::after {
-    content: '';
+/* Special tick marks for discount thresholds */
+.slider-tick.discount {
+    height: 12px;
+    width: 3px;
+    background: #2ecc71;
+    top: -12px;
+}
+
+/* Tick labels with discount info */
+.slider-tick-label {
     position: absolute;
-    bottom: -4px;
+    top: -32px;
     left: 50%;
     transform: translateX(-50%);
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid var(--accent-color);
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    pointer-events: none;
+}
+
+/* Discount badge in tick label */
+.discount-indicator {
+    font-size: 0.75rem;
+    color: #2ecc71;
+    background: rgba(46, 204, 113, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+/* Remove the now redundant bulk discount notice */
+.bulk-discount-notice {
+    display: none;
 }
 
 /* Enhanced Mixdown Type Selection */
@@ -458,27 +494,141 @@ input[type="range"]::-webkit-slider-thumb:active {
 
 /* Price Display Enhancements */
 .price-breakdown {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    text-align: left;
+    font-size: 1.1rem;
+    line-height: 1.5;
 }
 
 .breakdown-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 1rem;
-    border-bottom: 1px solid rgba(138, 123, 244, 0.2);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(138, 123, 244, 0.1);
 }
 
-.breakdown-item:last-child {
+/* Base Price and Additional Tracks */
+.breakdown-item.base,
+.extra-tracks-fee {
+    background: rgba(138, 123, 244, 0.05);
+}
+
+/* Selected Features Section */
+.breakdown-item.features {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.feature-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.feature-expand-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.feature-expand-btn[aria-expanded="true"] {
+    transform: rotate(180deg);
+}
+
+/* Feature Details Section */
+.feature-details-breakdown {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.feature-details-breakdown.expanded {
+    max-height: 500px;
+    opacity: 1;
+    padding: 0.5rem 0;
+}
+
+.feature-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.75rem 2rem;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(138, 123, 244, 0.1);
+}
+
+.feature-detail-item:last-child {
     border-bottom: none;
 }
 
-.breakdown-item .amount {
-    font-weight: bold;
+.feature-detail-left {
+    flex: 1;
+}
+
+.detail-calc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+}
+
+.feature-detail-item .amount {
     color: var(--accent-color);
+    font-weight: 500;
+    margin-left: 1rem;
+}
+
+/* Subtotal Section */
+.breakdown-item.subtotal {
+    background: rgba(138, 123, 244, 0.1);
+    font-weight: 500;
+}
+
+/* Discounts Section */
+.breakdown-item.discounts-section {
+    color: #2ecc71;
+    font-weight: 600;
+    background: rgba(46, 204, 113, 0.05);
+    border-top: 1px solid rgba(46, 204, 113, 0.1);
+}
+
+/* Nested discount items */
+.breakdown-item.nested {
+    padding-left: 3rem;
+    background: rgba(0, 0, 0, 0.1);
+    font-weight: normal;
+}
+
+/* All savings amounts */
+.amount.savings {
+    color: #2ecc71;
+    font-weight: 600;
+}
+
+/* Separator before discounts */
+.breakdown-item.subtotal {
+    border-bottom: 2px solid rgba(138, 123, 244, 0.2);
+    margin-bottom: 0.5rem;
+}
+
+/* Final Total */
+.breakdown-separator {
+    height: 2px;
+    background: rgba(138, 123, 244, 0.2);
+    margin: 0;
+}
+
+.breakdown-item.total {
+    background: rgba(138, 123, 244, 0.15);
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 1.25rem 2rem;
+    border-bottom: none;
 }
 
 /* Enhancement Option within 2-track mixdown */
@@ -551,18 +701,34 @@ input[type="range"]::-webkit-slider-thumb:active {
 .song-count-control {
     padding: 0;
     margin: 0;
-    border-top: 1px solid rgba(138, 123, 244, 0.2);
-    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    opacity: 1;
+    max-height: 60px;
+    overflow: visible;
+    transition: all 0.3s ease;
 }
 
+.song-count-control.active {
+    max-height: 120px;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Remove dropdown arrow styles */
+.song-count-control .toggle-icon {
+    display: none;
+}
+
+/* Hide the song count control header since we don't need it */
 .song-count-control h3 {
     display: none;
 }
 
 .slider-container {
-    margin: 0;
     position: relative;
-    padding: 0.75rem 1.5rem 0.5rem;
+    padding: 0.5rem 1.5rem;
+    margin: 0;
+    background: rgba(34, 34, 34, 0.6);
+    border-radius: 8px;
 }
 
 input[type="range"] {
@@ -590,13 +756,18 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 .slider-value {
     position: absolute;
-    top: -0.5rem;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(138, 123, 244, 0.2);
-    padding: 0.25rem 0.75rem;
+    transform: translate(-50%, -50%);
+    background: var(--accent-color);
+    color: white;
+    padding: 0.35rem 0.75rem;
     border-radius: 4px;
     font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .bulk-discount-notice {
@@ -614,90 +785,100 @@ input[type="range"]::-webkit-slider-thumb:hover {
     margin: 0 0.25rem;
 }
 
-/* Service Panels */
+/* Service Panels Layout */
 .service-panels {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .service-panel {
-    background: rgba(138, 123, 244, 0.1);
-    border: 1px solid rgba(138, 123, 244, 0.3);
+    position: relative;
+    background: rgba(34, 34, 34, 0.6);
+    border: 1px solid rgba(138, 123, 244, 0.2);
     border-radius: 12px;
-    padding: 2rem;
-    transition: transform 0.2s ease, background-color 0.2s ease;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.service-panel:not(.standalone) {
+    cursor: pointer;
 }
 
 .service-panel:hover {
-    transform: translateY(-4px);
-    background: rgba(138, 123, 244, 0.15);
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+    background: rgba(138, 123, 244, 0.1);
+}
+
+.service-panel .btn {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    margin-top: 1.5rem;
+    text-decoration: none;
+}
+
+.service-panel .btn.primary {
+    background: var(--accent-color);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.service-panel .btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(138, 123, 244, 0.2);
 }
 
 .panel-header {
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.base-price {
-    display: inline-block;
-    background: rgba(138, 123, 244, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    font-weight: bold;
-    color: var(--accent-color);
-}
-
-.panel-description {
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.panel-features {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 2rem 0;
-}
-
-.panel-features li {
-    padding-left: 1.5rem;
-    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
     margin-bottom: 0.75rem;
+}
+
+.panel-main {
+    flex: 1;
+}
+
+.panel-main h3 {
+    margin: 0;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.panel-main span {
+    font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.8);
 }
 
-.panel-features li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
+.panel-tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.panel-tag {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    background: rgba(138, 123, 244, 0.15);
     color: var(--accent-color);
 }
 
-.select-btn, .btn {
-    width: 100%;
-    padding: 1rem;
-    background: var(--accent-color);
-    border: none;
-    border-radius: 6px;
+.panel-tag.selected-tag {
+    display: none;
+    background: #2ecc71;
     color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    text-align: center;
-    text-decoration: none;
-    display: block;
 }
 
-.select-btn:hover, .btn:hover {
-    background: #7667e0;
-}
-
-/* Standalone panels */
-.service-panel.standalone {
-    background: rgba(0, 0, 0, 0.2);
-    border-color: rgba(255, 255, 255, 0.1);
+.service-panel.selected .panel-tag.selected-tag {
+    display: inline-flex;
 }
 
 /* Responsive adjustments */
@@ -727,34 +908,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 /* Price Breakdown Styles */
-.breakdown-toggle {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
-    transition: opacity 0.2s ease;
-}
-
-.breakdown-toggle:hover {
-    opacity: 0.8;
-}
-
-.breakdown-toggle .toggle-icon {
-    font-size: 0.8rem;
-    transition: transform 0.3s ease;
-    display: inline-block;
-}
-
-.breakdown-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(180deg);
-}
-
 .price-breakdown {
     max-height: 0;
     opacity: 0;
@@ -770,9 +923,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .price-breakdown.expanded {
-    max-height: 500px;
+    max-height: 2000px;
     opacity: 1;
     visibility: visible;
+    padding: 0.5rem 0;
 }
 
 .breakdown-item {
@@ -913,23 +1067,45 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Flow Steps and Progress */
 .flow-progress {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin: 0;
-    padding: 0.75rem;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    padding: 0.5rem;
+    background: #222222;
     border-top: 1px solid rgba(138, 123, 244, 0.2);
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
 }
 
+/* Progress steps container */
 .progress-steps {
     display: flex;
     gap: 1rem;
     position: relative;
+    padding: 0.25rem 0;
+    transition: all 0.3s ease;
 }
 
+.progress-step {
+    position: relative;
+    z-index: 1;
+    padding: 0.25rem 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #1a1a1a;
+}
+
+.progress-step.active {
+    color: var(--accent-color);
+}
+
+.progress-step.completed {
+    color: var(--accent-color);
+}
+
+/* Progress line */
 .progress-steps::before {
     content: '';
     position: absolute;
@@ -941,26 +1117,20 @@ input[type="range"]::-webkit-slider-thumb:hover {
     z-index: 0;
 }
 
-.progress-step {
-    position: relative;
-    padding: 0.25rem 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    transition: color 0.3s ease;
-    background: var(--bg-color);
-    z-index: 1;
-    font-size: 0.9rem;
+.progress-steps::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 2px;
+    background: var(--accent-color);
+    transform: translateY(-50%);
+    z-index: 0;
+    transition: width 0.3s ease;
+    width: var(--progress-width, 0%);
 }
 
-.progress-step.active {
-    color: var(--accent-color);
-}
-
-.progress-step:hover {
-    color: var(--accent-color);
-}
-
-/* Navigation Buttons */
+/* Navigation buttons */
 .nav-btn {
     padding: 0.5rem;
     width: 28px;
@@ -1051,86 +1221,83 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .feature-box {
-    display: block;
     position: relative;
-    background: rgba(138, 123, 244, 0.08);
+    background: rgba(34, 34, 34, 0.6);
     border: 1px solid rgba(138, 123, 244, 0.2);
     border-radius: 8px;
-    padding: 0.75rem;
+    padding: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.feature-box:not(.included):not(.disabled):hover {
-    transform: translateY(-1px);
+.feature-box.selected {
+    border-color: var(--accent-color);
+    background: rgba(138, 123, 244, 0.1);
 }
 
-.feature-box:not(.included):not(.disabled):hover::after {
-    content: '▼';
-    position: absolute;
-    left: 50%;
-    bottom: 0.5rem;
-    transform: translateX(-50%);
-    color: var(--accent-color);
-    opacity: 0.7;
-    font-size: 0.8rem;
-    transition: transform 0.3s ease;
+/* Selected tag */
+.feature-tag.selected-tag {
+    display: none;
+    background: #2ecc71;
+    color: white;
 }
 
-.feature-box.expanded:not(.included):not(.disabled)::after {
-    transform: translateX(-50%) rotate(180deg);
-    opacity: 1;
+.feature-box.selected .feature-tag.selected-tag {
+    display: inline-flex;
 }
 
+/* Feature details expansion */
 .feature-details {
-    display: flex;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding-top: 0.75rem;
     max-height: 0;
-    overflow: hidden;
     opacity: 0;
-    transition: all 0.3s ease-in-out;
-    border-top: 1px solid rgba(138, 123, 244, 0.2);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border-top: 1px solid transparent;
+    margin-top: 0;
+    padding-top: 0;
 }
 
-.feature-box.expanded .feature-details {
-    max-height: 200px; /* Adjust if needed based on content */
+.feature-box.selected.expanded .feature-details {
+    max-height: none;
     opacity: 1;
+    border-top-color: rgba(138, 123, 244, 0.2);
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
 }
 
-.feature-details-content {
-    flex: 2;
-}
-
+/* Track counter styles */
 .feature-track-counter {
-    flex: 1;
-    min-width: 120px;
-    max-width: 160px;
-    padding: 0.5rem;
-    align-self: flex-start;
-}
-
-.feature-track-counter label {
-    display: block;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    margin-bottom: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
 }
 
 .counter-controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    justify-content: center;
-    margin: 0.25rem 0;
+    gap: 0.75rem;
 }
 
-.feature-price-preview {
-    font-size: 0.85rem;
-    color: var(--accent-color);
-    text-align: center;
+.counter-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: var(--accent-color);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.counter-btn:hover {
+    background: rgba(138, 123, 244, 0.8);
 }
 
 .feature-details ul {
@@ -1148,7 +1315,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .feature-details li::before {
-    content: "•";
+    content: "";
     position: absolute;
     left: 0;
     color: var(--accent-color);
@@ -1158,11 +1325,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.6);
     font-style: italic;
-}
-
-.feature-box.selected {
-    background: rgba(138, 123, 244, 0.15);
-    border-color: rgba(138, 123, 244, 0.4);
 }
 
 .feature-box.included {
@@ -1271,7 +1433,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
 }
 
 .included-badge {
@@ -1298,384 +1460,141 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .track-counter {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(138, 123, 244, 0.08);
+    border: 1px solid rgba(138, 123, 244, 0.2);
     border-radius: 8px;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 0.35rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-.counter-controls {
+.track-counter label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.counter-control {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    margin: 0.5rem 0;
+    margin-bottom: 0.5rem;
 }
 
-.counter-btn {
-    background: var(--accent-color);
-    border: none;
+.counter-control button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(138, 123, 244, 0.3);
+    background: none;
+    color: var(--accent-color);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.counter-control button:hover {
+    background: rgba(138, 123, 244, 0.1);
+}
+
+.counter-control input {
+    width: 50px;
+    text-align: center;
+    background: rgba(138, 123, 244, 0.1);
+    border: 1px solid rgba(138, 123, 244, 0.3);
     border-radius: 4px;
     color: white;
-    width: 30px;
-    height: 30px;
-    font-size: 1.2rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.counter-btn:hover {
-    background: #7667e0;
-}
-
-.counter-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    padding: 0.35rem;
+    font-size: 1rem;
 }
 
 .track-notice {
     display: block;
+    text-align: center;
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.7);
 }
 
-.counter-value {
-    width: 30px;
-    text-align: center;
-    font-size: 1.1rem;
-    color: white;
+/* Vocal Track Counter Styling */
+.track-counter {
+    background: rgba(138, 123, 244, 0.08);
+    border: 1px solid rgba(138, 123, 244, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.track-counter label {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--accent-color);
     font-weight: 500;
 }
 
-.feature-tags {
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    align-items: flex-start;
-}
-
-.feature-tag {
-    font-size: 0.85rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    background: rgba(138, 123, 244, 0.15);
-    color: var(--accent-color);
-    white-space: nowrap;
-}
-
-.selected-tag {
-    background: rgba(39, 174, 96, 0.15);
-    color: #2ecc71;
-    display: none;
-}
-
-.feature-box.selected .selected-tag {
-    display: block;
-}
-
-.feature-box.included .feature-tag {
-    background: rgba(39, 174, 96, 0.15);
-    color: #2ecc71;
-}
-
-.feature-box.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: rgba(138, 123, 244, 0.04);
-    border-color: rgba(138, 123, 244, 0.1);
-}
-
-.feature-box.disabled .feature-tag {
-    opacity: 0.5;
-}
-
-.feature-box.disabled .feature-main h4,
-.feature-box.disabled .feature-main span {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-/* Feature track counter styles */
-.feature-track-counter {
-    flex: 1;
-    min-width: 120px;
-    max-width: 160px;
-    padding: 0.5rem;
-    align-self: flex-start;
-}
-
-.feature-track-counter label {
-    display: block;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    margin-bottom: 0.35rem;
-}
-
-.counter-controls {
+.counter-control {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     justify-content: center;
-    margin: 0.25rem 0;
-}
-
-.feature-price-preview {
-    font-size: 0.85rem;
-    color: var(--accent-color);
-    text-align: center;
-}
-
-/* Adjust feature details spacing */
-.feature-details {
-    padding-top: 1rem;
-}
-
-/* Update existing counter controls for consistency */
-.counter-controls {
-    display: flex;
-    align-items: center;
     gap: 0.5rem;
-    justify-content: center;
-}
-
-.track-info {
-    text-align: center;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 0.5rem;
 }
 
-.reference-track {
+.counter-control button {
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(138, 123, 244, 0.3);
+    background: none;
     color: var(--accent-color);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
-.aligned-tracks {
-    color: var(--accent-color);
-}
-
-/* Price Display Styles */
-.price-display-container {
+.counter-control button:hover {
     background: rgba(138, 123, 244, 0.1);
-    border: 1px solid rgba(138, 123, 244, 0.2);
-    border-radius: 12px;
-    margin: 0;
-    overflow: hidden;
 }
 
-.price-display {
-    padding: 1rem 2rem 0.75rem;
+.counter-control input {
+    width: 50px;
     text-align: center;
-}
-
-.price-amount {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--accent-color);
-    margin: 0.25rem 0;
-}
-
-.breakdown-toggle {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0 auto;
-    transition: opacity 0.2s ease;
-}
-
-.breakdown-toggle:hover {
-    opacity: 0.8;
-}
-
-.breakdown-toggle .toggle-icon {
-    font-size: 0.8rem;
-    transition: transform 0.3s ease;
-    display: inline-block;
-}
-
-.breakdown-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(180deg);
-}
-
-/* Price Breakdown */
-.price-breakdown {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
-    background: rgba(0, 0, 0, 0.1);
-    border-top: 1px solid rgba(138, 123, 244, 0.2);
-    visibility: hidden;
-    margin: 0;
-    padding: 0;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-
-.price-breakdown.expanded {
-    max-height: 500px;
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Remove background from individual items */
-.breakdown-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1;
-    border-bottom: 1px solid rgba(138, 123, 244, 0.1);
-}
-
-/* Remove border from last item */
-.breakdown-item:last-child {
-    border-bottom: none;
-}
-
-/* Add slightly darker background to the entire breakdown when expanded */
-.price-breakdown.expanded {
-    background: rgba(0, 0, 0, 0.15);
-}
-
-/* Price Breakdown Enhancements */
-.feature-summary {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.feature-expand-btn {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    padding: 0.25rem;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-.feature-expand-btn:hover {
-    opacity: 1;
-}
-
-.feature-expand-btn .toggle-icon {
-    font-size: 0.8rem;
-    transition: transform 0.3s ease;
-}
-
-.feature-expand-btn[aria-expanded="true"] .toggle-icon {
-    transform: rotate(180deg);
-}
-
-.feature-details-breakdown {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: all 0.3s ease-in-out;
-    background: rgba(0, 0, 0, 0.05);
-    padding: 0 2rem;
-    margin: 0;
-}
-
-.feature-details-breakdown.expanded {
-    max-height: 300px;
-    opacity: 1;
-    padding: 0.5rem 2rem;
-    margin: 0.5rem 0;
-    border-top: 1px solid rgba(138, 123, 244, 0.1);
-    border-bottom: 1px solid rgba(138, 123, 244, 0.1);
-}
-
-.feature-detail-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 0.5rem 0;
-}
-
-.feature-detail-item .detail-right {
-    text-align: right;
-}
-
-.feature-detail-item .detail-calc {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 0.25rem;
-}
-
-.stem-org-info {
-    text-align: right;
-}
-
-.waived-notice {
-    font-size: 0.85rem;
-    color: #2ecc71;
-}
-
-/* Add calculator namespace to increase specificity */
-.calculator-container {
-    /* Reset any inherited padding/margins */
-    padding: 2rem;
-    margin: 2rem 0;
-    /* Other styles remain the same */
-}
-
-/* Ensure price display container overrides main.css */
-.calculator-container .price-display-container {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-
-/* Add specificity to breakdown sections */
-.calculator-container .price-breakdown {
-    margin: 0;
-    padding: 0;
-}
-
-.calculator-container .breakdown-item {
-    margin: 0;
-    padding: 0 0;
-}
-
-/* Reset content wrapper padding if needed */
-.content-wrapper .calculator-container {
-    padding: 2rem;
-}
-
-/* Ensure feature sections maintain spacing */
-.calculator-container .feature-details-breakdown {
-    margin: 0;
-    padding: 0 2rem;
-}
-
-.calculator-container .feature-details-breakdown.expanded {
-    padding: 0.5rem 2rem;
-    margin: 0.5rem 0;
-}
-
-/* Override content wrapper padding */
-.content-wrapper {
-    padding: 0;
-}
-
-/* Price Display Container */
-.price-display-container {
     background: rgba(138, 123, 244, 0.1);
+    border: 1px solid rgba(138, 123, 244, 0.3);
+    border-radius: 4px;
+    color: white;
+    padding: 0.35rem;
+    font-size: 1rem;
+}
+
+.track-notice {
+    display: block;
+    text-align: center;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Combined sticky container for price display and controls */
+.price-and-controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #1a1a1a;
     border: 1px solid rgba(138, 123, 244, 0.2);
     border-radius: 12px;
-    margin: 0;
-    overflow: hidden;
+    margin: 1rem 0;
+    overflow: visible;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Price Display */
 .price-display {
-    background: #1a1a1a; /* Solid dark background */
+    background: #1a1a1a;
     padding: 0.75rem 2rem 0.75rem;
     text-align: center;
     margin: 0;
@@ -1688,52 +1607,711 @@ input[type="range"]::-webkit-slider-thumb:hover {
     margin: 0.25rem 0;
 }
 
-/* Remove any extra spacing */
-h1, h2 {
-    margin: 0;
-    padding: 0;
-}
-
-/* Price Display Container (Sticky) */
-.price-display-container {  
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg-color);
-    border: 1px solid rgba(138, 123, 244, 0.2);
-    border-radius: 12px;
-    margin: 0;
-    overflow: hidden;
-}
-
-/* Calculator Controls (Non-sticky) */
+/* Calculator Controls */
 .calculator-controls {
-    background: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(138, 123, 244, 0.2);
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: 0 0 12px 12px;
     overflow: hidden;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
+/* Song Count Slider */
 .song-count-control {
     padding: 0;
     margin: 0;
-    border-bottom: 1px solid rgba(138, 123, 244, 0.1);
+    border: none;
+    opacity: 1;
+    max-height: 60px;
+    overflow: visible;
+    transition: all 0.3s ease;
 }
 
-.bulk-discount-notice {
+.song-count-control.active {
+    max-height: 120px;
     padding: 0.75rem 1.5rem;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.8);
-    text-align: center;
 }
 
-/* Flow Progress (Non-sticky) */
-.flow-progress {
-    padding: 0.75rem;
+/* Slider container */
+.slider-container {
+    position: relative;
+    padding: 0.5rem 1.5rem;
+    margin: 0;
+    background: rgba(34, 34, 34, 0.6);
+    border-radius: 8px;
+}
+
+/* Slider value display */
+.slider-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--accent-color);
+    color: white;
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 1;
+}
+
+/* Hide unnecessary elements */
+.slider-toggle,
+.song-count-control h3 {
+    display: none;
+}
+
+/* Tick marks and labels only show in expanded state */
+.song-count-control:not(.active) .slider-tick-label,
+.song-count-control:not(.active) .discount-indicator {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+}
+
+/* Feature detail items */
+.feature-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.75rem 2rem;
     background: rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(138, 123, 244, 0.2);
-    border-radius: 12px;
+    font-size: 0.95rem;
+}
+
+.feature-detail-item .detail-right {
+    text-align: right;
+}
+
+.feature-detail-item .detail-calc {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.feature-detail-item .amount {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+/* Feature header with price alignment */
+.feature-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.feature-tags {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Feature breakdown section */
+.feature-details-breakdown {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.feature-details-breakdown.expanded {
+    max-height: none;
+    opacity: 1;
+}
+
+/* Feature expand button */
+.feature-expand-btn {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    padding: 0.25rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    transition: transform 0.3s ease;
 }
+
+/* Rotate arrow when expanded */
+.feature-expand-btn[aria-expanded="true"] {
+    transform: rotate(180deg);
+}
+
+/* Replace the text triangle with a nicer chevron */
+.feature-expand-btn .toggle-icon {
+    font-family: system-ui;
+    font-size: 1.2rem;
+    line-height: 1;
+    display: block;
+    transform-origin: center;
+}
+
+/* Breakdown Toggle Button */
+.breakdown-toggle {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.breakdown-toggle:hover {
+    opacity: 0.8;
+}
+
+.breakdown-toggle .toggle-icon {
+    font-family: system-ui;  /* Use system font for chevron */
+    font-size: 1.2rem;
+    line-height: 1;
+    display: block;
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.breakdown-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Quote Summary Styles */
+.quote-summary {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(138, 123, 244, 0.05);
+    border: 1px solid rgba(138, 123, 244, 0.2);
+    border-radius: 12px;
+}
+
+.quote-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(138, 123, 244, 0.2);
+}
+
+.quote-header h2 {
+    color: var(--accent-color);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.quote-total {
+    font-size: 2.5rem;
+    color: white;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* Service Details */
+.service-details {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.service-type h3 {
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.service-type p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.song-count {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(138, 123, 244, 0.2);
+}
+
+/* Included Features */
+.included-features {
+    margin-top: 2rem;
+}
+
+.included-features h4 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.included-features li {
+    margin-bottom: 1.2rem;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.included-features li strong {
+    color: white;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.included-features li .feature-explanation {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.included-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Selected Enhancements */
+.enhancement-item {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.enhancement-item h4 {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.enhancement-desc {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+}
+
+.enhancement-benefit {
+    color: #2ecc71;
+    font-style: italic;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 3px solid #2ecc71;
+}
+
+.enhancement-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(138, 123, 244, 0.2);
+}
+
+.enhancement-price {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Track Preparation */
+.prep-details {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.prep-details h4 {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.prep-details p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+}
+
+.prep-benefits {
+    margin: 1.5rem 0;
+}
+
+.prep-benefits ul {
+    list-style: none;
+    padding-left: 1.5rem;
+}
+
+.prep-benefits li {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.8rem;
+    position: relative;
+}
+
+.prep-benefits li::before {
+    content: "•";
+    color: var(--accent-color);
+    position: absolute;
+    left: -1.5rem;
+    font-weight: bold;
+}
+
+.prep-savings {
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(138, 123, 244, 0.2);
+}
+
+.prep-cost {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(138, 123, 244, 0.2);
+}
+
+.prep-guide-link {
+    display: inline-block;
+    color: var(--accent-color);
+    text-decoration: none;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+}
+
+.prep-guide-link:hover {
+    opacity: 0.8;
+}
+
+/* Discount Item */
+.discount-item {
+    background: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.discount-item h4 {
+    color: #2ecc71;
+    margin-bottom: 0.8rem;
+}
+
+.discount-item p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+}
+
+.discount-amount {
+    color: #2ecc71;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: right;
+}
+
+/* CTA Buttons */
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(138, 123, 244, 0.2);
+}
+
+.btn {
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn.primary {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+}
+
+.btn.secondary {
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(138, 123, 244, 0.2);
+}
+
+/* Print Styles */
+@media print {
+    .quote-summary {
+        background: white;
+        color: black;
+        border: none;
+    }
+    
+    .cta-buttons {
+        display: none;
+    }
+}
+
+.calculator-intro,
+.calculator-disclaimer,
+.quote-message {
+    background: rgba(138, 123, 244, 0.05);
+    border: 1px solid rgba(138, 123, 244, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.calculator-intro h2,
+.calculator-disclaimer h3,
+.quote-message h3 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.calculator-intro ul,
+.quote-message ul {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.calculator-intro li,
+.quote-message li {
+    position: relative;
+    margin-bottom: 0.8rem;
+}
+
+.calculator-intro li::before,
+.quote-message li::before {
+    content: "•";
+    color: var(--accent-color);
+    position: absolute;
+    left: -1.5rem;
+}
+
+.quote-message li strong {
+    color: var(--accent-color);
+}
+
+.pre-quote-message {
+    background: rgba(138, 123, 244, 0.05);
+    border: 1px solid rgba(138, 123, 244, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    animation: slideDown 0.3s ease-out;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pre-quote-message.hiding {
+    animation: slideUp 0.3s ease-out forwards;
+}
+
+.pre-quote-message h2 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.pre-quote-message p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.pre-quote-message ul {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+}
+
+.pre-quote-message li {
+    position: relative;
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+}
+
+.pre-quote-message li::before {
+    content: "•";
+    color: var(--accent-color);
+    position: absolute;
+    left: -1.5rem;
+}
+
+.pre-quote-message .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.pre-quote-message .close-btn:hover {
+    background: rgba(138, 123, 244, 0.1);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Add animation keyframes */
+@keyframes pulseFinish {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Update styles for pulsing finish step */
+.progress-step[data-step="3"].pulse {
+    animation: pulseFinish 2s ease-in-out infinite;
+    color: var(--accent-color);
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: rgba(138, 123, 244, 0.1);
+    border: 1px solid var(--accent-color);
+    transition: all 0.2s ease;
+}
+
+.progress-step[data-step="3"].pulse:hover {
+    background: rgba(138, 123, 244, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(138, 123, 244, 0.2);
+}
+
+/* Add a hint message */
+.progress-step[data-step="3"].pulse::after {
+    content: "Click to see your quote!";
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    white-space: nowrap;
+    opacity: 0.8;
+}
+
+/* Update breadcrumb styles */
+.breadcrumb {
+    background: rgba(138, 123, 244, 0.1);
+    border: 1px solid rgba(138, 123, 244, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.breadcrumb a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.breadcrumb span {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Center and style the main title */
+h1 {
+    text-align: center;
+    color: var(--accent-color);
+    font-size: 2.5rem;
+    margin: 1rem 0;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+/* Add responsive adjustments */
+@media (max-width: 768px) {
+    .breadcrumb {
+        margin: 1rem 0;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin: 1.5rem 0 2rem;
+    }
+}
+
+.service-panel.clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.service-panel.clickable:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+    background: rgba(138, 123, 244, 0.1);
+    box-shadow: 0 4px 12px rgba(138, 123, 244, 0.2);
+}
+
+/* Remove the button styles for these panels */
+.service-panel.clickable .btn {
+    display: none;
+}
+

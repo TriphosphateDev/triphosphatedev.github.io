@@ -65,166 +65,232 @@
 
         <h1>Mixing Services Price Calculator</h1>
         
-        <!-- Price Display (Sticky) -->
-        <div class="price-display-container">
-            <div class="price-display">
-                <h2>Estimated Total</h2>
-                <div class="price-amount">$<span id="totalPrice">0</span></div>
-                <button class="breakdown-toggle" aria-expanded="false">
-                    <span>Show Breakdown</span>
-                    <span class="toggle-icon">▼</span>
-                </button>
-            </div>
-            
-            <div class="price-breakdown">
-                <div class="breakdown-item base">
-                    <span>Base Price</span>
-                    <span class="amount">$<span id="basePrice">0</span></span>
+        <!-- Price display sticky box -->
+        <div class="price-and-controls">
+            <!-- Price Display -->
+            <div class="price-display-container">
+                <div class="price-display">
+                    <h2>Estimated Total</h2>
+                    <div class="price-amount">$<span id="totalPrice">0</span></div>
+                    <button class="breakdown-toggle" aria-expanded="false">
+                        <span>Show Breakdown</span>
+                        <span class="toggle-icon">▾</span>
+                    </button>
                 </div>
-                <div class="breakdown-item features">
-                    <div class="feature-summary">
-                        <span>Selected Features</span>
-                        <button class="feature-expand-btn" aria-expanded="false">
+                
+                <div class="price-breakdown">
+                    <!-- Base Price -->
+                    <div class="breakdown-item base">
+                        <span>Base Price</span>
+                        <span class="amount">$<span id="basePriceRaw">0</span></span>
+                    </div>
+
+                    <!-- Extra Tracks Fee (dynamically added when needed) -->
+
+                    <!-- Selected Features -->
+                    <div class="breakdown-item features">
+                        <div class="feature-summary">
+                            <span>Selected Features</span>
+                            <button class="feature-expand-btn" aria-expanded="true">
+                                <span class="toggle-icon">▼</span>
+                            </button>
+                        </div>
+                        <span class="amount">$<span id="featurePrice">0</span></span>
+                    </div>
+                    <div class="feature-details-breakdown expanded">
+                        <!-- Feature details populated dynamically -->
+                    </div>
+
+                    <!-- Subtotal before any discounts or fees -->
+                    <div class="breakdown-item subtotal">
+                        <span>Subtotal</span>
+                        <span class="amount">$<span id="subtotalPrice">0</span></span>
+                    </div>
+
+                    <!-- Additional Fees Section -->
+                    <div class="breakdown-item fees-section" style="display: none;">
+                        <span>Additional Fees</span>
+                        <span class="amount">$<span id="totalFees">0</span></span>
+                    </div>
+                    
+                    <!-- Stem Organization as Fee -->
+                    <div class="breakdown-item stem-org-fee nested" style="display: none;">
+                        <span>Track Preparation
+                            <a href="/services/track-prep/" target="_blank" class="stem-org-link">ⓘ</a>
+                        </span>
+                        <span class="amount fee">$<span id="stemOrgPrice">0</span></span>
+                    </div>
+
+                    <!-- Discounts Section -->
+                    <div class="breakdown-item discounts-section">
+                        <span>Available Discounts</span>
+                        <span class="amount savings">-$<span id="totalDiscounts">0</span></span>
+                    </div>
+                    
+                    <!-- Bulk Discount -->
+                    <div class="breakdown-item bulk-discount nested" style="display: none;">
+                        <span>Bulk Discount</span>
+                        <span class="amount savings">-$<span id="discountAmount">0</span></span>
+                    </div>
+                    
+                    <!-- Stem Organization as Savings -->
+                    <div class="breakdown-item stem-org-savings nested" style="display: none;">
+                        <span>Track Preparation Waived
+                            <a href="/services/track-prep/" target="_blank" class="stem-org-link">ⓘ</a>
+                        </span>
+                        <span class="amount savings">-$<span id="stemOrgSavings">0</span></span>
+                    </div>
+
+                    <!-- Final Total with separator -->
+                    <div class="breakdown-separator"></div>
+                    <div class="breakdown-item total">
+                        <span>Estimated Total</span>
+                        <span class="amount">$<span id="totalPrice">0</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Song Count Control -->
+            <div class="calculator-controls">
+                <div class="song-count-control">
+                    <div class="slider-container">
+                        <input type="range" 
+                               id="songCount" 
+                               min="1" 
+                               max="20" 
+                               value="1" 
+                               step="1">
+                        <div class="slider-progress"></div>
+                        <div class="slider-ticks">
+                            <!-- Ticks will be added dynamically -->
+                        </div>
+                        <output for="songCount" class="slider-value">1 song</output>
+                        <button class="slider-toggle" aria-label="Toggle slider details">
                             <span class="toggle-icon">▼</span>
                         </button>
                     </div>
-                    <span class="amount">$<span id="featurePrice">0</span></span>
                 </div>
-                <div class="feature-details-breakdown">
-                    <!-- Feature details will be populated dynamically -->
+            </div>
+
+            <!-- Navigation now part of sticky section -->
+            <div class="flow-progress">
+                <button class="nav-btn prev" disabled>←</button>
+                <div class="progress-steps">
+                    <div class="progress-step" data-step="0">Mix Type</div>
+                    <div class="progress-step" data-step="1">Track Prep</div>
+                    <div class="progress-step" data-step="2">Features</div>
+                    <div class="progress-step" data-step="3">Finish!</div>
                 </div>
-                <div class="breakdown-item stem-org">
-                    <span>Stem Organization</span>
-                    <div class="stem-org-info">
-                        <span class="amount">$<span id="stemOrgPrice">20</span></span>
-                        <span class="waived-notice" style="display: none">
-                            Waived! (-$<span id="stemOrgSavings">0</span>)
-                        </span>
-                    </div>
-                </div>
-                <div class="breakdown-item bulk-discount" style="display: none;">
-                    <span>Bulk Discount</span>
-                    <span class="amount">-$<span id="discountAmount">0</span></span>
-                </div>
+                <button class="nav-btn next">→</button>
             </div>
         </div>
 
-        <!-- Song Count Control (Separate) -->
-        <div class="calculator-controls">
-            <div class="song-count-control">
-                <div class="slider-container">
-                    <input type="range" 
-                           id="songCount" 
-                           min="1" 
-                           max="20" 
-                           value="1" 
-                           step="1">
-                    <output for="songCount" class="slider-value">1 song</output>
-                </div>
-            </div>
-            
-            <div class="bulk-discount-notice">
-                <span class="discount-badge">Save 10%</span> on 5+ songs
-                <span class="discount-badge">Save 20%</span> on 10+ songs
-            </div>
-        </div>
-
-        <!-- Navigation (Separate) -->
-        <div class="flow-progress">
-            <button class="nav-btn prev" disabled>←</button>
-            <div class="progress-steps">
-                <div class="progress-step" data-step="0">Mix Type</div>
-                <div class="progress-step" data-step="1">Track Prep</div>
-                <div class="progress-step" data-step="2">Features</div>
-                <div class="progress-step" data-step="3">Finish!</div>
-            </div>
-            <button class="nav-btn next">→</button>
+        <!-- Move pre-quote message here -->
+        <div class="pre-quote-message" id="preQuoteMessage">
+            <button class="close-btn" aria-label="Dismiss message">×</button>
+            <h2>Transparency Meets Flexibility</h2>
+            <p>Our quote calculator provides insight into how much work, time, and skill go into each element of your mix. However, it's important to note:</p>
+            <ul>
+                <li>These are rough estimates based on typical projects.</li>
+                <li>Some features may not apply to your specific track (e.g., manual pitch correction might not be needed for all vocal tracks).</li>
+                <li>Every quote is subject to adjustment after we review your project during the consultation.</li>
+            </ul>
         </div>
 
         <!-- Main Service Selection -->
         <div class="service-panels">
-            <!-- Core Mixing Services -->
             <div class="service-panel" data-service="twoTrack">
+                <input type="radio" name="service" value="twoTrack" hidden>
                 <div class="panel-header">
-                    <h3>2-Track Mixdown</h3>
-                    <div class="base-price">From $50/song</div>
-                </div>
-                <div class="panel-description">
-                    Perfect for finished instrumentals or beats with up to 4 vocal tracks
+                    <div class="panel-main">
+                        <h3>2-Track Mixdown</h3>
+                        <span>Professional mixing for beats and instrumentals</span>
+                    </div>
+                    <div class="panel-tags">
+                        <div class="panel-tag">From $50/song</div>
+                        <div class="panel-tag selected-tag">Selected</div>
+                    </div>
                 </div>
                 <ul class="panel-features">
-                    <li>1 Instrumental Track + Vocals</li>
-                    <li>Example: Main vocal, L/R doubles, adlibs</li>
-                    <li>Basic EQ & Compression</li>
+                    <li>Professional EQ, Compression, & Spatial Effects</li>
+                    <li>Reverb, Delay, & Stereo Enhancement</li>
                     <li>Basic Autotune Included</li>
-                    <span class="tooltip">Additional vocal tracks: +$5/track</span>
+                    <li>Optional Instrumental Enhancement Available</li>
                 </ul>
-                <button class="select-btn" data-service="twoTrack">Select</button>
             </div>
 
             <div class="service-panel" data-service="groupStem">
+                <input type="radio" name="service" value="groupStem" hidden>
                 <div class="panel-header">
-                    <h3>Group Stem Mixdown</h3>
-                    <div class="base-price">From $75/song</div>
-                </div>
-                <div class="panel-description">
-                    Ideal for bands and multi-track productions
+                    <div class="panel-main">
+                        <h3>Group Stem Mixdown</h3>
+                        <span>Ideal for bands and multi-track productions</span>
+                    </div>
+                    <div class="panel-tags">
+                        <div class="panel-tag">From $200/song</div>
+                        <div class="panel-tag selected-tag">Selected</div>
+                    </div>
                 </div>
                 <ul class="panel-features">
                     <li>Grouped instrument categories</li>
                     <li>Individual processing per group</li>
                     <li>Advanced routing and effects</li>
                 </ul>
-                <button class="select-btn" data-service="groupStem">Select</button>
             </div>
 
-            <div class="service-panel" data-service="fullStem">
+            <!-- Full Stem (now links to dedicated page) -->
+            <div class="service-panel standalone clickable" onclick="window.location.href='/resources/pricecalculator/fullstem/'">
                 <div class="panel-header">
-                    <h3>Full Stem Mixdown</h3>
-                    <div class="base-price">From $100/song</div>
-                </div>
-                <div class="panel-description">
-                    Maximum control and precision
+                    <div class="panel-main">
+                        <h3>Full Stem Mixdown</h3>
+                        <span>Maximum control and precision</span>
+                    </div>
+                    <div class="panel-tags">
+                        <div class="panel-tag">Custom Quote</div>
+                    </div>
                 </div>
                 <ul class="panel-features">
                     <li>Individual track processing</li>
                     <li>Complex effect chains</li>
-                    <li>Full timing and processing control</li>
+                    <li>Full timing control</li>
+                    <li>Perfect for full band recordings</li>
+                    <li>Ideal for complex studio sessions</li>
                 </ul>
-                <button class="select-btn" data-service="fullStem">Select</button>
             </div>
 
             <!-- Standalone Services -->
-            <div class="service-panel standalone" data-service="consultation">
+            <div class="service-panel standalone clickable" onclick="window.location.href='/consultation.html'">
                 <div class="panel-header">
-                    <h3>Consultation & Feedback</h3>
-                    <div class="base-price">$50/session</div>
-                </div>
-                <div class="panel-description">
-                    For DIY mixers seeking professional guidance
+                    <div class="panel-main">
+                        <h3>Consultation & Feedback</h3>
+                        <span>For DIY mixers seeking professional guidance</span>
+                    </div>
+                    <div class="panel-tags">
+                        <div class="panel-tag">$50/session</div>
+                    </div>
                 </div>
                 <ul class="panel-features">
                     <li>One-hour detailed review</li>
                     <li>Written feedback summary</li>
-                    <li>Implementation guidance</li>
+                    <li>Professional guidance</li>
                 </ul>
-                <a href="/services/consultation" class="btn">Learn More</a>
             </div>
 
-            <div class="service-panel standalone" data-service="mastering">
+            <div class="service-panel standalone clickable" onclick="window.location.href='/services/mastering/'">
                 <div class="panel-header">
-                    <h3>Mastering Only</h3>
-                    <div class="base-price">Custom pricing</div>
-                </div>
-                <div class="panel-description">
-                    For externally mixed tracks
+                    <div class="panel-main">
+                        <h3>Mastering Only</h3>
+                        <span>For externally mixed tracks</span>
+                    </div>
+                    <div class="panel-tags">
+                        <div class="panel-tag">Custom pricing</div>
+                    </div>
                 </div>
                 <ul class="panel-features">
                     <li>Streaming platform optimization</li>
                     <li>Professional loudness standards</li>
-                    <li>Final quality control</li>
+                    <li>Mix-dependent results</li>
                 </ul>
-                <a href="/services/mastering" class="btn">View Mastering Policy</a>
             </div>
         </div>
 
@@ -247,7 +313,6 @@
                                     <ul class="requirements-list">
                                         <li>Clearly labeled tracks</li>
                                         <li>Proper grouping</li>
-                                        <li>Correct export settings</li>
                                         <li>Basic cleanup completed</li>
                                     </ul>
                                     <a href="/services/track-prep" class="guide-link" target="_blank">
@@ -262,19 +327,16 @@
                                 <input type="radio" name="stemPrep" value="professionalPrep">
                                 <div class="option-content">
                                     <div class="option-header">
-                                        <h4>Professional Track Organization</h4>
+                                        <h4>Professional Editing</h4>
                                         <span class="price-badge">+$20/song</span>
                                     </div>
                                     <p>We'll handle everything for you</p>
                                     <ul class="service-list">
                                         <li>Track organization & labeling</li>
                                         <li>Proper stem grouping</li>
-                                        <li>Export optimization</li>
+                                        <li>Comping and take management</li>
                                         <li>Basic cleanup & preparation</li>
                                     </ul>
-                                    <span class="recommendation">
-                                        Recommended if you're unsure about track preparation
-                                    </span>
                                 </div>
                             </label>
                         </div>
@@ -285,10 +347,10 @@
                 <div class="flow-step" data-step="2">
                     <div class="track-counter">
                         <label>Number of Vocal Tracks</label>
-                        <div class="counter-controls">
-                            <button class="counter-btn" data-action="decrease">-</button>
-                            <span class="counter-value" id="vocalTrackCount">1</span>
-                            <button class="counter-btn" data-action="increase">+</button>
+                        <div class="counter-control">
+                            <button class="decrement">-</button>
+                            <input type="number" id="vocalTrackCount" min="1" max="8" value="1">
+                            <button class="increment">+</button>
                         </div>
                         <small class="track-notice">First 4 tracks included in base price (+$5/track after)</small>
                     </div>
@@ -308,40 +370,32 @@
                         </div>
 
                         <!-- Manual Pitch -->
-                        <label class="feature-box">
+                        <div class="feature-box">
                             <input type="checkbox" name="features" value="melodynePitchCorrection" hidden>
                             <div class="feature-header">
                                 <div class="feature-main">
-                                    <h4>Manual Pitch Correction</h4>
-                                    <span>Perfect pitch while maintaining natural sound</span>
+                                    <h4>Manual Pitch & Timing Correction</h4>
+                                    <span>Precise pitch and timing adjustments</span>
                                 </div>
                                 <div class="feature-tags">
-                                    <div class="feature-tag selected-tag" style="display: none;">Selected</div>
                                     <div class="feature-tag">$10/track</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
                                 </div>
                             </div>
                             <div class="feature-details">
-                                <div class="feature-details-content">
-                                    <ul>
-                                        <li>Natural-sounding results</li>
-                                        <li>Can be combined with autotune for style</li>
-                                        <li>Professional pitch correction</li>
-                                    </ul>
-                                </div>
                                 <div class="feature-track-counter">
-                                    <label>Tracks</label>
+                                    <label>Track Count</label>
                                     <div class="counter-controls">
                                         <button class="counter-btn" data-action="decrease" data-feature="melodynePitchCorrection">-</button>
-                                        <span class="counter-value" id="melodynePitchCorrectionCount">0</span>
+                                        <span class="track-count">1</span>
                                         <button class="counter-btn" data-action="increase" data-feature="melodynePitchCorrection">+</button>
                                     </div>
-                                    <div class="feature-price-preview">Total: $<span class="feature-total">0</span></div>
                                 </div>
                             </div>
-                        </label>
+                        </div>
 
                         <!-- Layer Alignment -->
-                        <label class="feature-box">
+                        <div class="feature-box">
                             <input type="checkbox" name="features" value="layerAlignment" hidden>
                             <div class="feature-header">
                                 <div class="feature-main">
@@ -349,8 +403,8 @@
                                     <span>Perfectly sync multiple vocal takes</span>
                                 </div>
                                 <div class="feature-tags">
-                                    <div class="feature-tag selected-tag" style="display: none;">Selected</div>
-                                    <div class="feature-tag">$10/aligned track</div>
+                                    <div class="feature-tag">$10/track</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
                                 </div>
                             </div>
                             <div class="feature-details">
@@ -369,59 +423,201 @@
                                     </div>
                                     <div class="counter-controls">
                                         <button class="counter-btn" data-action="decrease" data-feature="layerAlignment">-</button>
-                                        <span class="counter-value" id="layerAlignmentTotal">2</span>
+                                        <span class="track-count">2</span>
                                         <button class="counter-btn" data-action="increase" data-feature="layerAlignment">+</button>
                                     </div>
                                     <div class="feature-price-preview">Total: $<span class="feature-total">0</span></div>
                                 </div>
                             </div>
-                        </label>
+                        </div>
 
                         <!-- Artificial Harmonies -->
-                        <label class="feature-box">
+                        <div class="feature-box">
                             <input type="checkbox" name="features" value="artificialHarmonies" hidden>
                             <div class="feature-header">
                                 <div class="feature-main">
-                                    <h4>Artificial Harmonies</h4>
-                                    <span>Professional harmony creation</span>
+                                    <h4>Artificial Harmonies/Doubles</h4>
+                                    <span>Custom harmonies and natural-sounding doubles</span>
                                 </div>
                                 <div class="feature-tags">
-                                    <div class="feature-tag selected-tag" style="display: none;">Selected</div>
                                     <div class="feature-tag">+$20/song</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
                                 </div>
                             </div>
                             <div class="feature-details">
                                 <ul>
-                                    <li>Professional harmony creation</li>
-                                    <li>Natural-sounding results</li>
-                                    <li>Custom harmony arrangements</li>
+                                    <li>Custom harmony creation</li>
+                                    <li>Natural-sounding doubles</li>
+                                    <li>Rap/vocal layering</li>
                                 </ul>
-                                <div class="limit-text">Includes up to 3 harmony layers</div>
+                                <div class="limit-text">Includes up to 3 harmony/double layers</div>
                             </div>
-                        </label>
+                        </div>
 
-                        <!-- Rush Order -->
-                        <label class="feature-box rush">
-                            <input type="checkbox" name="rushOrder" id="rushOrder" hidden>
+                        <!-- Instrumental Enhancement -->
+                        <div class="feature-box instrumental-enhancement" style="display: none;">
+                            <input type="checkbox" name="features" value="instrumentalEnhancement" hidden>
                             <div class="feature-header">
                                 <div class="feature-main">
-                                    <h4>Rush Order</h4>
-                                    <span>48-hour delivery guaranteed</span>
+                                    <h4>Instrumental Enhancement</h4>
+                                    <span>Advanced processing for your instrumental</span>
                                 </div>
                                 <div class="feature-tags">
-                                    <div class="feature-tag selected-tag" style="display: none;">Selected</div>
-                                    <div class="feature-tag">+25%</div>
+                                    <div class="feature-tag">+$20/song</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
                                 </div>
                             </div>
                             <div class="feature-details">
                                 <ul>
-                                    <li>Priority processing</li>
-                                    <li>48-hour turnaround time</li>
+                                    <li>Dynamic EQ & Problem Frequency Control</li>
+                                    <li>Advanced Stereo Imaging & Depth</li>
+                                    <li>Spatial Enhancement & Clarity</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Audio Restoration -->
+                        <div class="feature-box">
+                            <input type="checkbox" name="features" value="audioRestoration" hidden>
+                            <div class="feature-header">
+                                <div class="feature-main">
+                                    <h4>Audio Restoration & Cleanup</h4>
+                                    <span>Professional cleanup and noise reduction</span>
+                                </div>
+                                <div class="feature-tags">
+                                    <div class="feature-tag">$10/track</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
+                                </div>
+                            </div>
+                            <div class="feature-details">
+                                <div class="feature-details-content">
+                                    <ul>
+                                        <li>Noise & interference reduction</li>
+                                        <li>De-breathing & plosive control</li>
+                                        <li>Room sound reduction</li>
+                                        <li>Spectral repair</li>
+                                    </ul>
+                                </div>
+                                <div class="feature-track-counter">
+                                    <label>Tracks to Process</label>
+                                    <div class="counter-controls">
+                                        <button class="counter-btn" data-action="decrease" data-feature="audioRestoration">-</button>
+                                        <span class="track-count">1</span>
+                                        <button class="counter-btn" data-action="increase" data-feature="audioRestoration">+</button>
+                                    </div>
+                                    <div class="feature-price-preview">Total: $<span class="feature-total">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real-Time Session -->
+                        <div class="feature-box">
+                            <input type="checkbox" name="features" value="realTimeSession" hidden>
+                            <div class="feature-header">
+                                <div class="feature-main">
+                                    <h4>Real-Time Studio Sessions</h4>
+                                    <span>One hour of live mix supervision per song</span>
+                                </div>
+                                <div class="feature-tags">
+                                    <div class="feature-tag">$25/song</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
+                                </div>
+                            </div>
+                            <div class="feature-details">
+                                <div class="feature-details-content">
+                                    <ul>
+                                        <li>Live mix supervision via Discord</li>
+                                        <li>Direct creative feedback</li>
+                                        <li>Learn professional techniques</li>
+                                        <li>Screen sharing and voice chat</li>
+                                        <li>One hour session per song</li>
+                                    </ul>
+                                </div>
+                                <div class="feature-track-counter">
+                                    <label>Selected Songs: <span class="session-count">1</span></label>
+                                    <div class="session-info">
+                                        <span>Total studio time: <span class="total-hours">1</span> hour(s)</span>
+                                    </div>
+                                    <div class="feature-price-preview">Total: $<span class="feature-total">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rush Order -->
+                        <div class="feature-box rush" onclick="handleFeatureClick(event)">
+                            <input type="checkbox" name="features" value="rushOrder" hidden>
+                            <div class="feature-header">
+                                <div class="feature-main">
+                                    <h4>Priority Delivery</h4>
+                                    <span>Fast-tracked processing and delivery</span>
+                                </div>
+                                <div class="feature-tags">
+                                    <div class="feature-tag">+25%</div>
+                                    <div class="feature-tag selected-tag">Selected</div>
+                                </div>
+                            </div>
+                            <div class="feature-details">
+                                <ul>
+                                    <li>Priority queue placement</li>
+                                    <li>Expedited processing</li>
                                     <li>Weekend availability</li>
                                 </ul>
                                 <div class="limit-text">Subject to current queue status</div>
                             </div>
-                        </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finish & Summary -->
+                <div class="flow-step" data-step="3">
+                    <div class="quote-summary">
+                        <div class="quote-header">
+                            <h2>Your Custom Mixing Package</h2>
+                            <div class="quote-total">Total Investment: $<span id="quoteTotalPrice">0.00</span></div>
+                        </div>
+                        
+                        <div class="service-details">
+                            <h3 id="quoteServiceType">2-Track Mixdown</h3>
+                            <p id="quoteServiceDesc">Professional mixing for beats and instrumentals</p>
+                            <p><span id="quoteSongCount">1</span> song(s)</p>
+                            
+                            <div class="included-features">
+                                <h4>Included with Your Package:</h4>
+                                <ul id="quoteIncludedFeatures">
+                                    <!-- Will be populated by JavaScript -->
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="selected-enhancements">
+                            <h4>Selected Enhancements</h4>
+                            <div id="quoteEnhancementList">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="preparation-method">
+                            <h4>Track Preparation</h4>
+                            <div id="quotePrepMethod">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="quote-message">
+                            <h3>What This Quote Means</h3>
+                            <p>This custom quote represents the estimated hours and work involved in enhancing your music based on your input. Here's what to keep in mind:</p>
+                            <ul>
+                                <li><strong>Not Set in Stone:</strong> Some songs may require less work than estimated, and we'll never overcharge for features or enhancements that aren't needed.</li>
+                                <li><strong>Tailored to You:</strong> During the free consultation, we'll assess your tracks and determine what's necessary to achieve your vision. If something you selected isn't needed, we'll let you know—and adjust the price accordingly.</li>
+                                <li><strong>Flexible and Affordable:</strong> Our goal is to offer professional mixing services that meet your needs without exceeding your budget.</li>
+                            </ul>
+                            <p>We're committed to clarity, quality, and fairness in every project. Let's work together to create something amazing!</p>
+                        </div>
+
+                        <div class="cta-buttons">
+                            <button class="btn secondary">Print Quote</button>
+                            <button class="btn primary" onclick="window.location.href='/getstarted'">Start Project</button>
+                        </div>
                     </div>
                 </div>
             </div>
