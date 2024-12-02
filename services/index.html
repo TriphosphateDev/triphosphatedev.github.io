@@ -16,13 +16,13 @@
     
     <!-- Primary Meta Tags -->
     <title>Professional Audio Services | Triphosphate Music</title>
-    <meta name="description" content="Professional mixing and mastering services for independent artists. From vocal mixing to track preparation, find the right service for your music.">
+    <meta name="description" content="Professional mixing and mastering services for independent artists. Use our interactive calculator for instant quotes and find the perfect service for your music.">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tripmixes.com/services/">
     <meta property="og:title" content="Professional Audio Services | Triphosphate Music">
-    <meta property="og:description" content="Professional mixing and mastering services for independent artists. Find the right service for your music.">
+    <meta property="og:description" content="Professional mixing and mastering services for independent artists. Get instant quotes and find the perfect service for your music.">
     <meta property="og:site_name" content="Triphosphate Music">
     
     <!-- Canonical URL -->
@@ -167,6 +167,22 @@
         .cta-box:hover .discord-icon {
             transform: scale(1.1);
         }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn.secondary {
+            background: rgba(138, 123, 244, 0.1);
+            border: 1px solid rgba(138, 123, 244, 0.3);
+        }
+
+        .btn.secondary:hover {
+            background: rgba(138, 123, 244, 0.2);
+        }
     </style>
 
     <script type="application/ld+json">
@@ -209,7 +225,10 @@
             <a href="/services/mastering" class="service-card" style="background: url('/services/mastering/pexels-techivation-76108219-10681799.jpg') no-repeat center/cover;">
                 <h2>Mastering Services</h2>
                 <p>Get your tracks ready for streaming platforms with professional mastering. Achieve competitive loudness while maintaining dynamics and clarity.</p>
-                <span class="service-link">Learn More</span>
+                <div class="service-actions">
+                    <span class="service-link">Learn More</span>
+                    <span class="price-hint">Get instant quote →</span>
+                </div>
             </a>
 
             <a href="/services/vocal-mixing" class="service-card" style="background: url('/services/vocal-mixing/pexels-cottonbro-9419242.jpg') no-repeat center/cover;">
@@ -235,7 +254,10 @@
             <div class="cta-bg" style="background-image: url('/services/genres/pexels-harrisonhaines-2921568.jpg'); background-position: center 25%;"></div>
             <h2>Ready to Get Started?</h2>
             <p>Let's discuss your project and create something amazing together.</p>
-            <a href="/getstarted/" class="btn">Get Started</a>
+            <div class="cta-buttons">
+                <a href="/resources/pricecalculator" class="btn secondary">Customize Your Quote</a>
+                <a href="/getstarted/" class="btn">Get Started</a>
+            </div>
         </section>
     </main>
 
@@ -268,6 +290,7 @@
                     <h3>Free Downloads</h3>
                     <a href="/resources/templates">Mixing Templates</a>
                     <a href="/resources/checklists">Production Checklists</a>
+                    <a href="/resources/pricecalculator">Customize Your Quote</a>
                 </div>
 
                 <div class="drawer-section">
@@ -307,6 +330,77 @@
                 lastScroll = currentScroll;
             });
         });
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Triphosphate Music",
+        "description": "Professional mixing and mastering services for independent artists",
+        "url": "https://tripmixes.com",
+        "serviceType": "Audio Production",
+        "areaServed": "Worldwide",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Audio Services",
+            "itemListElement": [
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Vocal Mixing",
+                        "description": "Professional vocal mixing services with unlimited revisions",
+                        "url": "https://tripmixes.com/services/vocal-mixing/",
+                        "priceSpecification": {
+                            "@type": "PriceSpecification",
+                            "description": "Starting from",
+                            "price": "50",
+                            "priceCurrency": "USD"
+                        }
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Mastering",
+                        "description": "Professional mastering for streaming platforms",
+                        "url": "https://tripmixes.com/services/mastering/",
+                        "priceSpecification": {
+                            "@type": "PriceSpecification",
+                            "description": "Starting from",
+                            "price": "30",
+                            "priceCurrency": "USD"
+                        }
+                    }
+                },
+                {
+                    "@type": "Offer",
+                    "itemOffered": {
+                        "@type": "Service",
+                        "name": "Track Preparation",
+                        "description": "Professional track organization and preparation",
+                        "url": "https://tripmixes.com/services/track-prep/",
+                        "priceSpecification": {
+                            "@type": "PriceSpecification",
+                            "description": "Starting from",
+                            "price": "20",
+                            "priceCurrency": "USD"
+                        }
+                    }
+                }
+            ]
+        },
+        "potentialAction": {
+            "@type": "ViewAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://tripmixes.com/resources/pricecalculator/",
+                "name": "Calculate Custom Quote"
+            }
+        }
+    }
     </script>
 </body>
 </html> 

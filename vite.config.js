@@ -11,10 +11,17 @@ export default defineConfig({
       }
     }
   },
-  base: '/repository-name/',
+  base: '/',
   build: {
     outDir: 'dist',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    rollupOptions: {
+      input: {
+        main: '/index.html',
+        pricecalculator: '/resources/pricecalculator/index.html',
+        // Add other pages as needed
+      }
+    }
   },
   root: '.',
   publicDir: 'public',
