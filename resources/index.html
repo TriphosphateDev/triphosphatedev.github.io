@@ -1,89 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Google tag analytics (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJ17BRT5MF"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+    <!-- Google tag analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XJ17BRT5MF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-XJ17BRT5MF');
+    </script>
     
-            gtag('config', 'G-XJ17BRT5MF');
-        </script>
-        
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>Audio Production Resources | Triphosphate Music</title>
-    <meta name="description" content="Free resources, guides, and tutorials for music producers and artists. Learn about home recording, mixing techniques, and equipment.">
+    <title>Resources | Triphosphate Music</title>
+    <meta name="description" content="Free mixing and production resources for independent artists. Learn professional techniques, download templates, and improve your music production skills.">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tripmixes.com/resources/">
-    <meta property="og:title" content="Audio Production Resources | Triphosphate Music">
-    <meta property="og:description" content="Free resources, guides, and tutorials for music producers and artists.">
-    <meta property="og:site_name" content="Triphosphate Music">
+    <meta property="og:title" content="Resources | Triphosphate Music">
+    <meta property="og:description" content="Free mixing and production resources for independent artists. Learn professional techniques, download templates, and improve your music production skills.">
     
-    <!-- Canonical URL -->
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://tripmixes.com/resources/">
+    <meta name="twitter:title" content="Resources | Triphosphate Music">
+    <meta name="twitter:description" content="Free mixing and production resources for independent artists. Learn professional techniques, download templates, and improve your music production skills.">
+    
     <link rel="canonical" href="https://tripmixes.com/resources/">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/main.css">
-
     <style>
-        .resources-grid {
+        .resource-section {
+            margin: 2rem 0;
+        }
+
+        .resource-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+            gap: 1.5rem;
+            margin: 1rem 0;
         }
 
         .resource-card {
             background: rgba(138, 123, 244, 0.1);
             border: 1px solid rgba(138, 123, 244, 0.3);
             border-radius: 12px;
-            padding: 2rem;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 1.5rem;
             text-decoration: none;
-            display: block;
+            color: inherit;
+            transition: all 0.3s ease;
         }
 
         .resource-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(138, 123, 244, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: rgba(138, 123, 244, 0.15);
         }
 
-        .resource-card h2 {
+        .resource-card h3 {
             color: #8a7bf4;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .resource-card p {
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+            margin: 0;
+            font-size: 0.9rem;
         }
 
-        .service-link {
-            color: #8a7bf4;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .service-link::after {
-            content: "→";
-            transition: transform 0.2s ease;
-        }
-
-        .resource-card:hover .service-link {
-            color: #fff;
-        }
-
-        .resource-card:hover .service-link::after {
-            transform: translateX(4px);
+        .section-header {
+            text-align: center;
+            margin: 3rem 0;
         }
     </style>
 </head>
@@ -100,58 +91,101 @@
             </ol>
         </nav>
 
-        <article class="guide-header">
-            <h1>Audio Production Resources</h1>
-            <p>Free guides, tutorials, and tools to improve your music</p>
-        </article>
-
-        <div class="resources-grid">
-            <a href="/resources/pricecalculator" class="resource-card">
-                <h2>Customize Your Quote</h2>
-                <p>Interactive calculator to estimate mixing costs. Select your services, features, and get an instant quote tailored to your project.</p>
-                <span class="service-link">Get Started</span>
-            </a>
-
-            <a href="/resources/home-recording" class="resource-card">
-                <h2>Home Recording Guide</h2>
-                <p>Learn how to set up your home studio and get professional-quality recordings. Tips on acoustics, microphone placement, and essential gear.</p>
-                <span class="service-link">Learn More</span>
-            </a>
-
-            <a href="/resources/production-tips" class="resource-card">
-                <h2>Production Tips</h2>
-                <p>DIY production techniques to improve your tracks. From arrangement to mixing, level up your production game.</p>
-                <span class="service-link">Learn More</span>
-            </a>
-
-            <a href="/resources/equipment" class="resource-card">
-                <h2>Equipment Reviews</h2>
-                <p>Honest reviews of audio equipment. Find the right tools for your studio, from budget-friendly to professional gear.</p>
-                <span class="service-link">Learn More</span>
-            </a>
-
-            <a href="/resources/templates" class="resource-card">
-                <h2>Free Templates</h2>
-                <p>Download professional mixing templates and project files. Get started with industry-standard session organization.</p>
-                <span class="service-link">Learn More</span>
-            </a>
-
-            <a href="/resources/tutorials" class="resource-card">
-                <h2>Genre Tutorials</h2>
-                <p>Genre-specific production techniques and mixing approaches. Learn how to achieve the sound you're after.</p>
-                <span class="service-link">Learn More</span>
-            </a>
-
-            <a href="/resources/checklists" class="resource-card">
-                <h2>Production Checklists</h2>
-                <p>Step-by-step checklists for recording, mixing, and mastering. Never miss a crucial step in your production.</p>
-                <span class="service-link">Learn More</span>
-            </a>
+        <div class="section-header">
+            <h1>Resources</h1>
+            <p>Free guides and resources to help you achieve professional results.</p>
         </div>
 
+        <div class="resource-sections">
+            <div class="resource-section">
+                <h2>Essential Guides</h2>
+                <div class="resource-grid">
+                    <a href="/resources/why-professional-mixing/" class="resource-card">
+                        <h3>Why Independent Artists Need Professional Mixing</h3>
+                        <p>Understand the impact of professional mixing on your music career and streaming success.</p>
+                    </a>
+                    <a href="/resources/great-vocal-mix/" class="resource-card">
+                        <h3>What Makes a Great Vocal Mix?</h3>
+                        <p>Master the art and science of professional vocal production.</p>
+                    </a>
+                    <a href="/resources/mixing-pitfalls/" class="resource-card">
+                        <h3>Common Mixing Pitfalls</h3>
+                        <p>Avoid common mistakes and learn professional solutions.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="resource-section">
+                <h2>Mixing & Production</h2>
+                <div class="resource-grid">
+                    <a href="/resources/electronic-mixing/" class="resource-card">
+                        <h3>5 Essential Tips for Mixing Electronic Music</h3>
+                        <p>Learn key techniques for achieving professional electronic mixes.</p>
+                    </a>
+                    <a href="/resources/creative-fx/" class="resource-card">
+                        <h3>Creative FX: From Radio Filters to Beat Cuts</h3>
+                        <p>Master creative effects to enhance your productions.</p>
+                    </a>
+                    <a href="/resources/hyperpop/" class="resource-card">
+                        <h3>Hyperpop Mixing Techniques</h3>
+                        <p>Learn how to mix hyperpop with controlled chaos and crunchy distortion.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="resource-section">
+                <h2>Technical Guides</h2>
+                <div class="resource-grid">
+                    <a href="/resources/mastering/" class="resource-card">
+                        <h3>Mastering for Independent Artists</h3>
+                        <p>Learn about professional mastering techniques and tools.</p>
+                    </a>
+                    <a href="/resources/noise-reduction/" class="resource-card">
+                        <h3>Noise Reduction and Spectral Repair</h3>
+                        <p>Clean up DIY recordings with professional techniques.</p>
+                    </a>
+                    <a href="/resources/vocal-alignment/" class="resource-card">
+                        <h3>Professional Vocal Alignment</h3>
+                        <p>Master tools and techniques for perfect vocal timing.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="resource-section">
+                <h2>Equipment & Setup</h2>
+                <div class="resource-grid">
+                    <a href="/resources/home-recording/" class="resource-card">
+                        <h3>Home Recording Guide</h3>
+                        <p>Set up your home studio for professional results.</p>
+                    </a>
+                    <a href="/resources/equipment/" class="resource-card">
+                        <h3>Equipment Reviews</h3>
+                        <p>Honest reviews of audio equipment and plugins.</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="resource-section">
+                <h2>Tools & Downloads</h2>
+                <div class="resource-grid">
+                    <a href="/resources/templates/" class="resource-card">
+                        <h3>Mixing Templates</h3>
+                        <p>Free DAW templates to jumpstart your mixing.</p>
+                    </a>
+                    <a href="/resources/checklists/" class="resource-card">
+                        <h3>Production Checklists</h3>
+                        <p>Step-by-step guides for consistent results.</p>
+                    </a>
+                    <a href="/resources/pricecalculator/" class="resource-card">
+                        <h3>Price Calculator</h3>
+                        <p>Get an instant quote for your project.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Bottom drawer navigation -->
+    <!-- Bottom Drawer Navigation -->
     <div class="bottom-drawer">
         <div class="drawer-tab">
             <span class="drawer-icon">^</span>

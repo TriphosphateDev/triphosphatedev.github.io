@@ -1,57 +1,3 @@
-### **Services Section Articles**  
-#### **Practical Guides and Tutorials**  
-1. **"How to Get the Most Out of Manual Pitch Correction with Melodyne"**  
-   - Break down your approach to natural tuning and why it differs from autotune.  
-   - Include step-by-step examples, like when to use subtle adjustments versus creative effects.  
-
-2. **"Layering Vocal Harmonies: Techniques for Creating Rich, Full Tracks"**  
-   - Discuss artificial harmonies, vocal doubling, and timing alignment.  
-   - Tie in your services for advanced layer synchronization.  
-
-3. **"Instrumental Enhancement Explained: Stereo Imaging and Dynamic EQ Secrets"**  
-   - Show how these techniques create a mix that sounds expansive and professional.  
-
-4. **"When to Use Group Stem Mixdowns vs. Full Stems"**  
-   - Educate clients on the differences, pros, and cons of each.  
-   - Include examples of when each approach works best.  
-
-5. **"Mixing for Streaming Platforms: Balancing Loudness, Dynamics, and Clarity"**  
-   - Share tips on achieving mixes that meet Spotify, Apple Music, and YouTube standards.  
-
----
-
-### **Resources Section Articles**  
-#### **Advanced Techniques and Niche Topics**  
-1. **"What Makes a Great Vocal Mix?"**  
-   - Explore nuanced details like reverb choices, sibilance control, and emotional delivery.  
-
-2. **"Mastering for Independent Artists: What You Need to Know"**  
-   - Offer insights into your approach to mastering tracks for various platforms.  
-
-3. **"Noise Reduction and Spectral Repair: Cleaning Up DIY Recordings"**  
-   - Explain the tools and methods you use to fix poor room acoustics, clicks, and hums.  
-
-4. **"When to Add Creative FX in a Mix: From Radio Filters to Beat Cuts"**  
-   - Provide real-world examples of how effects enhance transitions or add emotional impact.  
-
-5. **"DIY Mixing Pitfalls: Common Mistakes and How to Avoid Them"**  
-   - Offer tips on things like over-compression, muddy low ends, and harsh highs.  
-
-6. **"5 Essential Tips for Mixing Electronic Music"**  
-   - Focus on electronic genres and discuss elements like sidechaining, bass layering, and stereo width.  
-
-7. **"Hyperpop Mixing Techniques: Controlled Chaos and Crunchy Distortion"**  
-   - Niche and trendy content to target a rising genre.  
-
-8. **"When and How to Use Vocal Layer Timing Alignment"**  
-   - Explain the importance of tight doubles, harmonies, and adlibs in vocal-centric genres.  
-
-9. **"Why Independent Artists Need Affordable Mixing Services"**  
-   - A value-oriented article explaining the importance of professional mixing on a budget.  
-
-
----
-
 ### **Equipment Reviews**  
 #### **Equipment You Own or Have Used**  
 1. **Akai Fire Board for FL Studio**  
@@ -98,3 +44,22 @@
 8. **"The Role of Submixes in Modern Production"**  
    - Educate on when and why submixes are beneficial.  
 
+
+
+We've added these pages in resources:
+X creative-fx 
+X electronic-mixing 
+X great-vocal-mix 
+X hyperpop 
+X mastering 
+X mixing-pitfalls 
+X noise-reduction 
+X vocal-alignment 
+X why-professional-mixing 
+
+We've added these pages in services:
+@instrumental-enhancement 
+@melodyne 
+@mix-types 
+@streaming-loudness 
+@vocal-layering 
