@@ -13,7 +13,7 @@
      - Advanced Stereo Imaging & Depth
      - Spatial Enhancement & Clarity
 
-2. **Group Stem Mixdown** ($100/song)
+2. **Group Stem Mixdown** ($200/song)
    - Grouped instrument categories
    - Individual processing per group
    - Advanced routing and effects

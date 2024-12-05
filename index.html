@@ -310,6 +310,38 @@
     }
     </script>
 
+    <!-- Add this schema right after your existing schema.org scripts -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Triphosphate Music",
+        "url": "https://tripmixes.com",
+        "description": "Professional mixing engineer trained by Latin Grammy winner Charles Dye, bringing Grammy-winning studio techniques to bedroom producers. Experienced in collaborating with renowned industry professionals including Mark Hudson (Aerosmith producer), Rudy Perez (Latin Grammy producer), Jon Secada (Grammy winner), and David Frangioni (audio pioneer).",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://tripmixes.com/search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+        },
+        "sameAs": [
+            "https://soundcloud.com/triphosphate",
+            "https://www.instagram.com/triphosphate_music",
+            "https://engineears.com/triphosphate"
+        ],
+        "publisher": {
+            "@type": "Organization",
+            "name": "Triphosphate Music",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://i1.sndcdn.com/avatars-onpzqPoMMqmev27C-ifvxdw-t500x500.jpg"
+            }
+        }
+    }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14"></script>
     <script src="https://w.soundcloud.com/player/api.js"></script>
@@ -734,7 +766,7 @@
     <div class="privacy-banner" id="privacyBanner">
         <div class="privacy-content">
             <div class="privacy-text">
-                🔒 We value your privacy. We only collect anonymous usage data to improve our services. 
+                 We value your privacy. We only collect anonymous usage data to improve our services. 
                 <a href="/privacy-policy" class="privacy-link">Read our Privacy Policy</a>
             </div>
             <button class="privacy-dismiss" aria-label="Dismiss privacy notice" id="privacyDismiss">×</button>

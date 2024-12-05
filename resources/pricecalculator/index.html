@@ -63,7 +63,13 @@
     {
         "@context": "https://schema.org",
         "@type": "Service",
-        "name": "Professional Audio Mixing",
+        "name": "Mix Price Calculator",
+        "description": "Calculate custom mixing service quotes based on your project needs",
+        "provider": {
+            "@type": "ProfessionalService",
+            "name": "Triphosphate Music",
+            "url": "https://tripmixes.com"
+        },
         "offers": {
             "@type": "AggregateOffer",
             "priceCurrency": "USD",
@@ -71,8 +77,8 @@
             "offers": [
                 {
                     "@type": "Offer",
-                    "name": "Two Track Mixdown",
-                    "description": "Perfect for finished instrumentals or beats with vocals",
+                    "name": "2-Track Mixdown",
+                    "description": "Perfect for finished instrumentals with vocals",
                     "price": "50",
                     "priceCurrency": "USD"
                 },
@@ -80,15 +86,17 @@
                     "@type": "Offer",
                     "name": "Group Stem Mixdown",
                     "description": "Ideal for bands and multi-track productions",
-                    "price": "75",
+                    "price": "200",
                     "priceCurrency": "USD"
                 },
                 {
                     "@type": "Offer",
                     "name": "Full Stem Mixdown",
                     "description": "Maximum control and professional results",
-                    "price": "100",
-                    "priceCurrency": "USD"
+                    "priceSpecification": {
+                        "@type": "PriceSpecification",
+                        "description": "Custom quote based on project scope"
+                    }
                 }
             ]
         },
