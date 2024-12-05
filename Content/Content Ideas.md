@@ -43,23 +43,3 @@
 
 8. **"The Role of Submixes in Modern Production"**  
    - Educate on when and why submixes are beneficial.  
-
-
-
-We've added these pages in resources:
-X creative-fx 
-X electronic-mixing 
-X great-vocal-mix 
-X hyperpop 
-X mastering 
-X mixing-pitfalls 
-X noise-reduction 
-X vocal-alignment 
-X why-professional-mixing 
-
-We've added these pages in services:
-@instrumental-enhancement 
-@melodyne 
-@mix-types 
-@streaming-loudness 
-@vocal-layering 
