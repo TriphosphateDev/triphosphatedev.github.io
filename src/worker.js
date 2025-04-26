@@ -17,13 +17,17 @@ export default {
         // Parse the request body based on content type
         let data;
         const contentType = request.headers.get("content-type") || "";
+        console.log('Received request with content-type:', contentType); // Debug log
 
         if (contentType.includes("application/json")) {
           data = await request.json();
+          console.log('Parsed JSON data:', data); // Debug log
         } else if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
           const formData = await request.formData();
           data = Object.fromEntries(formData.entries());
+          console.log('Parsed form data:', data); // Debug log
         } else {
+          console.error('Unsupported content type:', contentType); // Debug log
           return new Response(
             JSON.stringify({ 
               error: "Unsupported Content-Type",
@@ -41,6 +45,7 @@ export default {
 
         // Check if this is a feedback form submission
         if (data.username && data.link) {
+          console.log('Processing feedback form submission'); // Debug log
           // Validate the feedback input
           if (!data.username || !data.link) {
             return new Response(
@@ -78,10 +83,15 @@ export default {
         }
         // Check if this is a consultation form submission
         else if (data.nameOrArtistName && data.email) {
+          console.log('Processing consultation form submission'); // Debug log
           // Validate the consultation input
           if (!data.nameOrArtistName || !data.email || !data.contactPreference || !data.projectDescription) {
+            console.error('Missing required fields:', data); // Debug log
             return new Response(
-              JSON.stringify({ error: "Required fields are missing" }),
+              JSON.stringify({ 
+                error: "Required fields are missing",
+                details: "Please fill in all required fields"
+              }),
               {
                 status: 400,
                 headers: {
@@ -123,8 +133,12 @@ export default {
           );
         }
         else {
+          console.error('Invalid form submission data:', data); // Debug log
           return new Response(
-            JSON.stringify({ error: "Invalid form submission" }),
+            JSON.stringify({ 
+              error: "Invalid form submission",
+              details: "The submitted data does not match any known form type"
+            }),
             {
               status: 400,
               headers: {
@@ -143,7 +157,8 @@ export default {
         return new Response(
           JSON.stringify({ 
             error: "Internal server error",
-            details: error.message 
+            details: error.message,
+            stack: error.stack // Only in development
           }),
           {
             status: 500,
