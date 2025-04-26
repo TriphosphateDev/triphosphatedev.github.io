@@ -176,14 +176,26 @@ export default {
         const url = new URL(request.url);
         if (url.pathname === '/api/feedback-queue') {
             try {
-                // Fetch all feedback entries from the database
+                console.log('Fetching feedback queue from database...');
+                
+                // First, let's verify the database connection and table structure
+                const tableInfo = await env.DB.prepare("PRAGMA table_info(feedback)").all();
+                console.log('Table info:', tableInfo);
+                
+                if (!tableInfo || !tableInfo.results || tableInfo.results.length === 0) {
+                    throw new Error('Feedback table not found or empty');
+                }
+
+                // Now fetch the feedback entries
                 const { results } = await env.DB.prepare(
-                    "SELECT username, track_link, submitted_at FROM feedback ORDER BY submitted_at DESC"
+                    "SELECT username, track_link, created_at FROM feedback ORDER BY created_at DESC"
                 ).all();
+                
+                console.log('Query results:', results);
 
                 // Return the feedback entries as JSON
                 return new Response(
-                    JSON.stringify(results),
+                    JSON.stringify(results || []),
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -192,11 +204,12 @@ export default {
                     }
                 );
             } catch (error) {
-                console.error("Error fetching feedback queue:", error);
+                console.error("Error in feedback queue endpoint:", error);
                 return new Response(
                     JSON.stringify({ 
                         error: "Internal server error",
-                        details: error.message
+                        details: error.message,
+                        stack: error.stack
                     }),
                     {
                         status: 500,
