@@ -104,7 +104,7 @@ export default {
 
           // Insert the consultation into the database
           await env.DB.prepare(
-            "INSERT INTO consultations (name, email, phone, discord, contact_preference, project_description) VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO formsubmissions (name, email, phone, discord, contact_preference, project_description) VALUES (?, ?, ?, ?, ?, ?)"
           )
             .bind(
               data.nameOrArtistName,
