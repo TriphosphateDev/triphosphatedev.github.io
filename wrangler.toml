@@ -1,6 +1,6 @@
-name = "form-handler"
+name = "feedback-form"
 main = "src/worker.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-03-18"
 
 # All variables in one [vars] section
 [vars]
@@ -16,8 +16,14 @@ enabled = true
 pattern = "tripmixes.com/submit-form*"
 zone_id = "745313294601ce924f0e49745603a937"
 
-# D1 Database
+# Production D1 Database
 [[d1_databases]]
 binding = "DB"
 database_name = "formsubmissions"
 database_id = "a8283608-a362-410a-80d8-76bddfa1df8c"
+
+# Local Development Database
+[[d1_databases]]
+binding = "DB"
+database_name = "feedback-local"
+preview_database_id = "local"  # This is a special ID for local development

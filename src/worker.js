@@ -1,165 +1,140 @@
 export default {
   async fetch(request, env) {
-    console.log('Worker started processing request');
-    console.log('Request URL:', request.url);
-    console.log('Request method:', request.method);
-
-    // Handle CORS preflight
-    if (request.method === 'OPTIONS') {
+    // Handle CORS preflight requests
+    if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Accept',
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Headers": "Content-Type",
         },
       });
     }
 
-    if (request.method !== 'POST') {
-      return new Response('Method not allowed', { status: 405 });
-    }
+    // Handle POST requests
+    if (request.method === "POST") {
+      try {
+        // Parse the request body
+        const data = await request.json();
 
-    try {
-      const formData = await request.formData();
-      console.log('Form data received:', Object.fromEntries(formData));
-
-      // Get client IP
-      const clientIP = request.headers.get('cf-connecting-ip');
-      console.log('Client IP:', clientIP);
-
-      // Honeypot check
-      if (formData.get('u_verify')) {
-        return new Response(JSON.stringify({
-          status: 'error',
-          message: 'Unable to process request'
-        }), { status: 400 });
-      }
-
-      // Check for previous conversion
-      console.log('Checking for previous conversion...');
-      const previousConversion = await env.DB.prepare(
-        "SELECT ip FROM conversion_tracking WHERE ip = ?"
-      ).bind(clientIP).first();
-      console.log('Previous conversion check result:', previousConversion);
-
-      // Insert form submission
-      console.log('Starting D1 database insertion...');
-      const result = await env.DB.prepare(`
-        INSERT INTO submissions (
-          name_or_artist_name,
-          email,
-          phone,
-          discord,
-          contact_preference,
-          project_description
-        ) VALUES (?, ?, ?, ?, ?, ?)
-      `).bind(
-        formData.get('nameOrArtistName'),
-        formData.get('email'),
-        formData.get('phone') || null,
-        formData.get('discord') || null,
-        formData.get('contactPreference'),
-        formData.get('projectDescription')
-      ).run();
-      console.log('Database insertion result:', result);
-
-      // Track new conversion
-      if (!previousConversion) {
-        const conversionId = `trip_${Date.now()}`;
-        console.log('Tracking new conversion for IP:', clientIP);
-        await env.DB.prepare(
-          "INSERT INTO conversion_tracking (ip) VALUES (?)"
-        ).bind(clientIP).run();
-        console.log('Conversion tracked successfully');
-
-        // Send Reddit conversion event
-        try {
-          await fetch('https://ads-api.reddit.com/api/v2.0/conversions/events/a2_g2pig4wsi4fe', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${env.REDDIT_BEARER_TOKEN}`
-            },
-            body: JSON.stringify({
-              test_mode: false,
-              events: [{
-                event_at: new Date().toISOString(),
-                event_type: {
-                  tracking_type: "Custom",
-                  custom_event_name: "Lead"
+        // Check if this is a feedback form submission
+        if (data.username && data.link) {
+          // Validate the feedback input
+          if (!data.username || !data.link) {
+            return new Response(
+              JSON.stringify({ error: "Username and link are required" }),
+              {
+                status: 400,
+                headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
                 },
-                conversion_id: conversionId
-              }]
-            })
-          });
-          console.log('Reddit conversion tracked successfully');
-        } catch (error) {
-          console.error('Reddit conversion tracking error:', error);
-        }
-
-        // Send Google Ads conversion event
-        try {
-          await fetch('https://www.google-analytics.com/mp/collect', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              client_id: clientIP,
-              events: [{
-                name: 'conversion',
-                params: {
-                  send_to: 'AW-16777349124/IfN6COvfye0ZEISQiMA-',
-                  value: 1,
-                  currency: 'USD'
-                }
-              }]
-            })
-          });
-          console.log('Google Ads conversion tracked successfully');
-        } catch (error) {
-          console.error('Google Ads conversion tracking error:', error);
-        }
-
-        // Return the conversion ID to client
-        return new Response(JSON.stringify({
-          status: 'success',
-          isNewConversion: true,
-          conversionId: conversionId
-        }), { 
-          status: 200,
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
+              }
+            );
           }
-        });
+
+          // Insert the feedback into the database
+          await env.DB.prepare(
+            "INSERT INTO feedback (username, track_link) VALUES (?, ?)"
+          )
+            .bind(data.username, data.link)
+            .run();
+
+          // Return success response
+          return new Response(
+            JSON.stringify({ 
+              status: "success", 
+              message: "Feedback submitted successfully" 
+            }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+        }
+        // Check if this is a consultation form submission
+        else if (data.nameOrArtistName && data.email) {
+          // Validate the consultation input
+          if (!data.nameOrArtistName || !data.email || !data.contactPreference || !data.projectDescription) {
+            return new Response(
+              JSON.stringify({ error: "Required fields are missing" }),
+              {
+                status: 400,
+                headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                },
+              }
+            );
+          }
+
+          // Insert the consultation into the database
+          await env.DB.prepare(
+            "INSERT INTO consultations (name, email, phone, discord, contact_preference, project_description) VALUES (?, ?, ?, ?, ?, ?)"
+          )
+            .bind(
+              data.nameOrArtistName,
+              data.email,
+              data.phone || null,
+              data.discord || null,
+              data.contactPreference,
+              data.projectDescription
+            )
+            .run();
+
+          // Return success response
+          return new Response(
+            JSON.stringify({ 
+              status: "success", 
+              message: "Consultation request submitted successfully",
+              isNewConversion: true,
+              conversionId: Date.now().toString()
+            }),
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+        }
+        else {
+          return new Response(
+            JSON.stringify({ error: "Invalid form submission" }),
+            {
+              status: 400,
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+        }
+
+      } catch (error) {
+        // Log the error (will appear in Worker logs)
+        console.error("Error processing request:", error);
+
+        // Return error response
+        return new Response(
+          JSON.stringify({ 
+            error: "Internal server error",
+            details: error.message 
+          }),
+          {
+            status: 500,
+            headers: {
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
       }
-
-      // Return response
-      return new Response(JSON.stringify({
-        status: 'success',
-        isNewConversion: false,
-        conversionId: null
-      }), { 
-        status: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        }
-      });
-
-    } catch (error) {
-      console.error('Error:', error);
-      return new Response(JSON.stringify({
-        status: 'error',
-        message: error.message
-      }), { 
-        status: 500,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        }
-      });
     }
-  }
+
+    // Handle unsupported methods
+    return new Response("Method not allowed", { status: 405 });
+  },
 }; 
