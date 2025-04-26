@@ -153,14 +153,32 @@
     <script>
         async function fetchFeedbackQueue() {
             try {
+                console.log('Fetching feedback queue...');
                 const response = await fetch('/api/feedback-queue');
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to fetch feedback queue');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`Expected JSON but got ${contentType}`);
+                }
+                
                 const data = await response.json();
+                console.log('Received data:', data);
                 updateFeedbackTable(data);
             } catch (error) {
                 console.error('Error fetching feedback queue:', error);
+                const tableBody = document.getElementById('feedbackTableBody');
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #ff6b6b;">
+                            Error loading feedback queue. Please try again later.
+                        </td>
+                    </tr>
+                `;
             }
         }
 

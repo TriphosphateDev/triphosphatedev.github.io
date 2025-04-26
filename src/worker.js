@@ -172,38 +172,41 @@ export default {
     }
 
     // Handle GET requests for feedback queue
-    if (request.method === "GET" && new URL(request.url).pathname === '/api/feedback-queue') {
-        try {
-            // Fetch all feedback entries from the database
-            const { results } = await env.DB.prepare(
-                "SELECT username, track_link, submitted_at FROM feedback ORDER BY submitted_at DESC"
-            ).all();
+    if (request.method === "GET") {
+        const url = new URL(request.url);
+        if (url.pathname === '/api/feedback-queue') {
+            try {
+                // Fetch all feedback entries from the database
+                const { results } = await env.DB.prepare(
+                    "SELECT username, track_link, submitted_at FROM feedback ORDER BY submitted_at DESC"
+                ).all();
 
-            // Return the feedback entries as JSON
-            return new Response(
-                JSON.stringify(results),
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-        } catch (error) {
-            console.error("Error fetching feedback queue:", error);
-            return new Response(
-                JSON.stringify({ 
-                    error: "Internal server error",
-                    details: error.message
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
+                // Return the feedback entries as JSON
+                return new Response(
+                    JSON.stringify(results),
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": "*",
+                        },
+                    }
+                );
+            } catch (error) {
+                console.error("Error fetching feedback queue:", error);
+                return new Response(
+                    JSON.stringify({ 
+                        error: "Internal server error",
+                        details: error.message
+                    }),
+                    {
+                        status: 500,
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": "*",
+                        },
+                    }
+                );
+            }
         }
     }
 
