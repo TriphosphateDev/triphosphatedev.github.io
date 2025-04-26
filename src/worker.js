@@ -14,8 +14,30 @@ export default {
     // Handle POST requests
     if (request.method === "POST") {
       try {
-        // Parse the request body
-        const data = await request.json();
+        // Parse the request body based on content type
+        let data;
+        const contentType = request.headers.get("content-type") || "";
+
+        if (contentType.includes("application/json")) {
+          data = await request.json();
+        } else if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
+          const formData = await request.formData();
+          data = Object.fromEntries(formData.entries());
+        } else {
+          return new Response(
+            JSON.stringify({ 
+              error: "Unsupported Content-Type",
+              message: "Please use application/json, application/x-www-form-urlencoded, or multipart/form-data"
+            }),
+            {
+              status: 400,
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+              },
+            }
+          );
+        }
 
         // Check if this is a feedback form submission
         if (data.username && data.link) {
