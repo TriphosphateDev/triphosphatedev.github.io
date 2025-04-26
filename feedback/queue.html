@@ -140,7 +140,6 @@
             <thead>
                 <tr>
                     <th>Username</th>
-                    <th>Track Link</th>
                     <th>Submitted At</th>
                 </tr>
             </thead>
@@ -190,8 +189,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${entry.username}</td>
-                    <td><a href="${entry.track_link}" target="_blank">${entry.track_link}</a></td>
-                    <td>${new Date(entry.submitted_at).toLocaleString()}</td>
+                    <td>${new Date(entry.created_at).toLocaleString()}</td>
                 `;
                 tableBody.appendChild(row);
             });

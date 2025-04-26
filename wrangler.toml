@@ -16,6 +16,10 @@ enabled = true
 pattern = "tripmixes.com/submit-form*"
 zone_id = "745313294601ce924f0e49745603a937"
 
+[[routes]]
+pattern = "tripmixes.com/api/feedback-queue*"
+zone_id = "745313294601ce924f0e49745603a937"
+
 # Production D1 Database
 [[d1_databases]]
 binding = "DB"
