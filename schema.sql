@@ -8,3 +8,10 @@ CREATE TABLE submissions (
     project_description TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    track_link TEXT NOT NULL,
+    submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
