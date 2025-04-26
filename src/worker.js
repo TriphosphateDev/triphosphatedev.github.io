@@ -188,7 +188,7 @@ export default {
 
                 // Now fetch the feedback entries
                 const { results } = await env.DB.prepare(
-                    "SELECT username, track_link, created_at FROM feedback ORDER BY created_at DESC"
+                    "SELECT username, track_link, created_at FROM feedback ORDER BY created_at ASC"
                 ).all();
                 
                 console.log('Query results:', results);
