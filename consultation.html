@@ -270,35 +270,37 @@
             document.querySelector('.loading-overlay').style.display = 'flex';
             
             try {
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+                
                 const response = await fetch('/submit-form', {
                     method: 'POST',
-                    body: new FormData(e.target)
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
                 });
-                const result = await response.json();
                 
-                if (result.status === 'success') {
-                    // Track conversion if it's new
-                    if (result.isNewConversion) {
-                        // Track Reddit conversion
-                        rdt('track', 'Lead', {
-                            conversion_id: result.conversionId
-                        });
-                        
-                        // Track Google Ads conversion
-                        gtag('event', 'conversion', {
-                            'send_to': 'AW-16777349124/IfN6COvfye0ZEISQiMA-'
-                        });
-                    }
-                    
+                if (response.ok) {
                     // Show success message
                     document.querySelector('.success-message').style.display = 'block';
+                    
+                    // Track conversion
+                    rdt('track', 'Lead', {
+                        conversion_id: Date.now().toString()
+                    });
+                    
+                    // Track Google Ads conversion
+                    gtag('event', 'conversion', {
+                        'send_to': 'AW-16777349124/IfN6COvfye0ZEISQiMA-'
+                    });
                     
                     // Redirect after delay
                     setTimeout(() => {
                         window.location.href = '/success.html';
                     }, 2000);
                 } else {
-                    throw new Error(result.message || 'Submission failed');
+                    throw new Error('Submission failed');
                 }
             } catch (error) {
                 console.error('Form submission error:', error);
