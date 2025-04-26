@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Queue | Triphosphate Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 120%;
+            height: 140%;
+            background-image: url('pexels-yusuf-miah-70201554-14828529.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            opacity: 0.12;
+            z-index: -1;
+            animation: parallaxScroll 20s cubic-bezier(0.1, 0.4, 0.2, 1) infinite alternate;
+        }
+
+        @keyframes parallaxScroll {
+            from { transform: translateY(0); }
+            to { transform: translateY(30px); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #8a7bf4;
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .subtitle a {
+            color: #8a7bf4;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .subtitle a:hover {
+            color: #9d8fff;
+        }
+
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .feedback-table th, .feedback-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feedback-table th {
+            background: rgba(255, 255, 255, 0.1);
+            color: #8a7bf4;
+        }
+
+        .feedback-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #8a7bf4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="container">
+        <h1>Feedback Queue</h1>
+        <p class="subtitle">
+            Live feedback queue for track submissions. Updates every 20 seconds.
+        </p>
+
+        <table class="feedback-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Track Link</th>
+                    <th>Submitted At</th>
+                </tr>
+            </thead>
+            <tbody id="feedbackTableBody">
+                <!-- Feedback entries will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchFeedbackQueue() {
+            try {
+                const response = await fetch('/api/feedback-queue');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch feedback queue');
+                }
+                const data = await response.json();
+                updateFeedbackTable(data);
+            } catch (error) {
+                console.error('Error fetching feedback queue:', error);
+            }
+        }
+
+        function updateFeedbackTable(feedbackEntries) {
+            const tableBody = document.getElementById('feedbackTableBody');
+            tableBody.innerHTML = '';
+
+            feedbackEntries.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.username}</td>
+                    <td><a href="${entry.track_link}" target="_blank">${entry.track_link}</a></td>
+                    <td>${new Date(entry.submitted_at).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Fetch feedback queue every 20 seconds
+        setInterval(fetchFeedbackQueue, 20000);
+
+        // Initial fetch
+        fetchFeedbackQueue();
+    </script>
+</body>
+</html> 
