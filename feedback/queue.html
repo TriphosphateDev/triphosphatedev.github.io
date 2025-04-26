@@ -185,7 +185,8 @@
             const tableBody = document.getElementById('feedbackTableBody');
             tableBody.innerHTML = '';
 
-            feedbackEntries.forEach(entry => {
+            // Reverse the array to show oldest entries first
+            feedbackEntries.reverse().forEach(entry => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${entry.username}</td>
