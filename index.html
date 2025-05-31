@@ -464,8 +464,8 @@
         }
 
         .audio-player {
-            background: rgba(98, 83, 204, 0.35);
-            border: 1px solid rgba(138, 123, 244, 0.5);
+            background: rgba(78, 63, 184, 0.55) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
             border-radius: 10px;
             padding: 1rem;
             width: 100%;
@@ -602,28 +602,69 @@
             }
         }
 
-        /* Update box backgrounds with darker purple and less transparency */
+        /* Update box backgrounds with darker purple and more opacity */
         .audio-player,
         .consultation-offer,
         .title-container,
         .nav-container,
         .social-container,
         .service-description {
-            background: rgba(98, 83, 204, 0.25) !important; /* Slightly more transparent */
-            backdrop-filter: blur(8px) !important; /* Add subtle blur effect */
+            background: rgba(78, 63, 184, 0.45) !important;
+            backdrop-filter: blur(8px) !important;
             -webkit-backdrop-filter: blur(8px) !important;
-            border: 1px solid rgba(138, 123, 244, 0.5) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
+        }
+
+        /* Update hover states for interactive elements */
+        .btn:hover {
+            background: rgba(138, 123, 244, 0.55) !important;
+        }
+
+        /* Update consultation box background */
+        .consultation-offer {
+            background: rgba(78, 63, 184, 0.45) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
+        }
+
+        /* Update title container background */
+        .title-container {
+            background: rgba(78, 63, 184, 0.45) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
+        }
+
+        /* Update nav container background */
+        .nav-container {
+            background: rgba(78, 63, 184, 0.45) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
+        }
+
+        /* Update social container background */
+        .social-container {
+            background: rgba(78, 63, 184, 0.45) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
+        }
+
+        /* Update service description background */
+        .service-description {
+            background: rgba(78, 63, 184, 0.45) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
+        }
+
+        /* Update audio player background */
+        .audio-player {
+            background: rgba(78, 63, 184, 0.55) !important;
+            border: 1px solid rgba(138, 123, 244, 0.6) !important;
         }
 
         /* Update privacy banner style */
         .privacy-banner {
-            background: rgba(5, 10, 25, 0.98) !important; /* Almost fully opaque */
+            background: rgba(5, 10, 25, 0.98) !important;
             border-bottom: 1px solid rgba(138, 123, 244, 0.5);
         }
 
         /* Update hover states for interactive elements */
         .btn:hover {
-            background: rgba(138, 123, 244, 0.45) !important;
+            background: rgba(138, 123, 244, 0.55) !important;
         }
 
         /* Ensure text remains highly readable */
@@ -672,8 +713,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem; /* Reduced from 2rem */
-            padding: 1.5rem; /* Reduced from 2rem */
+            gap: 1rem;
+            padding: 1.5rem;
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
@@ -681,7 +722,7 @@
 
         /* Update individual box margins */
         .title-container {
-            margin-bottom: 1rem !important; /* Reduced from 2rem */
+            margin-bottom: 1rem !important;
         }
 
         .consultation-offer,
@@ -689,26 +730,26 @@
         .nav-container,
         .social-container,
         .service-description {
-            margin: 0 !important; /* Remove default margins */
+            margin: 0 !important;
         }
 
         /* Adjust padding inside boxes */
         .audio-player {
-            padding: 0.75rem !important; /* Reduced padding */
+            padding: 0.75rem !important;
         }
 
         .consultation-offer,
         .nav-container,
         .social-container,
         .service-description {
-            padding: 1.25rem !important; /* Consistent padding */
+            padding: 1.25rem !important;
         }
 
         /* Mobile adjustments */
         @media screen and (max-width: 768px) {
             .content {
                 padding: 1rem;
-                gap: 0.75rem; /* Even tighter on mobile */
+                gap: 0.75rem;
             }
         }
 
@@ -747,7 +788,7 @@
 
         /* Home page specific styles */
         body.home {
-            background: none; /* Remove background for home page */
+            background: none;
         }
 
         /* All other pages will use the default gradient from main.css */
@@ -877,7 +918,7 @@
                 max-width: 600px;">
                 <div class="buttons" aria-label="Contact options">
                     <a href="/getstarted" class="btn" id="consultButton">Get Started</a>
-                    <a href="/feedback/" class="btn">Feedback</a>
+                    <a href="https://www.nero.fan/tripmixes/live" class="btn">Feedback</a>
                     <a href="/resources/pricecalculator/" class="btn">Customize Your Quote</a>
                     <a href="/about" class="btn">Meet Your Engineer</a>
                     <a class="btn" href="/services/">Services</a>
@@ -943,7 +984,7 @@
 
     <div class="button-container">
         <a href="/get-started/" class="button">Get Started</a>
-        <a href="/feedback/" class="button">Feedback</a>
+        <a href="https://www.nero.fan/tripmixes/live" class="button">Feedback</a>
         <a href="/resources/pricecalculator/" class="button">Customize Your Quote</a>
     </div>
 
