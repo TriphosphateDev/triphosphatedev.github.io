@@ -28,7 +28,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../assets/background.jpg');
+    background-image: url('/pexels-yusuf-miah-70201554-14828529.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -590,3 +590,59 @@ body:not(.visualizer-failed)::before,
 body:not(.visualizer-failed) .fallback-bg {
     opacity: 0;
 } 
+/* Modernized homepage surfaces */
+.title-container,
+.consultation-offer,
+.playlist-container,
+.nav-container,
+.social-container,
+.service-description {
+    border-radius: 18px !important;
+    border: 1px solid rgba(150, 132, 255, 0.45) !important;
+    background: linear-gradient(155deg, rgba(32, 38, 78, 0.82), rgba(16, 20, 40, 0.74)) !important;
+    box-shadow: 0 20px 45px rgba(7, 10, 25, 0.35);
+}
+
+.title-container h1 {
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+}
+
+.btn {
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.btn:focus-visible,
+.social-link:focus-visible,
+.drawer-tab:focus-visible {
+    outline: 2px solid #b8aeff;
+    outline-offset: 2px;
+}
+
+.home-seo-summary {
+    max-width: 960px;
+    margin: 1rem auto 6rem;
+    padding: 1.5rem 1.75rem;
+    background: rgba(10, 15, 30, 0.72);
+    border: 1px solid rgba(138, 123, 244, 0.32);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.home-seo-summary h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    color: #c4bcff;
+}
+
+.home-seo-summary p {
+    line-height: 1.65;
+    margin-bottom: 0.6rem;
+}
+
+.home-seo-summary ul {
+    margin-left: 1.2rem;
+    line-height: 1.6;
+}
